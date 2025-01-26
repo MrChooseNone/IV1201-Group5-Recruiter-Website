@@ -4,8 +4,6 @@ import com.example.demo.domain.dto.RoleDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
@@ -13,7 +11,6 @@ public class Role implements RoleDTO{
     
     @Id
     @Column(name="role_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer roleId;
 
     @Column(name="name")
@@ -37,4 +34,19 @@ public class Role implements RoleDTO{
         return this.name;
     }
 
+    /**
+     * Set the role's id.
+     * 
+     * @param id the role name to set
+     */
+    public void setId(Integer id)
+    {this.roleId=id;}
+
+    /**
+     * Set the role's name.
+     * 
+     * @param name the role name to set
+     */
+    public void setName(String name)
+    {this.name=name;}
 }
