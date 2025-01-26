@@ -1,0 +1,20 @@
+Below are the psql commands to create the existing database used as a basis for this program, along with filling it with table(s) containing relevant data items.
+PSQL is what was used, but another database service could be used, if that is the case the general principles should stay the same, but changes may need to be made to the backend system.
+
+0.  If the database already exists, you can use the following to remove it : DROP DATABASE applicationdatabase;
+
+1.  Use to check for errors: \set VERBOSITY verbose;
+
+2.  To create the database, use the following : CREATE DATABASE applicationdatabase;
+
+3.  Use the following to move to the newly created database : \c applicationdatabase;
+
+4.  To create the DRI table use the following to run the specific script, ensure you update the path, both in the script itself and for the location to the script, for your local installation, and note the formatting below:
+        \i 'D:\\Github Folder\\Spring-Test\\Database code\\existing-database.sql';
+        
+
+Below are some additional commands which where found to be useful:
+
+This command shows the datatype for the columns of a specific table:
+select column_name, data_type from information_schema.columns where table_name = 'competence_profile';
+
