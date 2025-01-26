@@ -1,7 +1,7 @@
 package com.example.demo.domain.dto;
 
 /* 
- * The PersonDTO interface provides a data transfer interface for handling competence
+ * The CompetenceDTO interface provides a data transfer interface for handling competence objects
 */
 public interface CompetenceDTO {
     /** Interface function for retriving a competence's id

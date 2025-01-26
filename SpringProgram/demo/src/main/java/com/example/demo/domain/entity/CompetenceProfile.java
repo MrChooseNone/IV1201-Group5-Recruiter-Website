@@ -56,6 +56,7 @@ public class CompetenceProfile implements CompetenceProfileDTO{
      * Implements the CompetenceProfileDTO function GetPerson, and returns the person who this profile belongs to
      * @return the competence profile's id
      */
+    @Override
     public Person GetPerson() {
         return this.person;
     }

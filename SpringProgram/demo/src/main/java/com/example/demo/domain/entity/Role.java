@@ -37,7 +37,7 @@ public class Role implements RoleDTO{
     /**
      * Set the role's id.
      * 
-     * @param id the role name to set
+     * @param id the role id to set
      */
     public void setId(Integer id)
     {this.roleId=id;}

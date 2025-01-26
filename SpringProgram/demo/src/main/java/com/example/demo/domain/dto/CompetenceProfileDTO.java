@@ -2,6 +2,11 @@ package com.example.demo.domain.dto;
 
 import java.math.BigDecimal;
 
+
+/* 
+ * The CompetenceProfileDTO interface provides a data transfer interface for handling competence profile objects
+*/
+
 public interface CompetenceProfileDTO {
     /** Interface function for retriving a competence profile's id
      * 

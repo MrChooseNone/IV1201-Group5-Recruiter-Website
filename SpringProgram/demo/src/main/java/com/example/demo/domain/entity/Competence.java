@@ -40,4 +40,20 @@ public class Competence implements CompetenceDTO{
     public String GetName() {
         return this.name;
     }
+
+    /**
+     * Set the competence's id.
+     * 
+     * @param id the competence id to set
+     */
+    public void setId(Integer id)
+    {this.competenceId=id;}
+
+    /**
+     * Set the competence's name.
+     * 
+     * @param name the competence name to set
+     */
+    public void setName(String name)
+    {this.name=name;}
 }
