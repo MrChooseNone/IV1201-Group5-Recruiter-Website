@@ -15,7 +15,7 @@ import jakarta.persistence.Id;
 @Entity
 public class Competence implements CompetenceDTO{
     @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "competence_id")
     private Integer competenceId;

@@ -45,16 +45,19 @@ public class DatabaseLoader implements CommandLineRunner{
             Competence competence = new Competence();
             competence.setId(1);
             competence.setName("ticket sales");
+            competenceRepository.save(competence);
         }
         if (competenceRepository.findByName("lotteries")==null) {
             Competence competence = new Competence();
             competence.setId(2);
             competence.setName("lotteries");
+            competenceRepository.save(competence);
         }
         if (competenceRepository.findByName("roller coaster operation")==null) {
             Competence competence = new Competence();
             competence.setId(3);
             competence.setName("roller coaster operation");
+            competenceRepository.save(competence);
         }
 
     }
@@ -73,5 +76,7 @@ public class DatabaseLoader implements CommandLineRunner{
 
     //This functions is responsible for loading people into the database
     private void loadPerson()
-    {}
+    {
+
+    }
 }
