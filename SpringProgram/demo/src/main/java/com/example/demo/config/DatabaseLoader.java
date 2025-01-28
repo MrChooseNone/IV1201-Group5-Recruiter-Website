@@ -26,57 +26,7 @@ public class DatabaseLoader implements CommandLineRunner{
     //This overwritten method will be run before the server starts, and is responsible for loading in data
     @Override
     public void run(String... args) throws Exception {
-        //We check if the roles exist, and if not we create them
-        if (roleRepository.findByName("recruiter") == null) {
-            Role role = new Role();
-            role.setId(1);
-            role.setName("recruiter");
-            roleRepository.save(role);
-        }
-        if (roleRepository.findByName("applicant") == null) {
-            Role role = new Role();
-            role.setId(2);
-            role.setName("applicant");
-            roleRepository.save(role);
-        }
-
-        //We then load the competences
-        if (competenceRepository.findByName("ticket sales")==null) {
-            Competence competence = new Competence();
-            competence.setId(1);
-            competence.setName("ticket sales");
-            competenceRepository.save(competence);
-        }
-        if (competenceRepository.findByName("lotteries")==null) {
-            Competence competence = new Competence();
-            competence.setId(2);
-            competence.setName("lotteries");
-            competenceRepository.save(competence);
-        }
-        if (competenceRepository.findByName("roller coaster operation")==null) {
-            Competence competence = new Competence();
-            competence.setId(3);
-            competence.setName("roller coaster operation");
-            competenceRepository.save(competence);
-        }
 
     }
     
-    //This function is responsible for loading availability periods into the database
-    private void loadAvailabilityPeriods()
-    {
-
-    }
-
-    //This function is responsible for loading availability periods into the database
-    private void loadCompetenceProfile()
-    {
-
-    }
-
-    //This functions is responsible for loading people into the database
-    private void loadPerson()
-    {
-
-    }
 }

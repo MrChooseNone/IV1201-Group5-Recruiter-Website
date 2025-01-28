@@ -11,6 +11,7 @@ public class Role implements RoleDTO{
     
     @Id
     @Column(name="role_id")
+    
     private Integer roleId;
 
     @Column(name="name")
