@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.domain.ServiceExample;
+import com.example.demo.service.ServiceExample;
 
 //This is an example of how a API endpoint should look for the REST controller
 //The presention folder is where these are located, and they should validate the inputs are the correct format before calling the domain/integration layers for futher logic/database accesses
