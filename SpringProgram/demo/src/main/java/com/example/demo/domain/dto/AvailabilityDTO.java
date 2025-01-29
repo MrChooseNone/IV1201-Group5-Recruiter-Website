@@ -2,7 +2,7 @@ package com.example.demo.domain.dto;
 
 import java.sql.Date;
 
-/* 
+/** 
  * The AvailabilityDTO interface provides a data transfer interface for availability periods
 */
 public interface AvailabilityDTO {

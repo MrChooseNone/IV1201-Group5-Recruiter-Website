@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.domain.dto.CompetenceDTO;
+import com.example.demo.domain.dto.CompetenceTranslationDTO;
 import com.example.demo.service.TranslationService;
 
 @RestController
@@ -42,27 +43,34 @@ public class TranslationEndpointController {
      *         object to the user
      */
     @GetMapping("/getStandardCompetences")
-    public List<? extends CompetenceDTO> standardCompetences() {
+    public List<? extends CompetenceDTO> GetStandardCompetences() {
 
-        List<? extends CompetenceDTO> existingCompetences = translationService.getCompetences();
+        List<? extends CompetenceDTO> existingCompetences = translationService.GetCompetences();
         System.out.println(existingCompetences);
         return existingCompetences;
     }
 
     /**
+     * This function returns a competences specified using its id. If it exists it will be returned, if not a 404 error will be sent stating this.
      * 
+     * @param id This is the id for the competence this requests
+     * @return This function will return the list of existing competences as a json
+     *         object to the user
      */
     @GetMapping("/getSpecificCompetence/{id}")
     public CompetenceDTO GetSpecificCompetence(@PathVariable Integer id) {
-
-        return translationService.getSpecificCompetence(id);
+        return translationService.GetSpecificCompetence(id);
     }
 
     /**
+     * This function returns a list of competence translations which are in a specified language. If any exists they will be returned, if not a 404 error will be sent stating this and if the language was missing or if the translations did not exist.
      * 
+     * @param language This is the language the translations are for
+     * @return This function will return the list of competences translations as a json object to the user, if no error occurs
      */
     @GetMapping("/getCompetenceTranslation")
-    public String GetCompetenceTranslation(@RequestParam String language) {
-        return "test123";
+    public List<? extends CompetenceTranslationDTO> GetCompetenceTranslation(@RequestParam String language) {
+        return translationService.GetCompetenceTranslation(language.toLowerCase());
     }
+
 }

@@ -14,6 +14,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Entity;
 
 @Entity
+/**
+ * Represents a availability entity in the system.
+ * Implements the AvailabilityDTO interface.
+ */
 public class Availability implements AvailabilityDTO{
     
     @Id 

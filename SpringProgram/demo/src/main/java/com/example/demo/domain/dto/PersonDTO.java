@@ -1,6 +1,6 @@
 package com.example.demo.domain.dto;
 
-/* 
+/** 
  * The PersonDTO interface provides a data transfer interface for objects representing a person.
 */
 public interface PersonDTO {

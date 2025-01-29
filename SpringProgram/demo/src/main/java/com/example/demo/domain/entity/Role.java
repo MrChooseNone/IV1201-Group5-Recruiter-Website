@@ -7,6 +7,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
+/**
+ * Represents a role entity in the system.
+ * Implements the RoleDTO interface.
+ */
 public class Role implements RoleDTO{
     
     @Id

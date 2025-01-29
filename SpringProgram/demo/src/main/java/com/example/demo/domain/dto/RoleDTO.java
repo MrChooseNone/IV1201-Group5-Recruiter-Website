@@ -1,6 +1,6 @@
 package com.example.demo.domain.dto;
 
-/* 
+/**
  * The RoleDTO interface provides a data transfer interface for objects representing a role.
 */
 public interface RoleDTO {

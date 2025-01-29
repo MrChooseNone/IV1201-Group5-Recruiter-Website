@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 
 /**
  * Represents a competence entity in the system.
+ * Implements the CompetenceDTO interface.
  */
 @Entity
 public class Competence implements CompetenceDTO{

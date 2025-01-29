@@ -1,6 +1,6 @@
 package com.example.demo.domain.dto;
 
-/* 
+/** 
  * The CompetenceDTO interface provides a data transfer interface for handling competence objects
 */
 public interface CompetenceDTO {

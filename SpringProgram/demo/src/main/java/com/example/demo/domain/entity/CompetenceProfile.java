@@ -14,12 +14,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 
 /**
  * Represents a competence profile entity in the system.
+ * Implements the CompetenceProfileDTO interface.
  */
 @Entity
 public class CompetenceProfile implements CompetenceProfileDTO{

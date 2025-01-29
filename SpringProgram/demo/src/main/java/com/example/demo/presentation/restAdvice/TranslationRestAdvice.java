@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
-import com.example.demo.presentation.restException.SpecificCompetenceNotFound;
+import com.example.demo.presentation.restException.LanguageNotFoundException;
+import com.example.demo.presentation.restException.SpecificCompetenceNotFoundException;
+import com.example.demo.presentation.restException.TranslationsNotFoundException;
 
 /**
  * This class is responsible for defining the error handeling for the TranslationEndpointController, defining which http response code should be used for the different potential errors
@@ -15,10 +16,36 @@ import com.example.demo.presentation.restException.SpecificCompetenceNotFound;
 @RestControllerAdvice
 public class TranslationRestAdvice {
 
-  @ExceptionHandler(SpecificCompetenceNotFound.class)
+  /**
+   * This function is responsible for handeling the SpecificCompetenceNotFound error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 404 error message with the SpecificCompetenceNotFound error message as the text
+   */
+  @ExceptionHandler(SpecificCompetenceNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  String employeeNotFoundHandler(SpecificCompetenceNotFound ex) {
+  String specificCompetenceNotFoundHandler(SpecificCompetenceNotFoundException ex) {
     return ex.getMessage();
   }
 
+  /**
+   * This function is responsible for handeling the LanguageNotFound error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 404 error message with the LanguageNotFound error message as the text
+   */
+  @ExceptionHandler(LanguageNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  String LanguageNotFoundExceptionHandler(LanguageNotFoundException ex) {
+    return ex.getMessage();
+  }
+
+  /**
+   * This function is responsible for handeling the TranslationsNotFoundException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 404 error message with the TranslationsNotFoundException error message as the text
+   */
+  @ExceptionHandler(TranslationsNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  String TranslationsNotFoundExceptionHandler(TranslationsNotFoundException ex) {
+    return ex.getMessage();
+  }
 }

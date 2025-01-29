@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 
 /**
  * Represents a person entity in the system.
+ * Implements the PersonDTO interface.
  */
 @Entity
 public class Person implements PersonDTO{
