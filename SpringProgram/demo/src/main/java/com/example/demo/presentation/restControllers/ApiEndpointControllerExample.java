@@ -1,4 +1,4 @@
-package com.example.demo.presentation;
+package com.example.demo.presentation.restControllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

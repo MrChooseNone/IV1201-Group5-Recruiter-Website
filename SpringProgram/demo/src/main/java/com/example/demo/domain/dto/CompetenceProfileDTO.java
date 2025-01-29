@@ -12,23 +12,23 @@ public interface CompetenceProfileDTO {
      * 
      * @return competence profile's id
      */
-    public Integer GetCompetenceProfileId();
+    public Integer getCompetenceProfileId();
 
     /** Interface function for retriving the person who this competence profile corresponds to
      * 
      * @return the person the competence profile belongs to
      */
-    public PersonDTO GetPerson();
+    public PersonDTO getPerson();
 
     /** Interface function for retriving the competence who this competence profile explains
      * 
      * @return the competence the competence profile explains
      */
-    public CompetenceDTO GetCompetenceDTO();
+    public CompetenceDTO getCompetenceDTO();
 
     /** Interface function for retriving the years of experience this profile states the person has
      * 
      * @return the number of years of experience
      */
-    public BigDecimal GetYearsOfExperience();
+    public BigDecimal getYearsOfExperience();
 }

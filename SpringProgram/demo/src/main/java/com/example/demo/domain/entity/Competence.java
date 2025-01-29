@@ -24,20 +24,20 @@ public class Competence implements CompetenceDTO{
     private String name;
 
     /**
-     * Implements the CompetenceDTO function GetCompetenceId, and returns the competence's id
+     * Implements the CompetenceDTO function getCompetenceId, and returns the competence's id
      * @return the role's role id
      */
     @Override
-    public Integer GetCompetenceId() {
+    public Integer getCompetenceId() {
         return this.competenceId;
     }
 
     /**
-     * Implements the CompetenceDTO function GetName, and returns the competence's name
+     * Implements the CompetenceDTO function getName, and returns the competence's name
      * @return the role's role id
      */
     @Override
-    public String GetName() {
+    public String getName() {
         return this.name;
     }
 

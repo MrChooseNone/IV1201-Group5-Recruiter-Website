@@ -44,38 +44,38 @@ public class CompetenceProfile implements CompetenceProfileDTO{
     private BigDecimal yearsOfExperience;
 
     /**
-     * Implements the CompetenceProfileDTO function GetCompetenceProfileId, and returns the object's id
+     * Implements the CompetenceProfileDTO function getCompetenceProfileId, and returns the object's id
      * @return the competence profile's id
      */
     @Override
-    public Integer GetCompetenceProfileId() {
+    public Integer getCompetenceProfileId() {
         return this.competenceProfileId;
     }
 
     /**
-     * Implements the CompetenceProfileDTO function GetPerson, and returns the person who this profile belongs to
+     * Implements the CompetenceProfileDTO function getPerson, and returns the person who this profile belongs to
      * @return the competence profile's id
      */
     @Override
-    public Person GetPerson() {
+    public Person getPerson() {
         return this.person;
     }
 
     /**
-     * Implements the CompetenceProfileDTO function GetCompetenceDTO, and returns the competence this profile corresponds to
+     * Implements the CompetenceProfileDTO function getCompetenceDTO, and returns the competence this profile corresponds to
      * @return the competence
      */
     @Override
-    public Competence GetCompetenceDTO() {
+    public Competence getCompetenceDTO() {
         return this.competence;
     }
 
     /**
-     * Implements the CompetenceProfileDTO function GetYearsOfExperience, and returns the years of experience this profile corresponds to
+     * Implements the CompetenceProfileDTO function getYearsOfExperience, and returns the years of experience this profile corresponds to
      * @return the years of experience
      */
     @Override
-    public BigDecimal GetYearsOfExperience() {
+    public BigDecimal getYearsOfExperience() {
         return this.yearsOfExperience;
     }
     

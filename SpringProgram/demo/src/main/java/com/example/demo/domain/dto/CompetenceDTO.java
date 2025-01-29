@@ -8,11 +8,11 @@ public interface CompetenceDTO {
      * 
      * @return the competence's id
      */
-    public Integer GetCompetenceId();
+    public Integer getCompetenceId();
 
     /** Interface function for retriving a competence's name
      * 
      * @return the competence's name
      */
-    public String GetName();
+    public String getName();
 }

@@ -33,31 +33,31 @@ public class Availability implements AvailabilityDTO{
     private Date toDate;
 
     /**
-     * Implements the AvailabilityDTO function GetAvailabilityId, and returns the availability id
+     * Implements the AvailabilityDTO function getAvailabilityId, and returns the availability id
      * @return the availability id
      */
     @Override
-    public Integer GetAvailabilityId(){return this.availabilityId;}
+    public Integer getAvailabilityId(){return this.availabilityId;}
 
     /**
-     * Implements the AvailabilityDTO function GetPerson, and returns the person this period refers to
+     * Implements the AvailabilityDTO function getPerson, and returns the person this period refers to
      * @return the person
      */
     @Override
-    public Person GetPerson(){return this.person;}
+    public Person getPerson(){return this.person;}
 
     /**
-     * Implements the AvailabilityDTO function GetFromDate, and returns the start date of the period
+     * Implements the AvailabilityDTO function getFromDate, and returns the start date of the period
      * @return the start date of the period
      */
     @Override
-    public Date GetFromDate(){return this.fromDate;}
+    public Date getFromDate(){return this.fromDate;}
     
     /**
-     * Implements the AvailabilityDTO function GetToDate, and returns the end date of the period
+     * Implements the AvailabilityDTO function getToDate, and returns the end date of the period
      * @return the end date of the period
      */
     @Override
-    public Date GetToDate(){return this.toDate;}
+    public Date getToDate(){return this.toDate;}
 
 }

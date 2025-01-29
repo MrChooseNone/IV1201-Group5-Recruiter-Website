@@ -49,64 +49,64 @@ public class Person implements PersonDTO{
     }
 
     /**
-     * Implements the PersonDTO function GetId, and returns the person objects id
+     * Implements the PersonDTO function getId, and returns the person objects id
      * @return the person's id
      */
     @Override
-    public Integer GetId() {
+    public Integer getId() {
         return this.id;
     }
 
     /**
-     * Implements the PersonDTO function GetName, and returns the person objects first name
+     * Implements the PersonDTO function getName, and returns the person objects first name
      * @return the person's first name
      */
     @Override
-    public String GetName() {
+    public String getName() {
         return this.name;
     }
 
     /**
-     * Implements the PersonDTO function GetSurname, and returns the person objects last name
+     * Implements the PersonDTO function getSurname, and returns the person objects last name
      * @return the person's last name
      */
     @Override
-    public String GetSurname() {
+    public String getSurname() {
         return this.surname;
     }
 
     /**
-     * Implements the PersonDTO function GetPnr, and returns the person objects personal identity number
+     * Implements the PersonDTO function getPnr, and returns the person objects personal identity number
      * @return the person's identity number
      */
     @Override
-    public String GetPnr() {
+    public String getPnr() {
         return this.pnr;
     }
 
     /**
-     * Implements the PersonDTO function GetEmail, and returns the person objects personal email
+     * Implements the PersonDTO function getEmail, and returns the person objects personal email
      * @return the person's email
      */
     @Override
-    public String GetEmail() {
+    public String getEmail() {
         return this.email;
     }
 
     /**
-     * Implements the PersonDTO function GetPassword, and returns the person objects password
+     * Implements the PersonDTO function getPassword, and returns the person objects password
      * @return the person's password
      */
     @Override
-    public String GetPassword() {
+    public String getPassword() {
         return this.password;
     }
 
     /**
-     * Implements the PersonDTO function GetRole, and returns the person objects role.
+     * Implements the PersonDTO function getRole, and returns the person objects role.
      * @return the person's role
      */
-    public Role GetRole() {
+    public Role getRole() {
         return this.role;
     }
 

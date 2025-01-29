@@ -17,20 +17,20 @@ public class Role implements RoleDTO{
     private String name;
 
     /**
-     * Implements the RoleDTO function GetRoleId, and returns the role objects role id
+     * Implements the RoleDTO function getRoleId, and returns the role objects role id
      * @return the role's role id
      */
     @Override
-    public Integer GetRoleId() {
+    public Integer getRoleId() {
         return this.roleId;
     }
 
     /**
-     * Implements the RoleDTO function GetName, and returns the role objects name
+     * Implements the RoleDTO function getName, and returns the role objects name
      * @return the role's name
      */
     @Override
-    public String GetName() {
+    public String getName() {
         return this.name;
     }
 

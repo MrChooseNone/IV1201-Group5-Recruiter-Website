@@ -8,11 +8,11 @@ public interface RoleDTO {
      * 
      * @return the role's role id
      */
-    public Integer GetRoleId();
+    public Integer getRoleId();
 
     /** Interface function for retriving a role's name
      * 
      * @return the role's first name
      */
-    public String GetName();
+    public String getName();
 }
