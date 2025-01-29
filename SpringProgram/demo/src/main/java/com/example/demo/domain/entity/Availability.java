@@ -3,7 +3,6 @@ package com.example.demo.domain.entity;
 import java.sql.Date;
 
 import com.example.demo.domain.dto.AvailabilityDTO;
-import com.example.demo.domain.dto.PersonDTO;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -12,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Entity;
 
 @Entity
 public class Availability implements AvailabilityDTO{
