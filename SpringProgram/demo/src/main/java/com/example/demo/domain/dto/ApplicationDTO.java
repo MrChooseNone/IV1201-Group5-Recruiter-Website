@@ -3,7 +3,6 @@ package com.example.demo.domain.dto;
 import java.util.List;
 
 import com.example.demo.domain.ApplicationStatus;
-import com.example.demo.domain.entity.CompetenceProfile;
 
 /** 
  * The ApplicationDTO interface provides a data transfer interface for applications

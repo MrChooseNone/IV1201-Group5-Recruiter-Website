@@ -1,13 +1,9 @@
 package com.example.demo.domain.entity;
 
-import java.sql.Date;
 import java.util.List;
 
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.ApplicationDTO;
-import com.example.demo.domain.dto.AvailabilityDTO;
-import com.example.demo.domain.dto.CompetenceProfileDTO;
-import com.example.demo.domain.dto.PersonDTO;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
