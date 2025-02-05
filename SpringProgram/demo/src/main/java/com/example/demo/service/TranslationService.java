@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.domain.dto.CompetenceTranslationDTO;
@@ -18,7 +20,11 @@ import com.example.demo.repository.CompetenceTranslationRepository;
 import com.example.demo.repository.LanguageRepository;
 
 @Service
-//This service is resonsible for handling translation related logic
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+/**
+ * The TranslationService class provides services for endpoints, specifically regarding handling translation (and internationalization)
+ * It uses explicit transaction annotation to ensure a rollback occurs whenever an unchecked exception is thrown.
+ */
 public class TranslationService {
     private final CompetenceRepository competenceRepository;
     private final LanguageRepository languageRepository;
