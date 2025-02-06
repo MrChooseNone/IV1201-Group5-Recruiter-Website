@@ -21,7 +21,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: availability; Type: TABLE; Schema: public; Owner: postgres
+-- Name: availability; Type: TABLE; Schema: public; Owner: app_db_user
 --
 
 CREATE TABLE public.availability (
@@ -32,10 +32,10 @@ CREATE TABLE public.availability (
 );
 
 
-ALTER TABLE public.availability OWNER TO postgres;
+ALTER TABLE public.availability OWNER TO app_db_user;
 
 --
--- Name: availability_availability_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: availability_availability_id_seq; Type: SEQUENCE; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE public.availability ALTER COLUMN availability_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -49,7 +49,7 @@ ALTER TABLE public.availability ALTER COLUMN availability_id ADD GENERATED ALWAY
 
 
 --
--- Name: competence; Type: TABLE; Schema: public; Owner: postgres
+-- Name: competence; Type: TABLE; Schema: public; Owner: app_db_user
 --
 
 CREATE TABLE public.competence (
@@ -58,10 +58,10 @@ CREATE TABLE public.competence (
 );
 
 
-ALTER TABLE public.competence OWNER TO postgres;
+ALTER TABLE public.competence OWNER TO app_db_user;
 
 --
--- Name: competence_competence_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: competence_competence_id_seq; Type: SEQUENCE; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE public.competence ALTER COLUMN competence_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -75,7 +75,7 @@ ALTER TABLE public.competence ALTER COLUMN competence_id ADD GENERATED ALWAYS AS
 
 
 --
--- Name: competence_profile; Type: TABLE; Schema: public; Owner: postgres
+-- Name: competence_profile; Type: TABLE; Schema: public; Owner: app_db_user
 --
 
 CREATE TABLE public.competence_profile (
@@ -86,10 +86,10 @@ CREATE TABLE public.competence_profile (
 );
 
 
-ALTER TABLE public.competence_profile OWNER TO postgres;
+ALTER TABLE public.competence_profile OWNER TO app_db_user;
 
 --
--- Name: competence_profile_competence_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: competence_profile_competence_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE public.competence_profile ALTER COLUMN competence_profile_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -103,7 +103,7 @@ ALTER TABLE public.competence_profile ALTER COLUMN competence_profile_id ADD GEN
 
 
 --
--- Name: person; Type: TABLE; Schema: public; Owner: postgres
+-- Name: person; Type: TABLE; Schema: public; Owner: app_db_user
 --
 
 CREATE TABLE public.person (
@@ -118,10 +118,10 @@ CREATE TABLE public.person (
 );
 
 
-ALTER TABLE public.person OWNER TO postgres;
+ALTER TABLE public.person OWNER TO app_db_user;
 
 --
--- Name: person_person_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: person_person_id_seq; Type: SEQUENCE; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE public.person ALTER COLUMN person_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -135,7 +135,7 @@ ALTER TABLE public.person ALTER COLUMN person_id ADD GENERATED ALWAYS AS IDENTIT
 
 
 --
--- Name: role; Type: TABLE; Schema: public; Owner: postgres
+-- Name: role; Type: TABLE; Schema: public; Owner: app_db_user
 --
 
 CREATE TABLE public.role (
@@ -144,10 +144,10 @@ CREATE TABLE public.role (
 );
 
 
-ALTER TABLE public.role OWNER TO postgres;
+ALTER TABLE public.role OWNER TO app_db_user;
 
 --
--- Name: role_role_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: role_role_id_seq; Type: SEQUENCE; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE public.role ALTER COLUMN role_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -161,10 +161,10 @@ ALTER TABLE public.role ALTER COLUMN role_id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- Data for Name: availability; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: availability; Type: TABLE DATA; Schema: public; Owner: app_db_user
 --
 
-COPY public.availability (availability_id, person_id, from_date, to_date) FROM stdin;
+\COPY public.availability (availability_id, person_id, from_date, to_date) FROM stdin;
 18260	547	2019-09-07	2019-10-07
 18261	781	2018-05-18	2018-06-18
 18262	686	2019-09-06	2019-10-06
@@ -2493,10 +2493,10 @@ COPY public.availability (availability_id, person_id, from_date, to_date) FROM s
 
 
 --
--- Data for Name: competence; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: competence; Type: TABLE DATA; Schema: public; Owner: app_db_user
 --
 
-COPY public.competence (competence_id, name) FROM stdin;
+\COPY public.competence (competence_id, name) FROM stdin;
 1	ticket sales
 2	lotteries
 3	roller coaster operation
@@ -2504,10 +2504,10 @@ COPY public.competence (competence_id, name) FROM stdin;
 
 
 --
--- Data for Name: competence_profile; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: competence_profile; Type: TABLE DATA; Schema: public; Owner: app_db_user
 --
 
-COPY public.competence_profile (competence_profile_id, person_id, competence_id, years_of_experience) FROM stdin;
+\COPY public.competence_profile (competence_profile_id, person_id, competence_id, years_of_experience) FROM stdin;
 4971	11	1	0.20
 4972	11	2	3.40
 4973	11	3	1.50
@@ -3869,10 +3869,10 @@ COPY public.competence_profile (competence_profile_id, person_id, competence_id,
 
 
 --
--- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: app_db_user
 --
 
-COPY public.person (person_id, name, surname, pnr, email, password, role_id, username) FROM stdin;
+\COPY public.person (person_id, name, surname, pnr, email, password, role_id, username) FROM stdin;
 1	Joelle	Wilkinson	\N	\N	LiZ98qvL8Lw	1	JoelleWilkinson
 2	Martin	Cummings	\N	\N	QkK48drV2Da	1	MartinCummings
 3	Dante	Mason	\N	\N	EyD84euX5Nj	1	DanteMason
@@ -4630,7 +4630,7 @@ COPY public.person (person_id, name, surname, pnr, email, password, role_id, use
 755	Dylan	Goodman	20040817-7461	d_goodman2035@finnsinte.se	\N	2	\N
 756	Olivia	Sampson	20030113-5180	s_olivia@finnsinte.se	\N	2	\N
 757	Gretchen	Green	20060516-3881	ggreen@finnsinte.se	\N	2	\N
-758	Zane	O'connor	20020211-6555	z-oconnor6278@finnsinte.se	\N	2	\N
+758	Zane	Oconnor	20020211-6555	z-oconnor6278@finnsinte.se	\N	2	\N
 759	Ciaran	Edwards	20030515-2217	ciaranedwards@finnsinte.se	\N	2	\N
 760	Anika	Russell	20030517-3236	russell_anika7139@finnsinte.se	\N	2	\N
 761	Ima	Bauer	20060319-2345	ibauer706@finnsinte.se	\N	2	\N
@@ -4777,52 +4777,52 @@ COPY public.person (person_id, name, surname, pnr, email, password, role_id, use
 
 
 --
--- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: app_db_user
 --
 
-COPY public.role (role_id, name) FROM stdin;
+\COPY public.role (role_id, name) FROM stdin;
 1	recruiter
 2	applicant
 \.
 
 
 --
--- Name: availability_availability_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: availability_availability_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_db_user
 --
 
 SELECT pg_catalog.setval('public.availability_availability_id_seq', 20862, true);
 
 
 --
--- Name: competence_competence_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: competence_competence_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_db_user
 --
 
 SELECT pg_catalog.setval('public.competence_competence_id_seq', 3, true);
 
 
 --
--- Name: competence_profile_competence_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: competence_profile_competence_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_db_user
 --
 
 SELECT pg_catalog.setval('public.competence_profile_competence_profile_id_seq', 6487, true);
 
 
 --
--- Name: person_person_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: person_person_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_db_user
 --
 
 SELECT pg_catalog.setval('public.person_person_id_seq', 1010, true);
 
 
 --
--- Name: role_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: role_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_db_user
 --
 
 SELECT pg_catalog.setval('public.role_role_id_seq', 2, true);
 
 
 --
--- Name: availability availability_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: availability availability_pkey; Type: CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.availability
@@ -4830,7 +4830,7 @@ ALTER TABLE ONLY public.availability
 
 
 --
--- Name: competence competence_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: competence competence_pkey; Type: CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.competence
@@ -4838,7 +4838,7 @@ ALTER TABLE ONLY public.competence
 
 
 --
--- Name: competence_profile competence_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: competence_profile competence_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.competence_profile
@@ -4846,7 +4846,7 @@ ALTER TABLE ONLY public.competence_profile
 
 
 --
--- Name: person person_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: person person_pkey; Type: CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.person
@@ -4854,7 +4854,7 @@ ALTER TABLE ONLY public.person
 
 
 --
--- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.role
@@ -4862,7 +4862,7 @@ ALTER TABLE ONLY public.role
 
 
 --
--- Name: availability availability_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: availability availability_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.availability
@@ -4870,7 +4870,7 @@ ALTER TABLE ONLY public.availability
 
 
 --
--- Name: competence_profile competence_profile_competence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: competence_profile competence_profile_competence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.competence_profile
@@ -4878,7 +4878,7 @@ ALTER TABLE ONLY public.competence_profile
 
 
 --
--- Name: competence_profile competence_profile_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: competence_profile competence_profile_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.competence_profile
@@ -4886,7 +4886,7 @@ ALTER TABLE ONLY public.competence_profile
 
 
 --
--- Name: person person_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: person person_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: app_db_user
 --
 
 ALTER TABLE ONLY public.person

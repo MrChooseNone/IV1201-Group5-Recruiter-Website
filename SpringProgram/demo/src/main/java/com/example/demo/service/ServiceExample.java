@@ -4,24 +4,24 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.domain.entity.entityExample;
-import com.example.demo.repository.RepositoryExample;
+import com.example.demo.domain.entity.Person;
+import com.example.demo.repository.PersonRepository;
 
 @Service
 
 //This is an example of how a service class is structured
 //Services are where the actual business logic is handeled, 
 public class ServiceExample {
-    private final RepositoryExample exampleRepository;
+    private final PersonRepository personRepository;
 
 
     /**
      * Constructs a new instance of the ServiceExample (Spring boot managed).
      *
-     * @param exampleRepository the repository for accessing example database data
+     * @param personRepository the repository for accessing person database data
      */
-    public ServiceExample(RepositoryExample exampleRepository) {
-        this.exampleRepository = exampleRepository;
+    public ServiceExample(PersonRepository personRepository) {
+        this.personRepository = personRepository;
     }
 
     /**
@@ -33,19 +33,19 @@ public class ServiceExample {
         return "basic service communication";
     }
 
-    public String findIfExistsById(Integer id)
+    public String findIfExistsById(Integer person_id)
     {
 
-        Optional<entityExample> foundExample=exampleRepository.findById(id);
-        if (!foundExample.isPresent()) {
-            return "Entry with id "+id+" did not exist";
+        Optional<Person> foundPerson=personRepository.findById(person_id);
+        if (!foundPerson.isPresent()) {
+            return "Person with person_id "+person_id+" did not exist";
         }
-        return "Entry with id "+id+" did exist";
+        
+        Person person = foundPerson.get();
+        return "Person with person_id "+person_id+" did exist. Name: "+person.getName();
     }
 
-    //Return how many entities exist in the example database
-    public long findCount()
-    {
-        return exampleRepository.count();
+    public long findCount() {
+        return personRepository.count();
     }
 }
