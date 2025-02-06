@@ -17,11 +17,23 @@ public interface PersonDTO {
      */
     public String getName();
 
+    /** Interface function for setting a person's first name
+     * 
+     * set the user's first name
+     */
+    public void setName(String name);
+
     /** Interface function for retriving a person's last name
      * 
      * @return the user's last name
      */
     public String getSurname();
+
+    /** Interface function for setting a person's surname
+     * 
+     * set the user's surname
+     */
+    public void setSurname(String surname);
 
     /** Interface function for retriving a person's personal identity number
      * 

@@ -68,12 +68,29 @@ public class Person implements PersonDTO{
     }
 
     /**
+     * Implements the PersonDTO function setName, and sets the person object's first name
+     * @param firstName the first name to set
+     */
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
      * Implements the PersonDTO function getSurname, and returns the person objects last name
      * @return the person's last name
      */
     @Override
     public String getSurname() {
         return this.surname;
+    }
+
+    /**
+     * Implements the PersonDTO function setSurname, and sets the person objects last name
+     * @param surname the person's last name
+     */
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     /**
