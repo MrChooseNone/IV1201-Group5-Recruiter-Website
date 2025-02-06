@@ -10,6 +10,7 @@ import com.example.demo.repository.PersonRepository;
 
 @RestController
 @RequestMapping("/person")
+@CrossOrigin
 public class PersonController {
     private final PersonRepository personRepository;
 
