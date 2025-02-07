@@ -1,5 +1,6 @@
 package com.example.demo.domain.entity;
 
+import java.sql.Date;
 import java.util.List;
 
 import com.example.demo.domain.ApplicationStatus;
@@ -13,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
@@ -107,7 +109,7 @@ public class Application implements ApplicationDTO{
     */
     public Date getApplicationDate()
     {
-        return this.date;
+        return this.applicationDate;
     }
 
 }
