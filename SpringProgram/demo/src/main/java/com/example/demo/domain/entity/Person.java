@@ -1,6 +1,7 @@
 package com.example.demo.domain.entity;
 
 import com.example.demo.domain.dto.PersonDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -116,6 +117,7 @@ public class Person implements PersonDTO{
      * @return the person's password
      */
     @Override
+    @JsonIgnore //This annotation ensures this property is ignored when returning the object to users, avoiding sharing the password with everyone with indirect access to the user
     public String getPassword() {
         return this.password;
     }

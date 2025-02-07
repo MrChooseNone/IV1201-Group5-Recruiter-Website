@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.repository.PersonRepository;
 
@@ -31,7 +32,7 @@ public class PersonController {
     }
 
     @PostMapping("/find")
-    public List<Person> findPersonByName(@RequestParam String name){
+    public List<? extends PersonDTO> findPersonByName(@RequestParam String name){
         return personRepository.findByName(name);
     }
 }
