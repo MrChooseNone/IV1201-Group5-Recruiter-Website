@@ -8,31 +8,27 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.repository.PersonRepository;
+import com.example.demo.service.PersonService;
 
 @RestController
 @RequestMapping("/person")
 @CrossOrigin
 public class PersonController {
-    private final PersonRepository personRepository;
+    private final PersonService personService;
 
     @Autowired
-    public PersonController(PersonRepository personRepository){
-        this.personRepository = personRepository;
+    public PersonController(PersonService personService){
+        this.personService = personService;
     }
 
     @PostMapping("/add")
     public String addPerson(@RequestParam String name, @RequestParam String surname){
-        Person person = new Person();
-        person.setName(name);
-        person.setSurname(surname);
-
-        personRepository.save(person);
-
+        personService.AddPerson(name, surname);
         return "Person added: " + name + " " + surname;
     }
 
-    @PostMapping("/find")
+    @GetMapping("/find")
     public List<? extends PersonDTO> findPersonByName(@RequestParam String name){
-        return personRepository.findByName(name);
+        return personService.FindPeopleByName(name);
     }
 }
