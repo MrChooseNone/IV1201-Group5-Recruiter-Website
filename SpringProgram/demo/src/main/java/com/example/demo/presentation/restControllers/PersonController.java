@@ -26,6 +26,7 @@ public class PersonController {
         person.setSurname(surname);
 
         personRepository.save(person);
+
         return "Person added: " + name + " " + surname;
     }
 

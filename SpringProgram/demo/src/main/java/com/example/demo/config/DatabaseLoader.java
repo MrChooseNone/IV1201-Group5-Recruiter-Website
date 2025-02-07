@@ -1,10 +1,11 @@
 package com.example.demo.config;
 
-
 import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
@@ -34,6 +35,7 @@ public class DatabaseLoader implements CommandLineRunner{
 
     //This overwritten method will be run before the server starts, and is responsible for loading in data
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public void run(String... args) throws Exception {
 
         // Insert Person data for testing
@@ -43,7 +45,6 @@ public class DatabaseLoader implements CommandLineRunner{
         // Save person to the database
         personRepository.save(person);
         
-
         // Declare language as final so it's effectively final
         final Language language;
         if (languageRepository.findByName("english") == null) {

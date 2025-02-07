@@ -1,5 +1,6 @@
 package com.example.demo.domain.dto;
 
+import java.sql.Date;
 import java.util.List;
 
 import com.example.demo.domain.ApplicationStatus;
@@ -44,4 +45,9 @@ public interface ApplicationDTO {
      */
     public ApplicationStatus getApplicationStatus();
 
+    /**
+     * Interface function for retriving application date for this application
+     * @return the date the application was sent
+     */
+    public Date getApplicationDate();
 }

@@ -20,7 +20,7 @@ import com.example.demo.repository.CompetenceTranslationRepository;
 import com.example.demo.repository.LanguageRepository;
 
 @Service
-@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW) //TODO Change to use existing if possible
 /**
  * The TranslationService class provides services for endpoints, specifically regarding handling translation (and internationalization)
  * It uses explicit transaction annotation to ensure a rollback occurs whenever an unchecked exception is thrown.

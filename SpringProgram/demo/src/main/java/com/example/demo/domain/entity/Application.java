@@ -29,11 +29,11 @@ public class Application implements ApplicationDTO{
     private Person applicant;
 
     @JoinColumn(name = "availability_id", referencedColumnName = "availability_id")
-    @OneToMany
+    @ManyToMany
     private List<Availability> availabilityPeriodsForApplication;
 
     @JoinColumn(name = "competence_profile_id", referencedColumnName = "competence_profile_id")
-    @OneToMany
+    @ManyToMany
     private List<CompetenceProfile> competenceProfilesForApplication;
 
     @Version //Note that this is what marks this as a version number, and will be used to handle the multi-reviewer update scenario
@@ -43,6 +43,9 @@ public class Application implements ApplicationDTO{
     @Enumerated(EnumType.STRING) //This specifies how the enum should be saved in the database, 
     @Column(name="application_status")
     private ApplicationStatus applicationStatus;
+
+    @Column(name="application_date")
+    private Date applicationDate;
 
     /**
     * Implements the ApplicationDTO function getApplicationId, and returns the application id
@@ -97,5 +100,14 @@ public class Application implements ApplicationDTO{
     public ApplicationStatus getApplicationStatus() {
         return this.applicationStatus;
     } 
+
+    /**
+    * Implements the ApplicationDTO function getApplicationDate, and returns the application date
+    * @return the date the application was sent 
+    */
+    public Date getApplicationDate()
+    {
+        return this.date;
+    }
 
 }

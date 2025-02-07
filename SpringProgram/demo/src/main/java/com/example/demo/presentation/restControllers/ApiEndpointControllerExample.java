@@ -46,11 +46,11 @@ public class ApiEndpointControllerExample {
      * Sends a variable test message, which is created by communicating with a service and uses parameters to check if a id exists in the test database, provided using ?id={value}
      */
     @GetMapping("/database")
-    public String basicDatabaseAnswer(@RequestParam String id) {
+    public String basicDatabaseAnswer(@RequestParam String person_id) {
         //Note we need to parse "manually" for types like integer, otherwise we can not send custom error messages for incorrect values
         Integer convertedId;
         try {
-           convertedId=Integer.parseInt(id);
+           convertedId=Integer.parseInt(person_id);
         } catch (NumberFormatException e) {
             return "input was not a valid integer";
         }
