@@ -7,9 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.domain.ApplicationStatus;
+import com.example.demo.domain.entity.Application;
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
 import com.example.demo.domain.entity.Person;
+import com.example.demo.repository.ApplicationRepository;
 import com.example.demo.repository.CompetenceRepository;
 import com.example.demo.repository.CompetenceTranslationRepository;
 import com.example.demo.repository.LanguageRepository;
@@ -24,13 +27,15 @@ public class DatabaseLoader implements CommandLineRunner{
     private final CompetenceTranslationRepository competenceTranslationRepository;
     private final CompetenceRepository competenceRepository;
     private final PersonRepository personRepository;
+    private final ApplicationRepository applicationRepository;
 
     //This ensures Spring creates and loads the specified repositories
-    public DatabaseLoader(LanguageRepository languageRepository,CompetenceTranslationRepository competenceTranslationRepository, CompetenceRepository competenceRepository, PersonRepository personRepository) {
+    public DatabaseLoader(LanguageRepository languageRepository,CompetenceTranslationRepository competenceTranslationRepository, CompetenceRepository competenceRepository, PersonRepository personRepository,ApplicationRepository applicationRepository) {
     this.languageRepository=languageRepository;
     this.competenceTranslationRepository=competenceTranslationRepository;
     this.competenceRepository=competenceRepository;
     this.personRepository=personRepository;
+    this.applicationRepository=applicationRepository;
     }
 
     //This overwritten method will be run before the server starts, and is responsible for loading in data
@@ -38,12 +43,15 @@ public class DatabaseLoader implements CommandLineRunner{
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public void run(String... args) throws Exception {
 
+        if (personRepository.findByName("Alexander")==null) {
+         
         // Insert Person data for testing
         Person person = new Person();
         person.setName("Alexander");
         person.setSurname("Ohlsson");
         // Save person to the database
-        personRepository.save(person);
+        personRepository.save(person);   
+        }
         
         // Declare language as final so it's effectively final
         final Language language;
@@ -89,6 +97,21 @@ public class DatabaseLoader implements CommandLineRunner{
         } else {
             System.out.println("english translations already exist, specifically there exist " + englishTranslations.size() + " english translations");
         }
+
+        //If there are no applications, we add one for testing purposes
+        if(applicationRepository.count()==0)
+        {
+            Person person = personRepository.findByName("Alexander").get(0);
+            Application testApplication=new Application();
+            testApplication.setApplicationDate(new java.sql.Date(System.currentTimeMillis()));
+            testApplication.setApplicant(person);
+            testApplication.setApplicationStatus(ApplicationStatus.unchecked);
+            applicationRepository.save(testApplication);
+            System.out.println("Added test application for "+person.getName());
+        }
+        
+
+
     }
 
 

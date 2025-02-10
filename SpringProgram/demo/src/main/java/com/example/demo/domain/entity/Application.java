@@ -8,6 +8,7 @@ import com.example.demo.domain.dto.ApplicationDTO;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +20,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
 
+@Entity
+/**
+ * Represents a application entity in the system.
+ * Implements the ApplicationDTO interface.
+ */
 public class Application implements ApplicationDTO{
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,17 +36,18 @@ public class Application implements ApplicationDTO{
     @ManyToOne
     private Person applicant;
 
-    @JoinColumn(name = "availability_id", referencedColumnName = "availability_id")
-    @ManyToMany
+    @JoinColumn(name = "applicationId", referencedColumnName  = "application_id")
+    @OneToMany //TODO Change to many-to-many if the same availability period should be usable in multiple applications
     private List<Availability> availabilityPeriodsForApplication;
 
-    @JoinColumn(name = "competence_profile_id", referencedColumnName = "competence_profile_id")
-    @ManyToMany
+    @JoinColumn(name = "applicationId", referencedColumnName  = "application_id")
+    @OneToMany  //TODO Change to many-to-many if the same competence profile should be usable in multiple applications
     private List<CompetenceProfile> competenceProfilesForApplication;
 
-    @Version //Note that this is what marks this as a version number, and will be used to handle the multi-reviewer update scenario
+    @Version //Note that this is what marks this as a version number, and will be used to handle the multi-reviewer update scenario¨
+    //Link to discussion about this: https://stackoverflow.com/questions/2572566/java-jpa-version-annotation 
     @Column(name="application_version_number")
-    private int versionNumber;
+    private long versionNumber;
 
     @Enumerated(EnumType.STRING) //This specifies how the enum should be saved in the database, 
     @Column(name="application_status")
@@ -90,7 +97,7 @@ public class Application implements ApplicationDTO{
     * @return the version number
     */
     @Override
-    public Integer getVersionNumber() {
+    public long getVersionNumber() {
         return this.versionNumber;
     }
 
@@ -107,9 +114,36 @@ public class Application implements ApplicationDTO{
     * Implements the ApplicationDTO function getApplicationDate, and returns the application date
     * @return the date the application was sent 
     */
+    @Override
     public Date getApplicationDate()
     {
         return this.applicationDate;
     }
 
+    /**
+     * This is a setter for application status
+     * @param newStatus the new status for this application
+     */
+    public void setApplicationStatus(ApplicationStatus newStatus)
+    {
+        this.applicationStatus=newStatus;
+    }
+
+    /**
+     * This is a setter for the applicant
+     * @param newApplicant the new applicant for this application
+     */
+    public void setApplicant(Person newApplicant)
+    {
+        this.applicant=newApplicant;
+    }
+
+    /**
+     * This is a setter for application date, this is used by loader and could be used to handle applicant re-submission if that is implemented in the future
+     * @param newStatus the new applicantion date 
+     */
+    public void setApplicationDate(Date applicationDate)
+    {
+        this.applicationDate=applicationDate;
+    }
 }

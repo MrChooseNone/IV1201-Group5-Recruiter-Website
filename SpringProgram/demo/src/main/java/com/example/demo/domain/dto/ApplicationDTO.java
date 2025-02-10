@@ -37,7 +37,7 @@ public interface ApplicationDTO {
      * 
      * @return the version number for this application
      */
-    public Integer getVersionNumber();
+    public long getVersionNumber();
 
     /** Interface function for retriving the application status for this application
      * 
