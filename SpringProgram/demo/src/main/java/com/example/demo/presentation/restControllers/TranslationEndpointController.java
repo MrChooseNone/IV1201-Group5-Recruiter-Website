@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.domain.dto.CompetenceTranslationDTO;
+import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.TranslationService;
 
 @RestController
@@ -54,12 +55,23 @@ public class TranslationEndpointController {
      * This function returns a competences specified using its id. If it exists it will be returned, if not a 404 error will be sent stating this.
      * 
      * @param id This is the id for the competence this requests
+     * @throws InvalidParameterException if the provided id can not be parsed as an integer 
      * @return This function will return the list of existing competences as a json
      *         object to the user
      */
     @GetMapping("/getSpecificCompetence/{id}")
-    public CompetenceDTO GetSpecificCompetence(@PathVariable Integer id) {
-        return translationService.GetSpecificCompetence(id);
+    public CompetenceDTO GetSpecificCompetence(@PathVariable String id) {
+                
+        Integer parsedId=null;
+        try {
+            parsedId=Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            throw new InvalidParameterException("Provided value ("+id+") could not be parsed as a valid integer" );
+        }
+        catch(Exception e) {
+            throw new InvalidParameterException("Unknown cause, but double check formating of request, specifically for the applicationId parameter");
+        }
+        return translationService.GetSpecificCompetence(parsedId);
     }
 
     /**
