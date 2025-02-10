@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.ApplicationDTO;
-import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ReviewService;
 
@@ -51,7 +50,7 @@ public class ReviewerEndpointController {
      * This function returns the existing standard competences
      * 
      * @param status the application status to find applications for
-     * @throws IllegalArgumentException this exceptions is thrown is a parameter is incorrectly specified
+     * @throws InvalidParameterException this exceptions is thrown is a parameter is incorrectly specified
      * @return This function will return the list of existing applications with the matching status as a json object to the user
      */
     @GetMapping("/getApplicationsByStatus/{status}")
@@ -77,8 +76,10 @@ public class ReviewerEndpointController {
     /**
      * This function updates the application status of a specific application
      * 
+     * @param applicationId the application id
      * @param status the new application status to set the application to
-     * @throws IllegalArgumentException this exceptions is thrown is a parameter is incorrectly specified
+     * @param versionNumber the application version
+     * @throws InvalidParameterException this exceptions is thrown is a parameter is incorrectly specified
      * @return The updated application as a json object
      */
     @PostMapping("/updateApplicationStatus")
