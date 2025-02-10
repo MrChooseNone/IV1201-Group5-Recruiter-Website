@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 
 import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.domain.dto.CompetenceTranslationDTO;
+import com.example.demo.domain.dto.LanguageDTO;
 import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
@@ -106,5 +107,14 @@ public class TranslationService {
 
         return translations;
 
+    }
+
+    /**
+     * Returns a list of supported languages
+     * @return The list of supported languages
+     */
+    public List<? extends LanguageDTO> GetLanguages()
+    {
+        return languageRepository.findAll();
     }
 }

@@ -43,6 +43,6 @@ public class PersonService {
         Person person = new Person();
         person.setName(name);
         person.setSurname(surname);
-        personRepository.save(person);
+        personRepository.save(person);        
     }
 }

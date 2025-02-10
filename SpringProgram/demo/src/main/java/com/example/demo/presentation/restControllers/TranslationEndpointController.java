@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.domain.dto.CompetenceTranslationDTO;
+import com.example.demo.domain.dto.LanguageDTO;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.TranslationService;
 
@@ -83,6 +84,17 @@ public class TranslationEndpointController {
     @GetMapping("/getCompetenceTranslation")
     public List<? extends CompetenceTranslationDTO> GetCompetenceTranslation(@RequestParam String language) {
         return translationService.GetCompetenceTranslation(language.toLowerCase());
+    }
+
+    /**
+     * This function returns a list of languages
+     * 
+     * @param language This is the language the translations are for
+     * @return This function will return the list of translations as a json object to the user
+     */
+    @GetMapping("/getLanguages")
+    public List<? extends LanguageDTO> GetLanguages() {
+        return translationService.GetLanguages();
     }
 
 }
