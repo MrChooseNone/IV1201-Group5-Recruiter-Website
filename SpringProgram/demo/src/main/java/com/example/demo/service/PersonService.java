@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +16,13 @@ import com.example.demo.repository.PersonRepository;
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW) 
 public class PersonService {
     private final PersonRepository personRepository;
-        /**
-     * Constructs a new instance of the ServiceExample (Spring boot managed).
+
+    //We create the logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class.getName()); 
+
+
+    /**
+     * Constructs a new instance of the PersonService (Spring boot managed).
      *
      * @param personRepository the repository for accessing person database data
      */
@@ -42,6 +49,7 @@ public class PersonService {
         Person person = new Person();
         person.setName(name);
         person.setSurname(surname);
+        LOGGER.info("Added new person with name (`{}`) and surname (`{}`)",name,surname); //TODO add more parameters here when those are added
         personRepository.save(person);        
     }
 }

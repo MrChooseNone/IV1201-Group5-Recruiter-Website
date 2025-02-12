@@ -11,7 +11,7 @@ import com.example.demo.presentation.restException.SpecificCompetenceNotFoundExc
 import com.example.demo.presentation.restException.TranslationsNotFoundException;
 
 /**
- * This class is responsible for defining the error handeling for the TranslationEndpointController, defining which http response code should be used for the different potential errors
+ * This class is responsible for defining the error handeling for the TranslationEndpointController flow, defining which http response code should be used for the different potential errors
  */
 @RestControllerAdvice
 public class TranslationRestAdvice {
