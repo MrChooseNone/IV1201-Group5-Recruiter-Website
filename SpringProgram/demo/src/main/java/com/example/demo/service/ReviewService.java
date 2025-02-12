@@ -4,6 +4,9 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,9 @@ import org.springframework.transaction.annotation.Propagation;
  */
 public class ReviewService {
     private final ApplicationRepository applicationRepository;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReviewService.class.getName()); 
+
 
     /**
      * Constructs a new instance of the ReviewService (Spring boot managed).
@@ -68,21 +74,26 @@ public class ReviewService {
         Optional<Application> applicationToUpdateContainer=applicationRepository.findById(applicationID);
         //This check is for if an application with this id existed or not, if not we throw a specific exception here
         if (applicationToUpdateContainer.isEmpty()) {
+            LOGGER.error("Failed to update application due to no application existing with specified application id (`{}`)",applicationID);
             throw new ApplicationNotFoundException("No application with id : \""+applicationID+"\" found");
         }
         Application applicationToUpdate=applicationToUpdateContainer.get();
 
         //This check is for if the version number of the reviewed version is the same as the current value, if not we throw a specific exception here
         if (applicationToUpdate.getVersionNumber()!=currentVersionNumber) {
-            throw new ApplicationNotFoundException("Version number is incorrect, specified : \""+currentVersionNumber+"\" but application with id : \""+applicationID+"\" is on version " + applicationToUpdate.getVersionNumber());
+            LOGGER.error("Failed to update application due to version number being incorret, specified (`{}`) but correct is (`{}`)",applicationToUpdate.getVersionNumber(),currentVersionNumber);
+            throw new ApplicationNotFoundException("Unable to update application since someone else updated it since you last retrived it");
         }
 
         if (applicationToUpdate.getApplicationStatus()==newStatus) {
+            LOGGER.error("Failed to update application since new status is identical to old status");
             throw new ApplicationNotUpdatedException("application status is already "+newStatus);
         }
 
         applicationToUpdate.setApplicationStatus(newStatus);
         applicationRepository.save(applicationToUpdate);
+
+        LOGGER.error("Updated application (`{}`) to status (`{}`)",applicationID,newStatus);
 
         return applicationToUpdate;
 

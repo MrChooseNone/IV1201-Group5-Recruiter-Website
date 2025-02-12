@@ -2,6 +2,9 @@ package com.example.demo.presentation.restControllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +30,9 @@ public class TranslationEndpointController {
     @Autowired
     private final TranslationService translationService;
 
+    //We create a logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(TranslationEndpointController.class.getName()); 
+
     /**
      * Constructs a new instance of the TranslationEndpointController (this is
      * Spring boot managed).
@@ -46,7 +52,7 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getStandardCompetences")
     public List<? extends CompetenceDTO> GetStandardCompetences() {
-
+        LOGGER.info("Standard competences requested"); //TODO add authentication info here, aka who accessed this
         List<? extends CompetenceDTO> existingCompetences = translationService.GetCompetences();
         System.out.println(existingCompetences);
         return existingCompetences;
@@ -62,14 +68,16 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getSpecificCompetence/{id}")
     public CompetenceDTO GetSpecificCompetence(@PathVariable String id) {
-                
+        LOGGER.info("Specific competences with id (`{}`) requested",id); //TODO add authentication info here, aka who accessed this
         Integer parsedId=null;
         try {
             parsedId=Integer.parseInt(id);
         } catch (NumberFormatException e) {
+            LOGGER.error("Failed to retrive competence with id (`{}`) since that is invalid integer",id);
             throw new InvalidParameterException("Provided value ("+id+") could not be parsed as a valid integer" );
         }
         catch(Exception e) {
+            LOGGER.error("Failed to retrive competence with id (`{}`) due to unknown error",id);
             throw new InvalidParameterException("Unknown cause, but double check formating of request, specifically for the applicationId parameter");
         }
         return translationService.GetSpecificCompetence(parsedId);
@@ -83,6 +91,7 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getCompetenceTranslation")
     public List<? extends CompetenceTranslationDTO> GetCompetenceTranslation(@RequestParam String language) {
+        LOGGER.info("Competence translation for language (`{}`) requested",language); //TODO add authentication info here, aka who accessed this
         return translationService.GetCompetenceTranslation(language.toLowerCase());
     }
 
@@ -94,6 +103,7 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getLanguages")
     public List<? extends LanguageDTO> GetLanguages() {
+        LOGGER.info("Languages supported requested"); //TODO add authentication info here, aka who accessed this
         return translationService.GetLanguages();
     }
 

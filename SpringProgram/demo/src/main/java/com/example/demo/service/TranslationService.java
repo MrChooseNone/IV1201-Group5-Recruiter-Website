@@ -3,6 +3,9 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,6 +33,9 @@ public class TranslationService {
     private final CompetenceRepository competenceRepository;
     private final LanguageRepository languageRepository;
     private final CompetenceTranslationRepository competenceTranslationRepository;
+
+    //We create a logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(TranslationService.class.getName()); 
 
     /**
      * Constructs a new instance of the TranslationService (Spring boot managed).
@@ -66,6 +72,7 @@ public class TranslationService {
 
         //We then confirm that the competence we searched for did exist, and if not we throw a specific error
         if (competenceContainer.isPresent() ==false ) {
+            LOGGER.error("Failed to retrive a competence with the specified id (`{}`)",id);
             throw new SpecificCompetenceNotFoundException(id);
         }
 
@@ -89,9 +96,11 @@ public class TranslationService {
             
             langague=languageRepository.findByName(languageName);
             if (langague==null) {
+                LOGGER.error("Failed to retrive a list of translations since the requested language (`{}`) could not be found ", languageName);
                 throw new LanguageNotFoundException(languageName);
             }
         } catch (Exception e) {
+            LOGGER.error("Failed to retrive a list of translations due to unknown error related to the language (`{}`) ", languageName);
             throw new LanguageNotFoundException(languageName);
         }
         //Then, if the language does exist, we search for translations in that language (with the matching language id), and we will throw TranslationsNotFoundException if no such translations exist 
@@ -99,9 +108,11 @@ public class TranslationService {
         try {
            translations=competenceTranslationRepository.findByLanguage_id(langague.getLanguageId());
            if (translations==null||translations.size()==0) {
+            LOGGER.error("Failed to retrive a list of translations since none exist for language (`{}`)", languageName);
             throw new TranslationsNotFoundException(languageName);
             }
         } catch (Exception e) {
+            LOGGER.error("Failed to retrive a list of translations due to unknown error related to translations");
             throw new TranslationsNotFoundException(languageName);
         }
 

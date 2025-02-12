@@ -34,3 +34,6 @@ build/
 
 ##Ignore .env
 .env
+
+##Ignore log files
+logs/ 
