@@ -60,7 +60,7 @@ public class ReviewerEndpointController {
      * @return This function will return the list of existing applications with the matching status as a json object to the user
      */
     @GetMapping("/getApplicationsByStatus/{status}")
-    public List<? extends ApplicationDTO> getApplicationsByStatus(@PathVariable String status) {
+    public List<? extends ApplicationDTO> GetApplicationsByStatus(@PathVariable String status) {
         LOGGER.info("All applications with status (`{}`) requested",status); //TODO add authentication info here, aka who accessed this
 
         ApplicationStatus parsedApplicationStatus=null;
@@ -93,7 +93,7 @@ public class ReviewerEndpointController {
      * @return The updated application as a json object
      */
     @PostMapping("/updateApplicationStatus")
-    public ApplicationDTO getApplicationsByStatus(@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber) {
+    public ApplicationDTO UpdateApplicationsByStatus(@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber) {
         LOGGER.info("Update for application with id (`{}`) version number (`{}`) to (`{}`) requested",applicationId,versionNumber,status); //TODO add authentication info here, aka who accessed this
 
         ApplicationStatus parsedApplicationStatus=null;
