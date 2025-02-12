@@ -29,6 +29,4 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
      * @return A list of matching applications
      */
     List<Application> findAllByApplicationStatus(ApplicationStatus applicationStatus);
-
-    Optional<Application> findByApplicationIdAndVersionNumber(Integer id, Integer versionNumber);
 }

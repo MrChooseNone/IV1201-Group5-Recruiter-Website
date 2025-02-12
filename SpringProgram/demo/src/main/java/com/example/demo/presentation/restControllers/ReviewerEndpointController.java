@@ -63,7 +63,7 @@ public class ReviewerEndpointController {
             throw new InvalidParameterException("Provided value ("+status+") is not valid value for application status, please specify as \"unchecked\",\"accepted\" or \"denied\" " );
         }
         catch(NullPointerException e) {
-            throw new InvalidParameterException("Provided status value is null, please specify as \"unchecked\\\",\"accepted\\\" or \"denied\"  ");
+            throw new InvalidParameterException("Provided status value is null, please specify as \"unchecked\",\"accepted\" or \"denied\"  ");
         }
         catch(Exception e) {
             throw new InvalidParameterException("Unknown cause, this should never occur, but double check formating of request, specifically for status parameter");

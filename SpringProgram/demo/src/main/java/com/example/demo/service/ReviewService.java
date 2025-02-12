@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 
 
 @Service
-@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW) //TODO Change to use existing if possible
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 /**
  * The TranslationService class provides services for endpoints, specifically regarding handling translation (and internationalization)
  * It uses explicit transaction annotation to ensure a rollback occurs whenever an unchecked exception is thrown.
