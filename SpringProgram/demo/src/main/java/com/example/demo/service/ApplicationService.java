@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.dto.AvailabilityDTO;
 import com.example.demo.domain.dto.CompetenceProfileDTO;
+import com.example.demo.domain.entity.Application;
 import com.example.demo.domain.entity.Availability;
 import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceProfile;
@@ -22,8 +25,10 @@ import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.FromDateAfterToDateException;
 import com.example.demo.presentation.restException.PeriodAlreadyCoveredException;
-import com.example.demo.presentation.restException.PersonNotFoundException;
-import com.example.demo.presentation.restException.SpecificCompetenceNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.AvailabilityInvalidException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.CompetenceProfileInvalidException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.SpecificCompetenceNotFoundException;
 import com.example.demo.repository.ApplicationRepository;
 import com.example.demo.repository.AvailabilityRepository;
 import com.example.demo.repository.CompetenceProfileRepository;
@@ -186,6 +191,64 @@ public class ApplicationService {
         }
         Person person=personContainer.get();
         return availabilityRepository.findAllByPerson(person);
+    }
+
+    /**
+     * This function creates a new application for a specified person with specific availability periods and competence profiles
+     * @param personId
+     * @param availabilityIds
+     * @param competenceProfileIds
+     * @throws PersonNotFoundException This is thrown if a person with the specified id could not be found
+     * @throws AvailabilityInvalidException This is thrown if one of the availabilites could not be found or where invalid for the specified user
+     * @throws CompetenceProfileInvalidException This is thrown if one of the competence profiles could not be found or where invalid for the specified user 
+     * @return If it does not throw any exceptions, it will return the newly created competence profile
+     */
+    public ApplicationDTO SubmitApplication(Integer personId,List<Integer> availabilityIds,List<Integer> competenceProfileIds)
+    {
+        Optional<Person> personContainer = personRepository.findById(personId);
+        if (personContainer.isEmpty()) {
+            LOGGER.error("Failed to create application for a person (`{}`) since no person with that id exists",personId);
+            throw new PersonNotFoundException(personId);
+        }
+        Person person=personContainer.get();
+
+        List<Availability> availabilities=new ArrayList<Availability>();
+
+        for (Integer i : availabilityIds) {
+            Optional<Availability> availabilityContainer = availabilityRepository.findById(i);
+            if (availabilityContainer.isEmpty()) {
+                LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied availabilites do not exist, specifically requested with id (`{}`)",personId,i);
+                throw new AvailabilityInvalidException("No availability with id "+i+" in the database");
+            }
+            if (availabilityContainer.get().getPerson().getId()!=person.getId()) {
+                LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied availability profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
+                throw new AvailabilityInvalidException("The availability period with id "+i+" belongs to another user");
+            }
+            availabilities.add(availabilityContainer.get());
+        }
+
+        List<CompetenceProfile> competenceProfiles=new ArrayList<CompetenceProfile>();
+
+        for (Integer i : competenceProfileIds) {
+            Optional<CompetenceProfile> competenceProfilesContainer = competenceProfileRepository.findById(i);
+            if (competenceProfilesContainer.isEmpty()) {
+                LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied competence profiles do not exist, specifically requested with id (`{}`)",personId,i);
+                throw new CompetenceProfileInvalidException("No competence profile with id "+i+" in the database");
+            }
+            if (competenceProfilesContainer.get().getPerson().getId()!=person.getId()) {
+                LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied competence profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
+                throw new CompetenceProfileInvalidException("The competence profile with id "+i+" belongs to another user");
+            }
+            competenceProfiles.add(competenceProfilesContainer.get());
+        }
+
+
+        Application newApplication=new Application(person,availabilities,competenceProfiles);
+        applicationRepository.save(newApplication);
+
+        LOGGER.info("Created new application period for person (`{}`), it has id ",personId, newApplication.getApplicationId());
+
+        return newApplication;
     }
 
 }

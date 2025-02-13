@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.entity.Application;
-import com.example.demo.presentation.restException.ApplicationNotFoundException;
 import com.example.demo.presentation.restException.ApplicationNotUpdatedException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
 import com.example.demo.repository.ApplicationRepository;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -93,7 +93,7 @@ public class ReviewService {
         applicationToUpdate.setApplicationStatus(newStatus);
         applicationRepository.save(applicationToUpdate);
 
-        LOGGER.error("Updated application (`{}`) to status (`{}`)",applicationID,newStatus);
+        LOGGER.info("Updated application (`{}`) to status (`{}`)",applicationID,newStatus);
 
         return applicationToUpdate;
 

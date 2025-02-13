@@ -1,4 +1,4 @@
-package com.example.demo.presentation.restException;
+package com.example.demo.presentation.restException.EntryNotFoundExceptions;
 
 /**
  * This class implements a specific error for the ReviewService.java class, specifically if an application does not exist

@@ -1,7 +1,7 @@
-package com.example.demo.presentation.restException;
+package com.example.demo.presentation.restException.EntryNotFoundExceptions;
 
 /**
- * This class implements a specific error for the TranslationService.java class, specifically if a specific competence does not exist
+ * This class implements a general error for if a person could not be found for the specified id
  */
 public class PersonNotFoundException extends RuntimeException {
 
@@ -10,6 +10,6 @@ public class PersonNotFoundException extends RuntimeException {
      * @param id The id for the person this request was attempting to access
      */
     public PersonNotFoundException(Integer id) {
-      super("Could not find specific person with id : " + id);
+      super("Could not find a person with the following id : " + id);
     }
   }

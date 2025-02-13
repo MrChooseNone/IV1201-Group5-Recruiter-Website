@@ -1,6 +1,5 @@
 package com.example.demo.presentation.restControllers;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
@@ -9,12 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.dto.AvailabilityDTO;
 import com.example.demo.domain.dto.CompetenceProfileDTO;
+import com.example.demo.domain.requestBodies.ApplicationSubmissionRequestBody;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ApplicationService;
 import com.example.demo.service.ReviewService;
@@ -158,7 +160,7 @@ public class ApplicationEndpointController {
     @PostMapping("/createAvailability")
     public AvailabilityDTO CreateAvailability(@RequestParam String personId,@RequestParam String fromDate,@RequestParam String toDate)
     {
-        LOGGER.info("Creation of availability period for person for person (`{}`) from (`{}`) to (`{}`) requested",personId,fromDate,toDate); //TODO add authentication info here, aka who accessed this
+        LOGGER.info("Creation of availability period for person (`{}`) from (`{}`) to (`{}`) requested",personId,fromDate,toDate); //TODO add authentication info here, aka who accessed this
 
 
         Integer parsedPersonId=null;
@@ -200,5 +202,23 @@ public class ApplicationEndpointController {
         }
 
         return applicationService.CreateAvailability(parsedPersonId, parsedFromDate, parsedToDate);
+    }
+
+    /**
+     * This function 
+     * @param requestBody
+     * To give an example of the request body, the following is a basic example of how it could look:
+     * <p>{
+     *   "personId":1014,
+     *   "availabilityIds":[20872],
+     *   "competenceProfileIds":[6488]
+     *   }<p>
+     * @return If it does not throw an exception, the newly created application is returned
+     */
+    @PostMapping("/submitApplication")
+    public ApplicationDTO SubmitApplication(@RequestBody ApplicationSubmissionRequestBody requestBody)
+    {
+        LOGGER.info("Creation of application for person (`{}`) requested",requestBody.getPersonId()); //TODO add authentication info here, aka who accessed this
+        return applicationService.SubmitApplication(requestBody.getPersonId(),requestBody.getAvailabilityIds(),requestBody.getCompetenceProfileIds());
     }
 }

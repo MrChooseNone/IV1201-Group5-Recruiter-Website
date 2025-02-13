@@ -7,14 +7,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.InvalidParameterException;
-import com.example.demo.presentation.restException.PersonNotFoundException;
-import com.example.demo.presentation.restException.SpecificCompetenceNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.SpecificCompetenceNotFoundException;
 
 /**
  * This class is responsible for defining the error handeling general errors, such as invalid parameter exceptions
  */
 @RestControllerAdvice
 public class GeneralRestAdvice {
+
+
+
     /**
    * This function is responsible for handeling the InvalidParameterException error
    * @param ex the error which was thrown to active this handler

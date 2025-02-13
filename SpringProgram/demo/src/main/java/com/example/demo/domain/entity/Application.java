@@ -56,6 +56,26 @@ public class Application implements ApplicationDTO{
     @Column(name="application_date")
     private Date applicationDate;
 
+    /** 
+     * This is the default constructor for Application
+    */
+    public Application(){}
+
+
+    /**
+     * This is a constructor which accepts person, availabilityPeriodsForApplication and competenceProfilesForApplication parameters and automatically sets application status and date
+     * @param applicant This is the applicant
+     * @param availabilityPeriodsForApplication This is a list of availability periods for this application
+     * @param competenceProfilesForApplication This is a list of competence profiles for this application
+     */
+    public Application(Person applicant, List<Availability> availabilityPeriodsForApplication,List<CompetenceProfile> competenceProfilesForApplication){
+        this.applicant=applicant;
+        this.availabilityPeriodsForApplication=availabilityPeriodsForApplication;
+        this.competenceProfilesForApplication=competenceProfilesForApplication;
+        this.applicationStatus=ApplicationStatus.unchecked;
+        this.applicationDate=new java.sql.Date(System.currentTimeMillis());
+    }
+
     /**
     * Implements the ApplicationDTO function getApplicationId, and returns the application id
     * @return the application id

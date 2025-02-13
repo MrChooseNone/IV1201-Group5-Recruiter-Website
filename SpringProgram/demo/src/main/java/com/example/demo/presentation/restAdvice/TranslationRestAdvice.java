@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.demo.presentation.restException.LanguageNotFoundException;
-import com.example.demo.presentation.restException.TranslationsNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.LanguageNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.TranslationsNotFoundException;
 
 /**
  * This class is responsible for defining the error handeling for the TranslationEndpointController flow, defining which http response code should be used for the different potential errors

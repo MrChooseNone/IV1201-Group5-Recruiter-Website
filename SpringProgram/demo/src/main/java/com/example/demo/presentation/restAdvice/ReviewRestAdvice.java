@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.demo.presentation.restException.ApplicationNotFoundException;
 import com.example.demo.presentation.restException.ApplicationNotUpdatedException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
 
 @RestControllerAdvice
 /**
