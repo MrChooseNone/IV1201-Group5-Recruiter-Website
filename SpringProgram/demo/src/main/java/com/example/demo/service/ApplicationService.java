@@ -19,6 +19,7 @@ import com.example.demo.domain.entity.Availability;
 import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceProfile;
 import com.example.demo.domain.entity.Person;
+import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.FromDateAfterToDateException;
 import com.example.demo.presentation.restException.PeriodAlreadyCoveredException;
 import com.example.demo.presentation.restException.PersonNotFoundException;
@@ -90,11 +91,17 @@ public class ApplicationService {
         Optional<Person> personContainer = personRepository.findById(personId);
         
         if (personContainer.isEmpty()) {
-            LOGGER.error("Failed to create new competence profile for person (`{}`) for competence (`{}`) with (`{}`) years of experience since no person exists in the database with that id",personId,competenceId,yearsOfExperience);
+            LOGGER.error("Failed to create new competence profile for a person (`{}`) for competence (`{}`) with (`{}`) years of experience since no person exists in the database with that id",personId,competenceId,yearsOfExperience);
             throw new PersonNotFoundException(personId);
         }
 
         Person person=personContainer.get();
+
+        if(competenceProfileRepository.existsByPersonAndCompetenceAndYearsOfExperience(person,competence,yearsOfExperience))
+        {
+            LOGGER.error("Failed to create competence profile for a person (`{}`) for competence (`{}`) with (`{}`) years of experience since an identical entry already exists",person,competence,yearsOfExperience);
+            throw new AlreadyExistsException("This competence profile already exists, so it does not need to be created");
+        }
 
         CompetenceProfile newCompetenceProfile = new CompetenceProfile(person,competence,yearsOfExperience);
 
@@ -147,11 +154,16 @@ public class ApplicationService {
             throw new FromDateAfterToDateException(fromDate,toDate);
         }
 
-        if (!availabilityRepository.findAllByFromDateAfterAndToDateBeforeAndByPerson(fromDate, toDate,person).isEmpty()) {
+        if(availabilityRepository.existsByFromDateAndToDateAndPerson(fromDate, toDate, person))
+        {
+            LOGGER.error("Failed to create availability period for a person with (`{}`) from (`{}`) to (`{}`) since an identical entry already exists",personId,fromDate,toDate);
+            throw new AlreadyExistsException("This availability period already exists, so it does not need to be created");
+        }
+
+        if (!availabilityRepository.findAllByFromDateGreaterThanEqualAndToDateLessThanEqualAndPerson(fromDate, toDate,person).isEmpty()) {
             LOGGER.error("Failed to create availability period for a person with (`{}`) from (`{}`) to (`{}`) since date range fully covered by existing availability period",personId,fromDate,toDate);
             throw new PeriodAlreadyCoveredException(fromDate, toDate);
         }
-
 
         Availability newAvailability=new Availability(person, fromDate, toDate);
         availabilityRepository.save(newAvailability);

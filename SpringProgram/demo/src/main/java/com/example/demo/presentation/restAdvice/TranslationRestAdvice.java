@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.presentation.restException.LanguageNotFoundException;
-import com.example.demo.presentation.restException.SpecificCompetenceNotFoundException;
 import com.example.demo.presentation.restException.TranslationsNotFoundException;
 
 /**

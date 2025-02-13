@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.presentation.restException.PersonNotFoundException;
 import com.example.demo.presentation.restException.SpecificCompetenceNotFoundException;
@@ -44,6 +45,19 @@ public class GeneralRestAdvice {
   @ExceptionHandler(PersonNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   String PersonNotFoundHandler(PersonNotFoundException ex) {
+    return ex.getMessage();
+  }
+
+  /**
+   * This function is responsible for handeling the AlreadyExistsException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 409 error message with the AlreadyExistsException error message as the text
+   * 
+   */
+  //409 is used since the request was correct, but it could not be fulfilled
+  @ExceptionHandler(AlreadyExistsException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  String PersonNotFoundHandler(AlreadyExistsException ex) {
     return ex.getMessage();
   }
 }

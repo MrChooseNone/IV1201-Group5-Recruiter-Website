@@ -6,20 +6,32 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.presentation.restException.FromDateAfterToDateException;
+import com.example.demo.presentation.restException.PeriodAlreadyCoveredException;
 
 /**
  * This class is responsible for defining the error for ApplicationService.java, such as being unable to create a competence profile
  */
 @RestControllerAdvice
 public class ApplicationRestAdvice {
-        /**
+  /**
    * This function is responsible for handeling the FromDateAfterToDateException error
    * @param ex the error which was thrown to active this handler
    * @return this sends a http 400 error message with the FromDateAfterToDateException error message as the text
    */
   @ExceptionHandler(FromDateAfterToDateException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  String specificCompetenceNotFoundHandler(FromDateAfterToDateException ex) {
+  String FromDateAfterToDateFoundHandler(FromDateAfterToDateException ex) {
+    return ex.getMessage();
+  }
+
+  /**
+   * This function is responsible for handeling the FromDateAfterToDateException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 400 error message with the FromDateAfterToDateException error message as the text
+   */
+  @ExceptionHandler(PeriodAlreadyCoveredException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  String PeriodAlreadyCoveredHandler(PeriodAlreadyCoveredException ex) {
     return ex.getMessage();
   }
 }

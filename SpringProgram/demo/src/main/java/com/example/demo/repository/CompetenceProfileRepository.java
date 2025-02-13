@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceProfile;
 import com.example.demo.domain.entity.Person;
 
@@ -28,4 +29,13 @@ public interface CompetenceProfileRepository extends JpaRepository<CompetencePro
      * @return A list of matching competence profiles
      */
     List<CompetenceProfile> findAllByPerson(Person person);
+
+    /**
+     * This interface function tells JPA to generate a query which confirms if a CompetenceProfile already exists with these exact values
+     * @param person the person the competence profile is for
+     * @param competence the competence this profile describes
+     * @param yearsOfExperience the years of experience the individual has for this period
+     * @return a boolean for if a matching competence profile exists or not
+     */
+    boolean existsByPersonAndCompetenceAndYearsOfExperience(Person person, Competence competence, Double yearsOfExperience);
 }
