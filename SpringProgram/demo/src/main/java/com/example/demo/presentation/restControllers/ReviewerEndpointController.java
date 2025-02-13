@@ -94,7 +94,7 @@ public class ReviewerEndpointController {
      */
     @PostMapping("/updateApplicationStatus")
     public ApplicationDTO UpdateApplicationsByStatus(@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber) {
-        LOGGER.info("Update for application with id (`{}`) version number (`{}`) to (`{}`) requested",applicationId,versionNumber,status); //TODO add authentication info here, aka who accessed this
+        LOGGER.info("Status change for application with id (`{}`) version number (`{}`) to (`{}`) requested",applicationId,versionNumber,status); //TODO add authentication info here, aka who accessed this
 
         ApplicationStatus parsedApplicationStatus=null;
         try {

@@ -37,6 +37,24 @@ public class Availability implements AvailabilityDTO{
     private Date toDate;
 
     /**
+     * Default constructor for the Availability class
+     */
+    public Availability(){};
+
+    /**
+     * This is a constructor with the person, fromDate and toDate parameters
+     * @param person
+     * @param fromDate
+     * @param toDate
+     */
+    public Availability(Person person, Date fromDate, Date toDate)
+    {
+        this.person=person;
+        this.fromDate=fromDate;
+        this.toDate=toDate;
+    };
+
+    /**
      * Implements the AvailabilityDTO function getAvailabilityId, and returns the availability id
      * @return the availability id
      */

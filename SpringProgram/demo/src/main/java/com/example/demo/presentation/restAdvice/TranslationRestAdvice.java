@@ -15,18 +15,6 @@ import com.example.demo.presentation.restException.TranslationsNotFoundException
  */
 @RestControllerAdvice
 public class TranslationRestAdvice {
-
-  /**
-   * This function is responsible for handeling the SpecificCompetenceNotFound error
-   * @param ex the error which was thrown to active this handler
-   * @return this sends a http 404 error message with the SpecificCompetenceNotFound error message as the text
-   */
-  @ExceptionHandler(SpecificCompetenceNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  String specificCompetenceNotFoundHandler(SpecificCompetenceNotFoundException ex) {
-    return ex.getMessage();
-  }
-
   /**
    * This function is responsible for handeling the LanguageNotFound error
    * @param ex the error which was thrown to active this handler

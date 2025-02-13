@@ -40,8 +40,26 @@ public class CompetenceProfile implements CompetenceProfileDTO{
 
     @Column
     @Min(value =0L,message="The value must be non-negative") //Test for jakarta validation
-    @Digits(integer=4,fraction=2) //This should ensure the value can only have the format (xxxx.xx) 
-    private BigDecimal yearsOfExperience;
+    private Double yearsOfExperience;
+
+    /**
+     * This is the default constructor for CompetenceProfile
+     */
+    public CompetenceProfile()
+    {}
+
+    /**
+     * This is a constructor with person, competence and yearsOfExperience as parameters
+     * @param person the person this competence profile is for
+     * @param competence the competence this profile is for
+     * @param yearsOfExperience the years of experience the person has in the competence
+     */
+    public CompetenceProfile(Person person, Competence competence, double yearsOfExperience)
+    {
+        this.person=person;
+        this.competence=competence;
+        this.yearsOfExperience=yearsOfExperience;
+    }
 
     /**
      * Implements the CompetenceProfileDTO function getCompetenceProfileId, and returns the object's id
@@ -75,7 +93,7 @@ public class CompetenceProfile implements CompetenceProfileDTO{
      * @return the years of experience
      */
     @Override
-    public BigDecimal getYearsOfExperience() {
+    public double getYearsOfExperience() {
         return this.yearsOfExperience;
     }
     

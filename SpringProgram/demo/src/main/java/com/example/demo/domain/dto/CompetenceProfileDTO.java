@@ -1,8 +1,5 @@
 package com.example.demo.domain.dto;
 
-import java.math.BigDecimal;
-
-
 /** 
  * The CompetenceProfileDTO interface provides a data transfer interface for handling competence profile objects
 */
@@ -30,5 +27,5 @@ public interface CompetenceProfileDTO {
      * 
      * @return the number of years of experience
      */
-    public BigDecimal getYearsOfExperience();
+    public double getYearsOfExperience();
 }
