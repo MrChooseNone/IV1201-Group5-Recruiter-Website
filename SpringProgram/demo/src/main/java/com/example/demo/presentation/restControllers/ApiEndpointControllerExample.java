@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ServiceExample;
 
 //This is an example of how a API endpoint should look for the REST controller
@@ -52,7 +53,7 @@ public class ApiEndpointControllerExample {
         try {
            convertedId=Integer.parseInt(person_id);
         } catch (NumberFormatException e) {
-            return "input was not a valid integer";
+            throw new InvalidParameterException("input was not a valid integer");
         }
 
         return exampleService.findIfExistsById(convertedId) +"\n"+exampleService.findCount();
