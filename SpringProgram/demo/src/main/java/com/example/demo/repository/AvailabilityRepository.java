@@ -39,7 +39,7 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Inte
      * @param person the person to find availability periods for
      * @return A list of availability periods fulfilling the criteria
      */
-    List<Availability> findAllByFromDateGreaterThanEqualAndToDateLessThanEqualAndPerson(Date fromDate, Date toDate,Person person);
+    List<Availability> findAllByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(Date fromDate, Date toDate,Person person);
 
 
     /**

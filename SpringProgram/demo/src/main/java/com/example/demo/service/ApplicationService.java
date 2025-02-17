@@ -90,7 +90,6 @@ public class ApplicationService {
             LOGGER.error("Failed to create new competence profile for person (`{}`) for competence (`{}`) with (`{}`) years of experience since no competence exists in the database with that id",personId,competenceId,yearsOfExperience);
             throw new SpecificCompetenceNotFoundException(competenceId);
         }
-
         Competence competence=competenceContainer.get();
 
         Optional<Person> personContainer = personRepository.findById(personId);
@@ -165,7 +164,7 @@ public class ApplicationService {
             throw new AlreadyExistsException("This availability period already exists, so it does not need to be created");
         }
 
-        if (!availabilityRepository.findAllByFromDateGreaterThanEqualAndToDateLessThanEqualAndPerson(fromDate, toDate,person).isEmpty()) {
+        if (!availabilityRepository.findAllByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(fromDate, toDate,person).isEmpty()) {
             LOGGER.error("Failed to create availability period for a person with (`{}`) from (`{}`) to (`{}`) since date range fully covered by existing availability period",personId,fromDate,toDate);
             throw new PeriodAlreadyCoveredException(fromDate, toDate);
         }
