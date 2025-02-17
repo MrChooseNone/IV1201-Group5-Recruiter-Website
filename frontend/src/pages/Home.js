@@ -1,6 +1,6 @@
 import Appbar from "../components/Appbar";
 import SearchApplication from "../components/SearchApplication";
-
+import Competences from "../components/Competences";
 
 
 export default function Home(){
@@ -9,6 +9,7 @@ export default function Home(){
             <Appbar/>
             <h2>Home page</h2>
             <SearchApplication></SearchApplication>
+            <Competences/>
         </>
     )
 }
