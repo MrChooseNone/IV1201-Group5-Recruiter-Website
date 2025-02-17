@@ -12,7 +12,7 @@ import com.example.demo.service.PersonService;
 
 @RestController
 @RequestMapping("/person")
-@CrossOrigin //This uses the config in config/WebConfig.java to allow cross-origin access
+@CrossOrigin(origins = "http://localhost:3000") //This uses the config in config/WebConfig.java to allow cross-origin access
 /**
  * This endpoint controller is responsible for handeling the requests concerning people application.
  * This includes, for example, finding the people with a specific name
