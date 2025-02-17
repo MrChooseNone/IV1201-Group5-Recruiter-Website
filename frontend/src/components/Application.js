@@ -50,8 +50,8 @@ export default function ApplicationForm() {
         <TextField
           required
           id="standard-required"
-          label="Required"
-          defaultValue="First name"
+          label="First name"
+          
           variant="standard"
           value={name}
           onChange={(e) => setName(e.target.value)} // Save inputed data on change
@@ -59,8 +59,8 @@ export default function ApplicationForm() {
         <TextField
           required
           id="standard-required"
-          label="Required"
-          defaultValue="Surname"
+          label="Surname"
+          
           variant="standard"
           value={surname}
           onChange={(e) => setSurname(e.target.value)} // Save inputed data on change
@@ -68,8 +68,8 @@ export default function ApplicationForm() {
         <TextField
           required
           id="standard-required"
-          label="Required"
-          defaultValue="E-mail"
+          label="E-mail"
+          
           variant="standard"
           // value={email}
           // onChange={(e) => setEmail(e.target.value)} // Save inputed data on change
@@ -78,7 +78,7 @@ export default function ApplicationForm() {
           required
           id="standard-required"
           label="Phone number"
-          defaultValue=""
+          
           variant="standard"
           // value={number}
           // onChange={(e) => setNumber(e.target.value)} // Save inputed data on change
