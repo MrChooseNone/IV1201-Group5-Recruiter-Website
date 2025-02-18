@@ -46,10 +46,9 @@ public class ReviewServiceTest {
     // We then define the list we will use as the mock database
     static List<Application> savedApplications = new ArrayList<Application>();
 
-    // This ensures mocks are created correctly and empty the mock databases
+    // This ensures mocks are created correctly
     @BeforeAll
     public static void beforeAll() {
-        savedApplications=new ArrayList<Application>();
         MockitoAnnotations.openMocks(ReviewServiceTest.class);
     }
 

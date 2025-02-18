@@ -164,7 +164,7 @@ public class ApplicationService {
             throw new AlreadyExistsException("This availability period already exists, so it does not need to be created");
         }
 
-        if (!availabilityRepository.findAllByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(fromDate, toDate,person).isEmpty()) {
+        if (availabilityRepository.existsByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(fromDate, toDate,person)) {
             LOGGER.error("Failed to create availability period for a person with (`{}`) from (`{}`) to (`{}`) since date range fully covered by existing availability period",personId,fromDate,toDate);
             throw new PeriodAlreadyCoveredException(fromDate, toDate);
         }

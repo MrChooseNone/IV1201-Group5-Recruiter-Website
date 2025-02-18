@@ -60,6 +60,15 @@ public class Person implements PersonDTO{
     }
 
     /**
+     * Basic settet for the id, only for testing purposes, DO NOT USE IN PRODUCTION!
+     * @param id the new id for the person
+     */
+    public void setId(Integer id) {
+        this.id=id;
+    }
+
+
+    /**
      * Implements the PersonDTO function getName, and returns the person objects first name
      * @return the person's first name
      */

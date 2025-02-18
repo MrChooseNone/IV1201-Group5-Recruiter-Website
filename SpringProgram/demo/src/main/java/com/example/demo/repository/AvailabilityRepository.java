@@ -33,14 +33,13 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Inte
     List<Availability> findAllByPerson(Person person);
 
     /**
-     * This interface function tells JPA to generate a query to find a list of Availability which is fully covered within a specified date range and for a specific person
+     * This interface function tells JPA to generate a query to which confirms if an Availability which is fully covered within a specified date range and for a specific person exists
      * @param fromDate start of the date range
      * @param toDate end of the date range
      * @param person the person to find availability periods for
-     * @return A list of availability periods fulfilling the criteria
+     * @return A boolean representing if it exists or not
      */
-    List<Availability> findAllByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(Date fromDate, Date toDate,Person person);
-
+    boolean existsByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(Date fromDate, Date toDate,Person person);
 
     /**
      * This interface function tells JPA to generate a query which confirms if an Availability already exists with these exact values
