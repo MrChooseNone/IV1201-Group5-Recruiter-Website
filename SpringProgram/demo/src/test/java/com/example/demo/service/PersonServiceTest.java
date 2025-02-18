@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,8 +59,14 @@ public class PersonServiceTest {
     //This ensures mocks are created correctly
     @BeforeAll
     public static void beforeAll() {
-        savedPeople.removeAll(savedPeople); //We ensure the database is empty before testing
         MockitoAnnotations.openMocks(PersonServiceTest.class);
+    }
+    
+    //This ensures the mock "databases" are clean after each attempt
+    @AfterEach
+    public void afterEach()
+    {
+        savedPeople.clear();
     }
 
     @Test

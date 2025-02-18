@@ -166,4 +166,13 @@ public class Application implements ApplicationDTO{
     {
         this.applicationDate=applicationDate;
     }
+
+    /**
+     * This is a setter for application id, this is used in testing and should NOT be used in production
+     * @param newId the new applicantion id 
+     */
+    public void setApplicationId(Integer newId)
+    {
+        this.applicationId=newId;
+    }
 }

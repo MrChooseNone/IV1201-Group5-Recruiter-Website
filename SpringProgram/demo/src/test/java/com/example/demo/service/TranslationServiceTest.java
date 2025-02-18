@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,13 +61,19 @@ public class TranslationServiceTest {
     static List<Language> savedLanguages = new ArrayList<Language>();
     static List<CompetenceTranslation> savedCompetenceTranslations = new ArrayList<CompetenceTranslation>();
 
-    // This ensures mocks are created correctly and empty the mock databases
+    // This ensures mocks are created correctly
     @BeforeAll
     public static void beforeAll() {
-        savedCompetence.removeAll(savedCompetence);
-        savedLanguages.removeAll(savedLanguages);
-        savedCompetenceTranslations.removeAll(savedCompetenceTranslations);
         MockitoAnnotations.openMocks(TranslationServiceTest.class);
+    }
+
+    //This ensures the mock "databases" are clean after each attempt
+    @AfterEach
+    public void afterEach()
+    {
+        savedCompetence.clear();
+        savedLanguages.clear();
+        savedCompetenceTranslations.clear();
     }
 
     @Test
@@ -91,7 +99,7 @@ public class TranslationServiceTest {
         });
 
         //We then call the method which is to be tested
-        List<CompetenceDTO> competenceRepositoryReturnValue = (List<CompetenceDTO>) translationService.GetCompetences();
+        List<? extends CompetenceDTO> competenceRepositoryReturnValue = translationService.GetCompetences();
 
         //Here we confirm the result, aka that with an empty "database" we will get an empty list
         assertNotNull(competenceRepositoryReturnValue);
@@ -102,7 +110,7 @@ public class TranslationServiceTest {
 
         //We then add a competence manually, and then re-call the exact same method as above
         competenceRepository.save(competence);
-        competenceRepositoryReturnValue = (List<CompetenceDTO>) translationService.GetCompetences();
+        competenceRepositoryReturnValue = translationService.GetCompetences();
 
         //Here we confirm the results now that one was added manually, aka it was added and is the entire database
         assertNotNull(competenceRepositoryReturnValue);
@@ -254,6 +262,8 @@ public class TranslationServiceTest {
      */
     void GetLanguagesTest()
     {
+        //This is a test to ensure the "database" is clean before we start
+        assertEquals(0, savedLanguages.size());
         /**
          * We create an example language object
          */
@@ -271,7 +281,7 @@ public class TranslationServiceTest {
         });
 
         //We then call the method which is to be tested
-        List<LanguageDTO> returnValue = (List<LanguageDTO>) translationService.GetLanguages();
+        List<? extends LanguageDTO> returnValue = translationService.GetLanguages();
 
         //Here we confirm the result, aka that with an empty "database" we will get an empty list
         assertNotNull(returnValue);
@@ -282,7 +292,7 @@ public class TranslationServiceTest {
 
         //We then add a langague manually, and then re-call the exact same method as above
         languageRepository.save(language);
-        returnValue = (List<LanguageDTO>) translationService.GetLanguages();
+        returnValue = translationService.GetLanguages();
 
         //Here we confirm the results now that one was added manually, aka it was added and is the entire database
         assertNotNull(returnValue);
