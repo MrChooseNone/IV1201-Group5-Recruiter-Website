@@ -143,15 +143,19 @@ public class DatabaseLoader implements CommandLineRunner{
         }
 
         //If there are no applications, we add one for testing purposes
-        if(applicationRepository.count()==0)
-        {
-            Person person = personRepository.findByName("Alexander").get(0);
-            Application testApplication=new Application();
-            testApplication.setApplicationDate(new java.sql.Date(System.currentTimeMillis()));
-            testApplication.setApplicant(person);
-            testApplication.setApplicationStatus(ApplicationStatus.unchecked);
-            applicationRepository.save(testApplication);
-            System.out.println("Added test application for "+person.getName());
+        if(applicationRepository.count() == 0) {
+            List<Person> persons = personRepository.findByName("Alexander");
+            if (persons != null && !persons.isEmpty()) {
+                Person person = persons.get(0); // Safe to get the first element
+                Application testApplication = new Application();
+                testApplication.setApplicationDate(new java.sql.Date(System.currentTimeMillis()));
+                testApplication.setApplicant(person);
+                testApplication.setApplicationStatus(ApplicationStatus.unchecked);
+                applicationRepository.save(testApplication);
+                System.out.println("Added test application for " + person.getName());
+            } else {
+                System.out.println("No person found with name 'Alexander'");
+            }
         }
         
 
