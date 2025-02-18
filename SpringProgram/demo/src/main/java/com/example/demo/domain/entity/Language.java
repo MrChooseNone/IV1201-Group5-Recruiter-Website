@@ -48,4 +48,12 @@ public class Language implements LanguageDTO{
      * @param name the new name for this object
      */
     public void SetLanguageName(String name){this.name=name;}
+
+    
+    /**
+     * A simple setter for the language's id
+     * Note that this should only be used for testing purposes, and any use in production code will result in an exception!
+     * @param id the new id for this object
+     */
+    public void SetLanguageId(Integer id){this.id=id;}
 }

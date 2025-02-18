@@ -113,7 +113,7 @@ public class TranslationService {
             }
         } catch (Exception e) {
             LOGGER.error("Failed to retrive a list of translations due to unknown error related to translations");
-            throw new TranslationsNotFoundException(languageName);
+            throw new TranslationsNotFoundException(languageName+". Due to an unknown error");
         }
 
         return translations;
