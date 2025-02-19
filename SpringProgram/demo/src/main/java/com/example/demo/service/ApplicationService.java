@@ -213,14 +213,19 @@ public class ApplicationService {
 
         List<Availability> availabilities=new ArrayList<Availability>();
 
+        if (availabilityIds.size()==0) {
+            LOGGER.error("Failed to create application for a person (`{}`) since the availabiltyIds is empty",personId);
+            throw new AvailabilityInvalidException("No availability period was specified, please specify at least one for this application");
+        }
+
         for (Integer i : availabilityIds) {
             Optional<Availability> availabilityContainer = availabilityRepository.findById(i);
             if (availabilityContainer.isEmpty()) {
-                LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied availabilites do not exist, specifically requested with id (`{}`)",personId,i);
+                LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied availabilites do not exist, specifically requested with id (`{}`) which does not exist",personId,i);
                 throw new AvailabilityInvalidException("No availability with id "+i+" in the database");
             }
             if (availabilityContainer.get().getPerson().getId()!=person.getId()) {
-                LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied availability profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
+                LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied availabilites profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
                 throw new AvailabilityInvalidException("The availability period with id "+i+" belongs to another user");
             }
             availabilities.add(availabilityContainer.get());
@@ -228,10 +233,15 @@ public class ApplicationService {
 
         List<CompetenceProfile> competenceProfiles=new ArrayList<CompetenceProfile>();
 
+        if (competenceProfileIds.size()==0) {
+            LOGGER.error("Failed to create application for a person (`{}`) since the competenceProfileIds is empty");
+            throw new CompetenceProfileInvalidException("No availability period was specified, please specify at least one for this application");
+        }
+
         for (Integer i : competenceProfileIds) {
             Optional<CompetenceProfile> competenceProfilesContainer = competenceProfileRepository.findById(i);
             if (competenceProfilesContainer.isEmpty()) {
-                LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied competence profiles do not exist, specifically requested with id (`{}`)",personId,i);
+                LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied competence profiles do not exist, specifically requested with id (`{}`)",personId,i);
                 throw new CompetenceProfileInvalidException("No competence profile with id "+i+" in the database");
             }
             if (competenceProfilesContainer.get().getPerson().getId()!=person.getId()) {
