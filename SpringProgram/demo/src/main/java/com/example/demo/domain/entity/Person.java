@@ -130,4 +130,13 @@ public class Person implements PersonDTO{
         return this.role;
     }
 
+    /**
+     * Implements the PersonDTO function setPassword, setting the password of a given person
+     * @param password the person's password
+     */
+    @Override
+    public void setPassword(String password){
+        this.password = password;
+    }
+
 }

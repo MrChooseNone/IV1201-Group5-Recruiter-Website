@@ -2,8 +2,10 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,8 @@ public class PersonService {
     //We create the logger
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class.getName()); 
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Constructs a new instance of the PersonService (Spring boot managed).
@@ -44,11 +48,12 @@ public class PersonService {
      * @param name the name of the person to add
      * @param surname the surname of the person to add
      */
-    public void AddPerson(String name,String surname)
+    public void AddPerson(String name,String surname, String password)
     {
         Person person = new Person();
         person.setName(name);
         person.setSurname(surname);
+        person.setPassword(passwordEncoder.encode(password));
         LOGGER.info("Added new person with name (`{}`) and surname (`{}`)",name,surname); //TODO add more parameters here when those are added
         personRepository.save(person);        
     }

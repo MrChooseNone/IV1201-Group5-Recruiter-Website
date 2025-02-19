@@ -59,4 +59,10 @@ public interface PersonDTO {
      */
     public RoleDTO getRole();
 
+    /**
+     * Interface function for setting a person's password
+     * @param password
+     */
+    public void setPassword(String password);
+
 }
