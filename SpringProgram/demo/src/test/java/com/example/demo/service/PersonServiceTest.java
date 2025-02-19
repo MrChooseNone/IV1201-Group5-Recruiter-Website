@@ -9,9 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,19 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.repository.PersonRepository;
-import com.example.demo.service.PersonService;
 
 @ExtendWith(MockitoExtension.class)
 /**
@@ -164,7 +154,7 @@ public class PersonServiceTest {
         });
 
         //We then call the function we wish to test
-        List<PersonDTO> returnFromService=(List<PersonDTO>) personService.FindPeopleByName(name);
+        List<? extends PersonDTO> returnFromService=personService.FindPeopleByName(name);
 
         //We then perform some checks on the result, to confirm it is correct
         assertNotNull(returnFromService);
@@ -178,7 +168,7 @@ public class PersonServiceTest {
         personRepository.save(person);
 
         //We then call the function we wish to test again
-        returnFromService=(List<PersonDTO>) personService.FindPeopleByName(name);
+        returnFromService=personService.FindPeopleByName(name);
 
         assertNotNull(returnFromService);
         assertEquals(1, returnFromService.size());

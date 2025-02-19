@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +28,6 @@ import com.example.demo.domain.dto.LanguageDTO;
 import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
-import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.LanguageNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.SpecificCompetenceNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.TranslationsNotFoundException;

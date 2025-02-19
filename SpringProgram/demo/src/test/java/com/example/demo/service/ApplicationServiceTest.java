@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.sql.Date;
@@ -24,7 +23,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.dto.AvailabilityDTO;
 import com.example.demo.domain.dto.CompetenceProfileDTO;
@@ -36,7 +34,6 @@ import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.FromDateAfterToDateException;
 import com.example.demo.presentation.restException.PeriodAlreadyCoveredException;
-import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.AvailabilityInvalidException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.CompetenceProfileInvalidException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
