@@ -75,7 +75,7 @@ public class ApplicationServiceTest {
     // This ensures mocks are created correctly and empty the mock databases
     @BeforeAll
     public static void beforeAll() {
-        MockitoAnnotations.openMocks(ReviewServiceTest.class);
+        MockitoAnnotations.openMocks(ApplicationServiceTest.class);
     }
 
     // This ensures the mock "databases" are clean after each attempt

@@ -68,11 +68,11 @@ public class ReviewerEndpointController {
             parsedApplicationStatus=ApplicationStatus.valueOf(status.toLowerCase());
         } catch (IllegalArgumentException e) {
             LOGGER.error("Failed to retrive applications with status (`{}`) since that is invalid application status",status);
-            throw new InvalidParameterException("Provided value ("+status+") is not valid value for application status, please specify as \"unchecked\",\"accepted\" or \"denied\" " );
+            throw new InvalidParameterException("Provided value ("+status+") is not valid value for application status, please specify as \"unchecked\",\"accepted\" or \"denied\"");
         }
         catch(NullPointerException e) {
             LOGGER.error("Failed to retrive applications with status (`{}`) since that is null",status);
-            throw new InvalidParameterException("Provided status value is null, please specify as \"unchecked\",\"accepted\" or \"denied\"  ");
+            throw new InvalidParameterException("Provided status value is null, please specify as \"unchecked\",\"accepted\" or \"denied\"");
         }
         catch(Exception e) {
             LOGGER.error("Failed to retrive applications with status (`{}`) due to unknown error related to application status",status);
@@ -101,11 +101,11 @@ public class ReviewerEndpointController {
             parsedApplicationStatus=ApplicationStatus.valueOf(status.toLowerCase());
         } catch (IllegalArgumentException e) {
             LOGGER.error("Failed to update application with id (`{}`) version number (`{}`) to (`{}`) since application status is invalid",applicationId,versionNumber,status);
-            throw new InvalidParameterException("Provided value ("+status+") is not valid value for application status, please specify as \"unchecked\",\"accepted\" or \"denied\" " );
+            throw new InvalidParameterException("Provided value ("+status+") is not valid value for application status, please specify as \"unchecked\",\"accepted\" or \"denied\"");
         }
         catch(NullPointerException e) {
             LOGGER.error("Failed to update application with id (`{}`) version number (`{}`) to (`{}`) since application status is null",applicationId,versionNumber,status);
-            throw new InvalidParameterException("Provided status value is null, please specify as \"unchecked\\\",\"accepted\\\" or \"denied\"  ");
+            throw new InvalidParameterException("Provided status value is null, please specify as \"unchecked\",\"accepted\" or \"denied\"");
         }
         catch(Exception e) {
             LOGGER.error("Failed to update application with id (`{}`) version number (`{}`) to (`{}`) due to unknown error related to application status",applicationId,versionNumber,status);

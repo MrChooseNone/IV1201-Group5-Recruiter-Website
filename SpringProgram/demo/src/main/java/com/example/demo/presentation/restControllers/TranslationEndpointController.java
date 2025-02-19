@@ -54,7 +54,6 @@ public class TranslationEndpointController {
     public List<? extends CompetenceDTO> GetStandardCompetences() {
         LOGGER.info("Standard competences requested"); //TODO add authentication info here, aka who accessed this
         List<? extends CompetenceDTO> existingCompetences = translationService.GetCompetences();
-        System.out.println(existingCompetences);
         return existingCompetences;
     }
 

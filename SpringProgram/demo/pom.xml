@@ -63,6 +63,13 @@
     		<artifactId>jjwt-jackson</artifactId>
     		<version>0.11.5</version>
 		</dependency>
+
+		<!-- In-memory database for testing purposes -->
+		<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+</dependency>
+
 	</dependencies>
 
 	<build>
