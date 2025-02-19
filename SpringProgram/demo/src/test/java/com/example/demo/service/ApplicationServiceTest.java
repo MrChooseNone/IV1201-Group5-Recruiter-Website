@@ -20,10 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.demo.domain.ApplicationStatus;
+import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.dto.AvailabilityDTO;
 import com.example.demo.domain.dto.CompetenceProfileDTO;
 import com.example.demo.domain.entity.Application;
@@ -35,6 +37,8 @@ import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.FromDateAfterToDateException;
 import com.example.demo.presentation.restException.PeriodAlreadyCoveredException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.AvailabilityInvalidException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.CompetenceProfileInvalidException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.SpecificCompetenceNotFoundException;
 import com.example.demo.repository.ApplicationRepository;
@@ -280,11 +284,11 @@ public class ApplicationServiceTest {
         Person person = new Person();
         person.setName("testName");
         person.setId(0);
-        Date fromDate=Date.valueOf("2000-12-1");
-        Date fromDateConflict=Date.valueOf("2001-02-1");
-        Date toDate=Date.valueOf("2001-12-1");
+        Date fromDate = Date.valueOf("2000-12-1");
+        Date fromDateConflict = Date.valueOf("2001-02-1");
+        Date toDate = Date.valueOf("2001-12-1");
 
-        Availability availability = new Availability(person, fromDate,toDate);
+        Availability availability = new Availability(person, fromDate, toDate);
 
         // We then define the implementation for the mock repositories
 
@@ -313,55 +317,66 @@ public class ApplicationServiceTest {
             return invocation.getArguments()[0];
         });
 
-        when(availabilityRepository.existsByFromDateAndToDateAndPerson(any(Date.class),any(Date.class),any(Person.class))).thenAnswer(invocation -> {
-            Date dateArg1 = (Date) invocation.getArguments()[0];
-            Date dateArg2 = (Date) invocation.getArguments()[1];
-            Person personArg = (Person) invocation.getArguments()[2];
-            for (Availability a : savedAvailabilities) {
-                if (a.getPerson() == personArg && a.getFromDate()==dateArg1&&a.getToDate()==dateArg2) {
-                    return true;
-                }
-            }
-            return false;
-        });     
+        when(availabilityRepository.existsByFromDateAndToDateAndPerson(any(Date.class), any(Date.class),
+                any(Person.class))).thenAnswer(invocation -> {
+                    Date dateArg1 = (Date) invocation.getArguments()[0];
+                    Date dateArg2 = (Date) invocation.getArguments()[1];
+                    Person personArg = (Person) invocation.getArguments()[2];
+                    for (Availability a : savedAvailabilities) {
+                        if (a.getPerson() == personArg && a.getFromDate() == dateArg1 && a.getToDate() == dateArg2) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
-        when(availabilityRepository.existsByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(any(Date.class),any(Date.class),any(Person.class))).thenAnswer(invocation -> {
-            Date dateArg1 = (Date) invocation.getArguments()[0];
-            Date dateArg2 = (Date) invocation.getArguments()[1];
-            Person personArg = (Person) invocation.getArguments()[2];
-            for (Availability a : savedAvailabilities) {
-                if (a.getPerson() == personArg && (a.getFromDate().before(dateArg1)||a.getFromDate()==dateArg1)&& (a.getToDate().after(dateArg2)||a.getToDate()==dateArg2)) {
-                    return true;
-                }
-            }
-            return false;
-        });  
-
+        when(availabilityRepository.existsByFromDateLessThanEqualAndToDateGreaterThanEqualAndPerson(any(Date.class),
+                any(Date.class), any(Person.class))).thenAnswer(invocation -> {
+                    Date dateArg1 = (Date) invocation.getArguments()[0];
+                    Date dateArg2 = (Date) invocation.getArguments()[1];
+                    Person personArg = (Person) invocation.getArguments()[2];
+                    for (Availability a : savedAvailabilities) {
+                        if (a.getPerson() == personArg
+                                && (a.getFromDate().before(dateArg1) || a.getFromDate() == dateArg1)
+                                && (a.getToDate().after(dateArg2) || a.getToDate() == dateArg2)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
         // We then test the exception for if a person does not exist, and afterwards add
         // it
-        var e = assertThrowsExactly(PersonNotFoundException.class, () -> applicationService.CreateAvailability(person.getId(), availability.getFromDate(),availability.getToDate()));
+        var e = assertThrowsExactly(PersonNotFoundException.class, () -> applicationService
+                .CreateAvailability(person.getId(), availability.getFromDate(), availability.getToDate()));
         assertEquals("Could not find a person with the following id : 0", e.getMessage());
         personRepository.save(person);
 
-        var e2 = assertThrowsExactly(FromDateAfterToDateException.class, () -> applicationService.CreateAvailability(person.getId(), availability.getToDate(),availability.getFromDate()));
-        assertEquals("Could not create availability period since start date 2001-12-01 is after end date 2000-12-01", e2.getMessage());
+        var e2 = assertThrowsExactly(FromDateAfterToDateException.class, () -> applicationService
+                .CreateAvailability(person.getId(), availability.getToDate(), availability.getFromDate()));
+        assertEquals("Could not create availability period since start date 2001-12-01 is after end date 2000-12-01",
+                e2.getMessage());
 
-
-        AvailabilityDTO results=applicationService.CreateAvailability(person.getId(),availability.getFromDate(),availability.getToDate());
+        AvailabilityDTO results = applicationService.CreateAvailability(person.getId(), availability.getFromDate(),
+                availability.getToDate());
 
         assertNotNull(results);
         assertEquals(person, results.getPerson());
         assertEquals(fromDate, results.getFromDate());
         assertEquals(toDate, results.getToDate());
 
-        var e3 = assertThrowsExactly(AlreadyExistsException.class, () -> applicationService.CreateAvailability(person.getId(), availability.getFromDate(),availability.getToDate()));
-        assertEquals("The requested resource already exists : This availability period already exists, so it does not need to be created", e3.getMessage());
-
+        var e3 = assertThrowsExactly(AlreadyExistsException.class, () -> applicationService
+                .CreateAvailability(person.getId(), availability.getFromDate(), availability.getToDate()));
+        assertEquals(
+                "The requested resource already exists : This availability period already exists, so it does not need to be created",
+                e3.getMessage());
 
         // And finally we confirm that duplicate profiles can not exist
-        var e4 = assertThrowsExactly(PeriodAlreadyCoveredException.class, () -> applicationService.CreateAvailability(person.getId(), fromDateConflict ,availability.getToDate()));
-        assertEquals("Could not create availability period since range start date 2001-02-01 to end date 2001-12-01 is fully covered by an existing availability period ", e4.getMessage());
+        var e4 = assertThrowsExactly(PeriodAlreadyCoveredException.class, () -> applicationService
+                .CreateAvailability(person.getId(), fromDateConflict, availability.getToDate()));
+        assertEquals(
+                "Could not create availability period since range start date 2001-02-01 to end date 2001-12-01 is fully covered by an existing availability period ",
+                e4.getMessage());
 
     }
 
@@ -415,8 +430,7 @@ public class ApplicationServiceTest {
             return availabilityResult;
         });
 
-        // We then test that the PersonNotFoundException is thrown if the person does
-        // not exist
+        // We first test that the PersonNotFoundException is thrown if the person does not exist
         var e = assertThrowsExactly(PersonNotFoundException.class,
                 () -> applicationService.GetCompetenceProfilesForAPerson(person.getId()));
         assertEquals("Could not find a person with the following id : 0", e.getMessage());
@@ -428,6 +442,7 @@ public class ApplicationServiceTest {
         assertEquals(0, result.size());
 
         // We finally test that after saving a availability period it is returned
+        // correctly
         availabilityRepository.save(availability);
         result = applicationService.GetAvailabilityForAPerson(person.getId());
         assertEquals(1, result.size());
@@ -440,6 +455,162 @@ public class ApplicationServiceTest {
      * This is a test for the method SubmitApplication
      */
     void SubmitApplication() {
+
+        // We first create the test object
+        Person person = new Person();
+        person.setName("testName");
+        person.setId(0);
+        
+        Person person2 = new Person();
+        person2.setName("testName2");
+        person2.setId(1);
+
+        Availability availability = new Availability(person, new java.sql.Date(System.currentTimeMillis() - 1), new java.sql.Date(System.currentTimeMillis()));
+        availability.setAvailabilityId(0);
+
+        Availability availability2 = new Availability(person2, new java.sql.Date(System.currentTimeMillis() - 1), new java.sql.Date(System.currentTimeMillis()));
+        availability2.setAvailabilityId(1);
+
+        Competence competence = new Competence();
+        competence.setName("testCompetence");
+        competence.setId(0);
+
+        Double yearsOfExperience = 1.0;
+
+        CompetenceProfile profile = new CompetenceProfile(person, competence, yearsOfExperience);
+        profile.setCompetenceProfileId(0); 
+
+        CompetenceProfile profile2 = new CompetenceProfile(person2, competence, yearsOfExperience);
+        profile2.setCompetenceProfileId(1);
+
+        List<Integer> availabilityIds=new ArrayList<Integer>();
+        List<Integer> competenceProfileIds=new ArrayList<Integer>();
+
+
+        // We then define the implementation for the mock repositories
+        when(personRepository.save(any(Person.class))).thenAnswer(invocation -> {
+            savedPersons.add((Person) invocation.getArguments()[0]);
+            return invocation.getArguments()[0];
+        });
+
+        when(personRepository.findById(anyInt())).thenAnswer(invocation -> {
+
+            Integer idArg = (Integer) invocation.getArguments()[0];
+            Optional<Person> tContainer;
+            for (Person p : savedPersons) {
+                if (p.getId() == idArg) {
+                    tContainer = Optional.of(p);
+                    return tContainer;
+                }
+            }
+            tContainer = Optional.empty();
+            return tContainer;
+        });
+      
+        when(competenceProfileRepository.save(any(CompetenceProfile.class))).thenAnswer(invocation -> {
+            savedCompetenceProfiles.add((CompetenceProfile) invocation.getArguments()[0]);
+            return invocation.getArguments()[0];
+        });
+
+  
+        when(competenceProfileRepository.findById(anyInt())).thenAnswer(invocation -> {
+            Integer idArg = (Integer) invocation.getArguments()[0];
+            Optional<CompetenceProfile> cContainer;
+            for (CompetenceProfile c : savedCompetenceProfiles) {
+                if (c.getCompetenceProfileId() == idArg) {
+                    cContainer = Optional.of(c);
+                    return cContainer;
+                }
+            }
+            cContainer = Optional.empty();
+            return cContainer;
+        });
+
+        when(availabilityRepository.save(any(Availability.class))).thenAnswer(invocation -> {
+            savedAvailabilities.add((Availability) invocation.getArguments()[0]);
+            return invocation.getArguments()[0];
+        });
+
+        when(availabilityRepository.findById(anyInt())).thenAnswer(invocation -> {
+
+            Integer idArg = (Integer) invocation.getArguments()[0];
+            Optional<Availability> aContainer;
+            for (Availability a : savedAvailabilities) {
+                if (a.getAvailabilityId() == idArg) {
+                    aContainer = Optional.of(a);
+                    return aContainer;
+                }
+            }
+            aContainer = Optional.empty();
+            return aContainer;
+        });
+
+        when(applicationRepository.save(any(Application.class))).thenAnswer(invocation -> {
+            savedApplications.add((Application) invocation.getArguments()[0]);
+            return invocation.getArguments()[0];
+        });
+
+        //We then start testing the method to be tested, starting with testing that it throws the correct exceptions
+
+        // We first test that the PersonNotFoundException is thrown if the person does not exist
+        var e = assertThrowsExactly(PersonNotFoundException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Could not find a person with the following id : 0", e.getMessage());
+        personRepository.save(person);
+
+        //We then test that the AvailabilityInvalidException is thrown for the relevant cases
+
+        //First is if the availabilityId list is empty
+        var e2 = assertThrowsExactly(AvailabilityInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Availability invalid due to : No availability period was specified, please specify at least one for this application", e2.getMessage());
+
+        //Then is if the given availability id does not exist in the database
+        availabilityIds.add(0);
+        e2 = assertThrowsExactly(AvailabilityInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Availability invalid due to : No availability with id 0 in the database", e2.getMessage());
+
+        //And the final case for this exception is for if a provided availability belongs to another user
+        availabilityRepository.save(availability);
+        availabilityRepository.save(availability2);
+        availabilityIds.add(1);
+        e2 = assertThrowsExactly(AvailabilityInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Availability invalid due to : The availability period with id 1 belongs to another user", e2.getMessage());
+
+        //Here we remove the invalid id, since otherwise the above exception will be thrown
+        availabilityIds.remove(1);
+
+        //We then test that the CompetenceProfileInvalidException is thrown for the relevant cases
+
+        //First is if the competenceProfileIds list is empty
+        var e3 = assertThrowsExactly(CompetenceProfileInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Competence profile invalid due to : No competence profile was specified, please specify at least one for this application", e3.getMessage());
+
+        //Then is if the given competence profile id does not exist in the database
+        competenceProfileIds.add(0);
+        e3 = assertThrowsExactly(CompetenceProfileInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Competence profile invalid due to : No competence profile with id 0 in the database", e3.getMessage());
+
+        //And the final case for this exception is for if a provided competence profile belongs to another user
+        competenceProfileRepository.save(profile);
+        competenceProfileRepository.save(profile2);
+        competenceProfileIds.add(1);
+        e3 = assertThrowsExactly(CompetenceProfileInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Competence profile invalid due to : The competence profile with id 1 belongs to another user", e3.getMessage());
+
+        //Here we remove the invalid id, since otherwise the above exception will be thrown
+        competenceProfileIds.remove(1);
+
+        //We then test that the correct execution has the correct result
+        ApplicationDTO result=applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds);
+        assertEquals(profile, result.getCompetenceProfilesForApplication().get(0));
+        assertEquals(availability, result.getAvailabilityPeriodsForApplication().get(0));
+        assertEquals(person, result.getApplicant());
+
+        //We verify that the mock save method was called by the SubmitApplication method
+        Mockito.verify(this.applicationRepository, Mockito.times(1)).save(any(Application.class));
+
+        //And finally we verify that it saved the correct application
+        assertEquals(result.getApplicationId(), savedApplications.get(0).getApplicationId());
+        assertEquals(person, savedApplications.get(0).getApplicant());
 
     }
 }

@@ -9,6 +9,6 @@ public class AvailabilityInvalidException extends RuntimeException{
      * @param cause A description of why the availability period is invalid
      */
     public AvailabilityInvalidException(String cause) {
-        super("Availability invalid due to  : " + cause);
+        super("Availability invalid due to : " + cause);
       }
 }

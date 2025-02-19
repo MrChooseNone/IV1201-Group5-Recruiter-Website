@@ -71,6 +71,15 @@ public class CompetenceProfile implements CompetenceProfileDTO{
     }
 
     /**
+     * This is a setter for competence profile, IT SHOULD ONLY BE USED FOR TESTING PURPOSES
+     * @param newCompetenceProfileId
+     */
+    public void setCompetenceProfileId(Integer newCompetenceProfileId)
+    {
+        this.competenceProfileId=newCompetenceProfileId;
+    }
+
+    /**
      * Implements the CompetenceProfileDTO function getPerson, and returns the person who this profile belongs to
      * @return the competence profile's id
      */
@@ -96,5 +105,7 @@ public class CompetenceProfile implements CompetenceProfileDTO{
     public double getYearsOfExperience() {
         return this.yearsOfExperience;
     }
+
+
     
 }

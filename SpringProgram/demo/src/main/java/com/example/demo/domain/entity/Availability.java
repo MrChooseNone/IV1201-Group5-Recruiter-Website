@@ -82,4 +82,11 @@ public class Availability implements AvailabilityDTO{
     @Override
     public Date getToDate(){return this.toDate;}
 
+
+    /**
+     * This is a setter for availabilityId, IT SHOULD ONLY BE USED IN TESTING!
+     * @param newId the new availability id
+     */
+    public void setAvailabilityId(Integer newId){this.availabilityId=newId;}
+
 }

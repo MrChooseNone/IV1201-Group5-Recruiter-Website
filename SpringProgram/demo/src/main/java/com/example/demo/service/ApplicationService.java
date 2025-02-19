@@ -235,7 +235,7 @@ public class ApplicationService {
 
         if (competenceProfileIds.size()==0) {
             LOGGER.error("Failed to create application for a person (`{}`) since the competenceProfileIds is empty");
-            throw new CompetenceProfileInvalidException("No availability period was specified, please specify at least one for this application");
+            throw new CompetenceProfileInvalidException("No competence profile was specified, please specify at least one for this application");
         }
 
         for (Integer i : competenceProfileIds) {
