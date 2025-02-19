@@ -39,7 +39,13 @@ export default function SearchApplication() {
   return (
     <Box
       component="form"
-      sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
+      sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } ,
+      bgcolor: "#8E8C8C",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",}}
+      
       noValidate
       autoComplete="off"
       onSubmit={handleSearch} // Allows Enter key to trigger search
