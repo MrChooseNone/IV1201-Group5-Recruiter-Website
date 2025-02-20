@@ -1,8 +1,6 @@
 package com.example.demo.presentation.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -20,12 +18,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.demo.domain.dto.PersonDTO;
-import com.example.demo.domain.entity.Competence;
-import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restControllers.PersonController;
 import com.example.demo.service.PersonService;
-import com.example.demo.service.TranslationServiceTest;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonControllerUnitTest {

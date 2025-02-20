@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.entity.Availability;
-import com.example.demo.domain.entity.CompetenceProfile;
 import com.example.demo.domain.entity.Person;
 
 import org.springframework.transaction.annotation.Propagation;

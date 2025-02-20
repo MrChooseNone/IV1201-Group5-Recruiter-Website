@@ -3,7 +3,6 @@ package com.example.demo.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -14,11 +13,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.entity.Application;
-import com.example.demo.domain.entity.Availability;
-import com.example.demo.domain.entity.Person;
 
 /**
- * This a unit test of the Application class
+ * This a unit test of the Application repository class
  * Based on a article by Wynn Teo for Baeldung
  * Link: https://www.baeldung.com/junit-datajpatest-repository
  */

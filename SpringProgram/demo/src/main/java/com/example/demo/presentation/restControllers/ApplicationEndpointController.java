@@ -19,7 +19,6 @@ import com.example.demo.domain.dto.CompetenceProfileDTO;
 import com.example.demo.domain.requestBodies.ApplicationSubmissionRequestBody;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ApplicationService;
-import com.example.demo.service.ReviewService;
 
 @RestController
 @RequestMapping("/application")
@@ -130,7 +129,7 @@ public class ApplicationEndpointController {
      * @return If no exception is thrown, a list of availability periods for that person is returned
      */
     @GetMapping("/getAllAvailability")
-    public List<? extends AvailabilityDTO> getAllAvailability(@RequestParam String personId)
+    public List<? extends AvailabilityDTO> GetAllAvailability(@RequestParam String personId)
     {
         LOGGER.info("List of availability periods for person (`{}`) requested",personId); //TODO add authentication info here, aka who accessed this
 
@@ -180,7 +179,7 @@ public class ApplicationEndpointController {
         Date parsedFromDate=null;
         try {
             parsedFromDate=Date.valueOf(fromDate);
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             LOGGER.error("Failed to create availability for person (`{}`) from (`{}`) to (`{}`) since from date is not a date",personId,fromDate,toDate);
             throw new InvalidParameterException("Provided value ("+fromDate+") could not be parsed as a valid date, please use the yyyy-(m)m-(d)d format, with the (m) and (d) specifying that these can be 0 or ignored" );
         }
@@ -192,7 +191,7 @@ public class ApplicationEndpointController {
         Date parsedToDate=null;
         try {
             parsedToDate=Date.valueOf(toDate);
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             LOGGER.error("Failed to create availability for person (`{}`) from (`{}`) to (`{}`) since to date is not a date",personId,fromDate,toDate);
             throw new InvalidParameterException("Provided value ("+toDate+") could not be parsed as a valid date, please use the yyyy-(m)m-(d)d format, with the (m) and (d) specifying that these can be 0 or ignored" );
         }

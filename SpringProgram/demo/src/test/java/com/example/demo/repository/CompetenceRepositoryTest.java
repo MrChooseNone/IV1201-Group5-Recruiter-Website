@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.demo.domain.entity.Competence;
-import com.example.demo.domain.entity.CompetenceTranslation;
-import com.example.demo.domain.entity.Language;
 
 /**
  * This a unit test of the CompetenceRepository class

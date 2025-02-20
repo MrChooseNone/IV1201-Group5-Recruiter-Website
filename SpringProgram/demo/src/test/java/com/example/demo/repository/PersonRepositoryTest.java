@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.demo.domain.entity.Person;
-import com.example.demo.domain.entity.Role;
 
 /**
  * This a unit test of the PersonRepository class

@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,17 +23,15 @@ import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.domain.dto.CompetenceTranslationDTO;
 import com.example.demo.domain.dto.LanguageDTO;
 import com.example.demo.domain.entity.Competence;
-import com.example.demo.domain.entity.CompetenceProfile;
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
-import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restControllers.TranslationEndpointController;
 import com.example.demo.presentation.restException.InvalidParameterException;
-import com.example.demo.presentation.restException.EntryNotFoundExceptions.SpecificCompetenceNotFoundException;
 import com.example.demo.service.TranslationService;
-import com.example.demo.service.TranslationServiceTest;
-
 @ExtendWith(MockitoExtension.class)
+/**
+ * This class tests the TranslationEndpointController class
+ */
 public class TranslationEndpointControllerUnitTest {
     // This is used to define the service we want to mock
     @Mock

@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.demo.domain.entity.Availability;
-import com.example.demo.domain.entity.Competence;
-import com.example.demo.domain.entity.CompetenceProfile;
 import com.example.demo.domain.entity.Person;
 
 /**

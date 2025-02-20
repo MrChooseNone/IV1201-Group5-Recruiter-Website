@@ -21,12 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.entity.Application;
-import com.example.demo.domain.entity.Competence;
-import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restControllers.ReviewerEndpointController;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ReviewService;
-import com.example.demo.service.TranslationServiceTest;
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewerEndpointControllerUnitTest {
