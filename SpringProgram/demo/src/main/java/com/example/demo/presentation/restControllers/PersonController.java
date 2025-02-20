@@ -5,9 +5,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.domain.dto.PersonDTO;
+import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.service.PersonService;
 
 @RestController
@@ -43,6 +45,33 @@ public class PersonController {
         LOGGER.info("Creation of new user with name (`{}`) and surname (`{}`) applications requested",name,surname); //TODO add authentication info here, aka who accessed this. Also add any new fields to log entry here
         personService.AddPerson(name, surname);
         return "Person added: " + name + " " + surname;
+    }
+
+    /**
+     * This function registers a new person using the provided request body.
+     * @param requestBody The request body containing the person's information.
+     * @return A response indicating success or failure.
+     */
+    @PostMapping("/register")
+    public ResponseEntity<String> registerPerson(@RequestBody PersonRegistrationRequestBody requestBody) {
+        try {
+            LOGGER.info("Registration requested for user with Name: `{}`, Surname: `{}`, PNR: `{}`, Email: `{}`, Username `{}`", 
+                        requestBody.getName(), requestBody.getSurname(), requestBody.getPnr(), requestBody.getEmail(), requestBody.getUsername());
+
+            personService.RegisterPerson(
+                requestBody.getName(),
+                requestBody.getSurname(),
+                requestBody.getPnr(),
+                requestBody.getEmail(),
+                requestBody.getPassword(),
+                requestBody.getUsername()
+            );
+
+            return ResponseEntity.ok("User registered successfully!");
+        } catch (IllegalArgumentException e) {
+            LOGGER.warn("Registration failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     /**

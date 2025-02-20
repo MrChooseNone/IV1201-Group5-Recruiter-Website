@@ -160,7 +160,7 @@ public class Application implements ApplicationDTO{
 
     /**
      * This is a setter for application date, this is used by loader and could be used to handle applicant re-submission if that is implemented in the future
-     * @param newStatus the new applicantion date 
+     * @param applicationDate the new applicantion date 
      */
     public void setApplicationDate(Date applicationDate)
     {
