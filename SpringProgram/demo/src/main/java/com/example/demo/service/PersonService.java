@@ -64,7 +64,6 @@ public class PersonService {
      * @param username The username of the person to add
      */
     public void RegisterPerson(String name, String surname, String pnr, String email, String password, String username) {
-        // Ensure email, username, and PNR are unique
         if (personRepository.existsByPnr(pnr)) {
             LOGGER.warn("Attempt to register with duplicate PNR: {}", pnr);
             throw new IllegalArgumentException("PNR is already in use!");

@@ -6,7 +6,7 @@ package com.example.demo.domain.requestBodies;
  * {
  *   "name": "John",
  *   "surname": "Doe",
- *   "pnr": "123456789",
+ *   "pnr": "12345678-1234",
  *   "email": "john.doe@example.com",
  *   "password": "securepassword",
  *   "username": "johndoe"

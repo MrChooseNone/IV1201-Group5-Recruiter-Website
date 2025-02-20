@@ -1,6 +1,7 @@
 package com.example.demo.presentation.restControllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,5 +84,40 @@ public class PersonController {
     public List<? extends PersonDTO> findPersonByName(@RequestParam String name){
         LOGGER.info("People with the name (`{}`) requested", name); //TODO add authentication info here, aka who accessed this
         return personService.FindPeopleByName(name);
+    }
+
+    /**
+     * Finds a person by their PNR, email, or username.
+     * @param pnr The personal identity number to search for (optional).
+     * @param email The email to search for (optional).
+     * @param username The username to search for (optional).
+     * @return A response containing the found person, or an error message if not found.
+     */
+    @GetMapping("/findPerson")
+    public ResponseEntity<?> findPerson(
+            @RequestParam(required = false) String pnr,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String username) {
+
+        Optional<? extends PersonDTO> person = Optional.empty();
+
+        if (pnr != null) {
+            LOGGER.info("Searching for person with PNR `{}`", pnr);
+            person = personService.FindPersonByPnr(pnr);
+        } else if (email != null) {
+            LOGGER.info("Searching for person with email `{}`", email);
+            person = personService.FindPersonByEmail(email);
+        } else if (username != null) {
+            LOGGER.info("Searching for person with username `{}`", username);
+            person = personService.FindPersonByUsername(username);
+        } else {
+            return ResponseEntity.badRequest().body("Please provide PNR, email, or username for search.");
+        }
+
+        if (person.isPresent()) {
+            return ResponseEntity.ok(person.get());
+        } else {
+            return ResponseEntity.status(404).body("Person not found.");
+        }
     }
 }
