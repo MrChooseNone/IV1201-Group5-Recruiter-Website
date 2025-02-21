@@ -35,18 +35,6 @@ public class PersonController {
         this.personService = personService;
     }
 
-    /**
-     * This function creates a new person with the specified parameters, and then returns a string with the new person´s information
-     * @param name the first name of the new person
-     * @param surname the last name of the new person
-     * @return a string confirming the new person
-     */
-    @PostMapping("/add")
-    public String addPerson(@RequestParam String name, @RequestParam String surname, @RequestParam String password){
-        LOGGER.info("Creation of new user with name (`{}`) and surname (`{}`) applications requested",name,surname); //TODO add authentication info here, aka who accessed this. Also add any new fields to log entry here
-        personService.AddPerson(name, surname, password);
-        return "Person added: " + name + " " + surname;
-    }
 
     /**
      * This function registers a new person using the provided request body.

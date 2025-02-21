@@ -44,20 +44,6 @@ public class PersonService {
         return personRepository.findByName(name);
     }
 
-    /**
-     * This function adds a new person, with the specified fields
-     * @param name the name of the person to add
-     * @param surname the surname of the person to add
-     */
-    public void AddPerson(String name,String surname, String password)
-    {
-        Person person = new Person();
-        person.setName(name);
-        person.setSurname(surname);
-        person.setPassword(passwordEncoder.encode(password));
-        LOGGER.info("Added new person with name (`{}`) and surname (`{}`)",name,surname); //TODO add more parameters here when those are added
-        personRepository.save(person);        
-    }
 
     /**
      * This function adds a new person, with the specified fields
@@ -87,7 +73,7 @@ public class PersonService {
         person.setSurname(surname);
         person.setPnr(pnr);
         person.setEmail(email);
-        person.setPassword(password);
+        person.setPassword(passwordEncoder.encode(password));
         person.setUsername(username);
 
         LOGGER.info("Registering new person: Name: `{}`, Surname: `{}`, PNR: `{}`, Email: `{}`, Username: `{}`", name, surname, pnr, email, username);

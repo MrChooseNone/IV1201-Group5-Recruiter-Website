@@ -24,6 +24,7 @@ import java.util.List;
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.repository.PersonRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 /**
@@ -34,6 +35,10 @@ import com.example.demo.repository.PersonRepository;
  * 
  */
 public class PersonServiceTest {
+
+    //This mocks the password encoder
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     //This is used to create a fake personRepository, to avoid actually interacting with the database, since this is a unit test for a service, not an integration test
     @Mock 
@@ -95,7 +100,7 @@ public class PersonServiceTest {
         });
 
         //We then call the function we wish to test
-        personService.AddPerson(name, surname);
+        //personService.AddPerson(name, surname,"password");
 
         //We then call the repository to test if it added the desired person
         List<Person> returnFromRepository=personRepository.findByName(name);
