@@ -13,39 +13,34 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 @Configuration
 public class SecurityConfig {
     
     /**
-     * Provides a password encoder for hashing user passwords
-     * @return BCryptPasswordEncoder instance
+     * Provides a password encoder for hashing user passwords.
+     * @return BCryptPasswordEncoder instance.
      */
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     /**
-     * Configures security settings, including CORS
+     * Configures security settings to allow public access to all endpoints for testing.
+     * @param http The HttpSecurity configuration.
+     * @return SecurityFilterChain instance.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // Allow all requests
-                .build();
-    }
+        http
+            .csrf(csrf -> csrf.disable())  // ✅ New way to disable CSRF in Spring Security 6.1+
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll()  // ✅ Allows all endpoints without authentication (for testing)
+            );
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Allow React frontend
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        return http.build();
     }
 }

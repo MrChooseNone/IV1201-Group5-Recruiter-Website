@@ -44,6 +44,9 @@ public class Person implements PersonDTO{
     @ManyToOne
     private Role role;
 
+    @Column(name="username")
+    private String username;
+
     /**
      * Default constructor.
      */
@@ -99,6 +102,7 @@ public class Person implements PersonDTO{
      * Implements the PersonDTO function setSurname, and sets the person objects last name
      * @param surname the person's last name
      */
+    @Override
     public void setSurname(String surname) {
         this.surname = surname;
     }
@@ -113,12 +117,30 @@ public class Person implements PersonDTO{
     }
 
     /**
+     * Implements the PersonDTO function setPnr, and sets the person objects personal identity number
+     * @param pnr the person's personal identity number
+     */
+    @Override
+    public void setPnr(String pnr) {
+        this.pnr = pnr;
+    }
+
+    /**
      * Implements the PersonDTO function getEmail, and returns the person objects personal email
      * @return the person's email
      */
     @Override
     public String getEmail() {
         return this.email;
+    }
+
+    /**
+     * Implements the PersonDTO function setEmail, and sets the person objects email
+     * @param email the person's email
+     */
+    @Override
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**
@@ -132,11 +154,39 @@ public class Person implements PersonDTO{
     }
 
     /**
-     * Implements the PersonDTO function getRole, and returns the person objects role.
+     * Implements the PersonDTO function setPassword, and sets the person objects password
+     * @param password the person's password
+     */
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * Implements the PersonDTO function getRole, and returns the person objects role
      * @return the person's role
      */
+    @Override
     public Role getRole() {
         return this.role;
+    }
+
+    /**
+     * Implements the PersonDTO function getUsername, and returns the person objects username
+     * @return the person's username
+     */
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    /**
+     * Implements the PersonDTO function setPassword, and sets the person objects password
+     * @param password the person's password
+     */
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }
