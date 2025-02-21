@@ -17,6 +17,7 @@ export default function Appbar() {
             flexWrap: "wrap", // Prevents text overlap
             justifyContent: "space-between",
             alignItems: "center",
+            bgcolor: "#2A4D14"
           }}>
               
               <Button color='inherit' startIcon="" component={Link} to="/" 

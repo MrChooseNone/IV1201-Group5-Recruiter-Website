@@ -86,7 +86,7 @@ export default function HomePageComp() {
         >
           {/* Card 1 */}
             <Card sx={{
-                bgcolor: "#AD8762", 
+                bgcolor: "#67E0A3", 
                 width: 300, 
                 height: 200, 
                 p: 2, 
@@ -102,14 +102,14 @@ export default function HomePageComp() {
             </Card>
 
             {/* Card 2 */}
-            <Card sx={{bgcolor: "#AD8762", width: 300, height: 200, p: 2, textAlign: "center", boxShadow: 3 }}>
+            <Card sx={{bgcolor: "#67E0A3", width: 300, height: 200, p: 2, textAlign: "center", boxShadow: 3 }}>
                 <CardContent>
                 <Typography variant="h6">Step 2</Typography>
                 <Typography variant="body2">Apply for the job!</Typography>
                 <Button
                     sx={{
                     position: "relative",
-                    backgroundColor: "#D3B08D", 
+                    backgroundColor: "#AFF9C9", 
                     color: "#000",
                     fontWeight: "bold",
                     fontSize: "16px",

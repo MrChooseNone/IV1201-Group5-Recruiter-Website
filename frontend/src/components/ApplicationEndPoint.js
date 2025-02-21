@@ -69,66 +69,72 @@ export default function ApplicationEndPoint() {
 
 
     return (
-        <Container maxWidth="md" style={{ marginTop: "20px" }}>
         
+
+            <Container maxWidth="md" sx={{ 
+                marginTop: "20px",
+                bgcolor: "#AFF9C9",
+            }}>
+            
+            
+            <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
+                <Typography variant="h6">Competence Profiles</Typography>
+                <TextField label="Person ID" value={personId} onChange={(e) => setPersonId(e.target.value)} fullWidth />
+                <Button variant="contained" color="primary" onClick={getCompetenceProfiles} style={{ marginTop: "10px" }}>
+                Get Competence Profiles
+                </Button>
+                <List>
+                {competenceProfiles.map((cp, index) => (
+                    <ListItem key={index}>
+                    <ListItemText primary={`Competence ID: ${cp.competenceId}, Experience: ${cp.yearsOfExperience} years`} />
+                    </ListItem>
+                ))}
+                </List>
+            </Paper>
+
+            <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
+                <Typography variant="h6">Create Competence Profile</Typography>
+                <TextField label="Competence ID" value={competenceId} onChange={(e) => setCompetenceId(e.target.value)} fullWidth />
+                <TextField label="Years of Experience" value={yearsOfExperience} onChange={(e) => setYearsOfExperience(e.target.value)} fullWidth />
+                <Button variant="contained" color="secondary" onClick={createCompetenceProfile} style={{ marginTop: "10px" }}>
+                Create Profile
+                </Button>
+            </Paper>
+
+            <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
+                <Typography variant="h6">Availability</Typography>
+                <Button variant="contained" color="primary" onClick={getAvailability}>
+                Get Availability Periods
+                </Button>
+                <List>
+                {availability.map((a, index) => (
+                    <ListItem key={index}>
+                    <ListItemText primary={`From: ${a.fromDate}, To: ${a.toDate}`} />
+                    </ListItem>
+                ))}
+                </List>
+            </Paper>
+
+            <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
+                <Typography variant="h6">Create Availability</Typography>
+                <Typography variant="h8">From date</Typography>
+                <TextField type="date"  value={fromDate} onChange={(e) => setFromDate(e.target.value)} fullWidth />
+                <Typography variant="h8">To date</Typography>
+                <TextField type="date"  value={toDate} onChange={(e) => setToDate(e.target.value)} fullWidth />
+                <Button variant="contained" color="secondary" onClick={createAvailability} style={{ marginTop: "10px" }}>
+                Create Availability
+                </Button>
+            </Paper>
+
+            <Paper elevation={3} style={{ padding: "20px" }}>
+                
+                <Button variant="contained" color="primary" >
+                Submit Application
+                </Button>
+                
+            </Paper>
+            </Container>
         
-        <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
-            <Typography variant="h6">Competence Profiles</Typography>
-            <TextField label="Person ID" value={personId} onChange={(e) => setPersonId(e.target.value)} fullWidth />
-            <Button variant="contained" color="primary" onClick={getCompetenceProfiles} style={{ marginTop: "10px" }}>
-            Get Competence Profiles
-            </Button>
-            <List>
-            {competenceProfiles.map((cp, index) => (
-                <ListItem key={index}>
-                <ListItemText primary={`Competence ID: ${cp.competenceId}, Experience: ${cp.yearsOfExperience} years`} />
-                </ListItem>
-            ))}
-            </List>
-        </Paper>
-
-        <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
-            <Typography variant="h6">Create Competence Profile</Typography>
-            <TextField label="Competence ID" value={competenceId} onChange={(e) => setCompetenceId(e.target.value)} fullWidth />
-            <TextField label="Years of Experience" value={yearsOfExperience} onChange={(e) => setYearsOfExperience(e.target.value)} fullWidth />
-            <Button variant="contained" color="secondary" onClick={createCompetenceProfile} style={{ marginTop: "10px" }}>
-            Create Profile
-            </Button>
-        </Paper>
-
-        <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
-            <Typography variant="h6">Availability</Typography>
-            <Button variant="contained" color="primary" onClick={getAvailability}>
-            Get Availability Periods
-            </Button>
-            <List>
-            {availability.map((a, index) => (
-                <ListItem key={index}>
-                <ListItemText primary={`From: ${a.fromDate}, To: ${a.toDate}`} />
-                </ListItem>
-            ))}
-            </List>
-        </Paper>
-
-        <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
-            <Typography variant="h6">Create Availability</Typography>
-            <Typography variant="h8">From date</Typography>
-            <TextField type="date"  value={fromDate} onChange={(e) => setFromDate(e.target.value)} fullWidth />
-            <Typography variant="h8">To date</Typography>
-            <TextField type="date"  value={toDate} onChange={(e) => setToDate(e.target.value)} fullWidth />
-            <Button variant="contained" color="secondary" onClick={createAvailability} style={{ marginTop: "10px" }}>
-            Create Availability
-            </Button>
-        </Paper>
-
-        <Paper elevation={3} style={{ padding: "20px" }}>
-            
-            <Button variant="contained" color="primary" >
-            Submit Application
-            </Button>
-            
-        </Paper>
-        </Container>
     );
 };
 

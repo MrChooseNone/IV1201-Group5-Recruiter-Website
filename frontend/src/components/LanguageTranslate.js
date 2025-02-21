@@ -17,7 +17,7 @@ export default function LanguageTranslate(){
     
     const fetchLanguages = async () => {
         try {
-        const response = await fetch(`http://localhost:3000/translation/getLanguages`);
+        const response = await fetch(`http://localhost:8080/translation/getLanguages`);
         if (!response.ok) throw new Error("Failed to fetch languages");
         const data = await response.json();
         setLanguages(data);
@@ -29,7 +29,7 @@ export default function LanguageTranslate(){
     const fetchCompetenceTranslations = async () => {
         if (!language) return;
         try {
-            const url = `http://localhost:3000/translation/getCompetenceTranslation?language=${language}`;
+            const url = `http://localhost:8080/translation/getCompetenceTranslation?language=${language}`;
             fetch(url, {
                 method: "GET",
                 headers: {

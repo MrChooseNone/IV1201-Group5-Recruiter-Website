@@ -42,7 +42,9 @@ export default function ApplicationForm() {
   return (
     <Box
       component="form"
-      sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
+      sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' }, 
+      bgcolor: "#AFF9C9" 
+      }}
       noValidate
       autoComplete="off"
     >
