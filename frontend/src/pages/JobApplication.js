@@ -4,6 +4,7 @@ import Application from  "../components/Application"
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import ApplicationEndPoint from "../components/ApplicationEndPoint";
 
 
 export default function JobApplication(){
@@ -17,6 +18,7 @@ export default function JobApplication(){
 
                         
                         <Application/>  
+                        <ApplicationEndPoint/>
                     </Box>
                 </Container>
             </React.Fragment>

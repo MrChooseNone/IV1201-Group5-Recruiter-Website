@@ -11,12 +11,13 @@ import {Link} from 'react-router-dom';
 export default function Appbar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Toolbar sx={{
             display: "flex",
             flexWrap: "wrap", // Prevents text overlap
             justifyContent: "space-between",
             alignItems: "center",
+            bgcolor: "#2A4D14"
           }}>
               
               <Button color='inherit' startIcon="" component={Link} to="/" 
@@ -30,7 +31,7 @@ export default function Appbar() {
               }}>Home</Button>
               
               
-              <Button color='inherit' startIcon="" component={Link} to="/about"
+              <Button color='inherit' startIcon="" component={Link} to="/competences"
               sx={{
                 p: 2,
                 px: 4,
@@ -39,7 +40,7 @@ export default function Appbar() {
                 flexWrap: "wrap",
                 justifyContent: "space-between",
                 gap: 4,
-              }}>About</Button>
+              }}>Competences</Button>
               
               
               <Button color='inherit' startIcon="" component={Link} to="/JobApplication"
