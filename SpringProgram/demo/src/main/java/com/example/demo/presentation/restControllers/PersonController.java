@@ -42,9 +42,9 @@ public class PersonController {
      * @return a string confirming the new person
      */
     @PostMapping("/add")
-    public String addPerson(@RequestParam String name, @RequestParam String surname){
+    public String addPerson(@RequestParam String name, @RequestParam String surname, @RequestParam String password){
         LOGGER.info("Creation of new user with name (`{}`) and surname (`{}`) applications requested",name,surname); //TODO add authentication info here, aka who accessed this. Also add any new fields to log entry here
-        personService.AddPerson(name, surname);
+        personService.AddPerson(name, surname, password);
         return "Person added: " + name + " " + surname;
     }
 

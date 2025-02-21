@@ -58,7 +58,7 @@ public class PersonControllerUnitTest {
         // Note we do not mock the personService, this is since the addPerson method
         // does not return anything
         // TODO add mock if it is changed to return anything
-        String result = personController.addPerson("name", "surname");
+        String result = personController.addPerson("name", "surname","password");
         assertEquals("Person added: name surname", result);
     }
 
