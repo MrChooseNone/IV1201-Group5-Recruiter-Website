@@ -172,6 +172,14 @@ public class Person implements PersonDTO{
     }
 
     /**
+     * Setter for the role attribute
+     * @param role the new role 
+     */
+    public void setRole(Role role) {
+        this.role=role;
+    }
+
+    /**
      * Implements the PersonDTO function getUsername, and returns the person objects username
      * @return the person's username
      */

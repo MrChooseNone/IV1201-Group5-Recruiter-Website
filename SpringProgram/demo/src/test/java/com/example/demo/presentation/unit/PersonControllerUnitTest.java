@@ -1,6 +1,7 @@
 package com.example.demo.presentation.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,6 +30,7 @@ import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restControllers.PersonController;
+import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.PersonService;
 
 import jakarta.persistence.PersistenceException;
@@ -136,4 +138,44 @@ public class PersonControllerUnitTest {
 
     }
 
+    /**
+     * This tests the UpdateReviewer method
+     */
+    @Test 
+    void UpdateReviewerTest()
+    {
+        // We then define the mock implementation for the service function
+        when(personService.UpdateReviewer(anyInt(),anyString(),anyString())).thenAnswer(invocation -> {
+            Integer id = (Integer) invocation.getArguments()[0];
+            String pnr = (String) invocation.getArguments()[1];
+            String email = (String) invocation.getArguments()[2];
+            return "Updated pnr and email for a reviwer "+id+" to pnr "+pnr+" and email " + email;
+        });
+
+        //We test it throws the correct exception
+        var e = assertThrowsExactly(InvalidParameterException.class, () -> personController.UpdateReviewer("notAnInteger", "notAPersonId", "notaDouble"));
+        assertEquals("Invalid parameter : Provided value (notAnInteger) could not be parsed as a valid integer",e.getMessage());
+        
+        //And that it return the correct value if correct parameters
+        String result = personController.UpdateReviewer("0", "notAPersonId", "notaDouble");
+        assertEquals("Updated pnr and email for a reviwer 0 to pnr notAPersonId and email notaDouble", result);
+    }
+    
+    /**
+     * This tests the UpdateApplicant method
+     */
+    @Test
+    void UpdateApplicantTest()
+    {
+        // We then define the mock implementation for the service function
+        when(personService.UpdateApplicant(anyString(),anyString(),anyString())).thenAnswer(invocation -> {
+            
+            String pnr = (String) invocation.getArguments()[0];
+            String username = (String) invocation.getArguments()[1];
+            String password = (String) invocation.getArguments()[2];
+            return "Updated username and password for a Applicant "+pnr+" to username "+username+" and password " + password;
+        });
+        String result=personController.UpdateApplicant("pnr", "username", "password");
+        assertEquals("Updated username and password for a Applicant pnr to username username and password password", result);
+    }
 }

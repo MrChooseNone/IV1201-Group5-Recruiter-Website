@@ -29,7 +29,10 @@ import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Application;
 import com.example.demo.domain.entity.Person;
+import com.example.demo.domain.entity.Role;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
 import com.example.demo.repository.PersonRepository;
 
 import org.springframework.boot.test.context.SpringBootTest;
@@ -428,5 +431,111 @@ public class PersonServiceTest {
 
         Mockito.verify(this.personRepository, Mockito.times(1)).save(Mockito.any(Person.class));
         Mockito.verify(this.personRepository, Mockito.times(2)).findByPnr(anyString());
+    }
+
+    @Test
+    /**
+     * This tests the UpdateReviewer method
+     */
+    void UpdateReviewerTest()
+    {
+
+        //We first create an example person, with test parameters
+        String name="test";
+        String surname="testsson";
+        Person person=new Person();
+        person.setName(name);
+        person.setSurname(surname);
+        person.setId(0);
+        Role role =new Role();
+        role.setName("notRecruiter");
+        person.setRole(role);
+
+        //We then mock the repository function
+
+        when(personRepository.findById(anyInt())).thenAnswer(invocation -> {
+            Integer idArgument=(Integer)invocation.getArguments()[0];
+            Optional<PersonDTO> pContainer;
+            for (PersonDTO a : savedPeople) {
+                if (a.getId()==idArgument) {
+                    pContainer=Optional.of(a);
+                    return pContainer;
+                }
+            }
+            pContainer=Optional.empty();
+            return pContainer;
+        });
+
+        //We then test that it throws the correct exceptions
+
+        var e=assertThrowsExactly(PersonNotFoundException.class, ()->personService.UpdateReviewer(0,"test","test"));
+        assertEquals("Could not find a person with the following id : 0", e.getMessage());
+
+        savedPeople.add(person);
+
+        var e2=assertThrowsExactly(InvalidPersonException.class, ()->personService.UpdateReviewer(0,"test","test"));
+        assertEquals("Specified person invalid due to : You are not a recruiter, so this endpoint is not for you!", e2.getMessage());
+
+        //And then that it works correctly in a "real" situation
+        role.setName("recruiter");
+        person.setRole(role);
+
+        String returnFromService=personService.UpdateReviewer(0,"test","test");
+        assertEquals("Updated pnr and email for a reviwer "+person.getName()+" to pnr test and email test" ,returnFromService);
+
+    }
+
+    @Test
+    /**
+     * This tests the UpdateApplicant method
+     */
+    void UpdateApplicantTest()
+    {
+
+        //We first create an example person, with test parameters
+        String name="test";
+        String surname="testsson";
+        String pnr="pnr";
+        Person person=new Person();
+        person.setName(name);
+        person.setSurname(surname);
+        person.setPnr(pnr);
+        Role role =new Role();
+        role.setName("notApplicant");
+        person.setRole(role);
+
+        //We then mock the repository function
+        when(personRepository.findByPnr(anyString())).thenAnswer(invocation -> {
+            String pnrArgument=(String)invocation.getArguments()[0];
+            Optional<PersonDTO> pContainer;
+            for (PersonDTO a : savedPeople) {
+                if (a.getPnr()==pnrArgument) {
+                    pContainer=Optional.of(a);
+                    return pContainer;
+                }
+            }
+            pContainer=Optional.empty();
+            return pContainer;
+        });
+
+
+        //We then test it throws the correct exceptions
+
+        var e=assertThrowsExactly(InvalidPersonException.class, ()->personService.UpdateApplicant("fakePNR","test","test"));
+        assertEquals("Specified person invalid due to : No person with that pnr exists!", e.getMessage());
+
+        savedPeople.add(person);
+
+        e=assertThrowsExactly(InvalidPersonException.class, ()->personService.UpdateApplicant(pnr,"test","test"));
+        assertEquals("Specified person invalid due to : You are not a applicant, so this endpoint is not for you!", e.getMessage());
+
+        //And then that it works correctly in a "real" situation
+        role.setName("applicant");
+        person.setRole(role);
+
+        //We then call the function we wish to test
+        String returnFromService=personService.UpdateApplicant(pnr,"test","test");
+        assertEquals("Updated username and password for a Applicant "+person.getName()+" to username test (password excludes :) )",returnFromService);
+
     }
 }

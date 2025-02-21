@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.InvalidParameterException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.SpecificCompetenceNotFoundException;
 
@@ -61,6 +62,17 @@ public class GeneralRestAdvice {
   @ExceptionHandler(AlreadyExistsException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
   String PersonNotFoundHandler(AlreadyExistsException ex) {
+    return ex.getMessage();
+  }
+
+        /**
+   * This function is responsible for handeling the InvalidPersonException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 404 error message with the InvalidPersonException error message as the text
+   */
+  @ExceptionHandler(InvalidPersonException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  String InvalidPersonExceptionHandler(InvalidPersonException ex) {
     return ex.getMessage();
   }
 }

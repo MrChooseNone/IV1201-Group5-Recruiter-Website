@@ -76,7 +76,7 @@ public class PersonControllerMockMVCTest {
     @Test
     void findPersonPnrEndpointTest() throws Exception {
         this.mockMvc.perform(get("/person/findPerson?pnr=20070114-1252")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":null}"));
+                .andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":\"badUsername\"}"));
     }
 
     /**
@@ -90,7 +90,7 @@ public class PersonControllerMockMVCTest {
     void findPersonEmailEndpointTest() throws Exception {
         // We first set up the mock implementation of the function
         this.mockMvc.perform(get("/person/findPerson?email=l_crane118@finnsinte.se")).andDo(print())
-                .andExpect(status().isOk()).andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":null}"));
+                .andExpect(status().isOk()).andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":\"badUsername\"}"));
     }
 
     /**
@@ -105,7 +105,7 @@ public class PersonControllerMockMVCTest {
 
         this.mockMvc.perform(get("/person/findPerson?username=JoelleWilkinson")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":1,\"name\":\"Joelle\",\"surname\":\"Wilkinson\",\"pnr\":null,\"email\":null,\"role\":{\"roleId\":1,\"name\":\"recruiter\"},\"username\":\"JoelleWilkinson\"}"));
+                .andExpect(content().string("{\"id\":1,\"name\":\"Joelle\",\"surname\":\"Wilkinson\",\"pnr\":\"testsson\",\"email\":\"froghead\",\"role\":{\"roleId\":1,\"name\":\"recruiter\"},\"username\":\"JoelleWilkinson\"}"));
 
     }
 

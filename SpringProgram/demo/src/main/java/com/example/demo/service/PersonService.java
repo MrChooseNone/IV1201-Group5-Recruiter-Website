@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
+import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
 import com.example.demo.repository.PersonRepository;
 
 @Service
@@ -105,5 +107,77 @@ public class PersonService {
      */
     public Optional<? extends PersonDTO> FindPersonByPnr(String pnr) {
         return personRepository.findByPnr(pnr);
+    }
+
+    /**
+     * This method is used to update pnr and email for a reviewer
+     * @param personId The person id for the reviwer to update
+     * @param pnr The new pnr
+     * @param email The new email
+     * @throws PersonNotFoundException if the personId does not match a existing person
+     * @throws InvalidPersonException if the person is not a reviewer
+     * @return If successfull, a string describing this
+     */
+    public String UpdateReviewer(Integer personId, String pnr, String email)
+    {
+
+        Optional<Person> personContainer = personRepository.findById(personId);
+        
+        if (personContainer.isEmpty()) {
+            LOGGER.error("Failed to update pnr and email for a reviwer (`{}`) to pnr (`{}`) and email (`{}`) since no person exists in the database with that id",personId,pnr,email);
+            throw new PersonNotFoundException(personId);
+        }
+
+        Person person=personContainer.get();
+
+        //We confirm the user is a recruiter, if not this endpoint should not be used
+        if (!person.getRole().getName().equals("recruiter")) {
+            LOGGER.error("Failed to update pnr and email for a reviwer (`{}`) to pnr (`{}`) and email (`{}`) since person is not a recruiter, they are a (`{}`)",personId,pnr,email,person.getRole().getName());
+            throw new InvalidPersonException("You are not a recruiter, so this endpoint is not for you!");
+        }
+
+        person.setPnr(pnr);
+        person.setEmail(email);
+        personRepository.save(person);
+
+        LOGGER.info("Updated pnr and email for a reviwer (`{}`) to pnr (`{}`) and email (`{}`)", personId,pnr,email);
+
+
+        return "Updated pnr and email for a reviwer "+person.getName()+" to pnr "+pnr+" and email " + email;
+    }
+
+    /**
+     * This method is used to update username and password for a applicant
+     * @param pnr The pnr for the applicant to update
+     * @param pnr 
+     * @param email
+     * @throws InvalidPersonException if the pnr does not match a existing person or that person is not an applicant
+     * @return If no exception is thrown, a string describing the success
+     */
+    public String UpdateApplicant(String pnr, String username, String password)
+    {
+
+        Optional<Person> personContainer = personRepository.findByPnr(pnr);
+        
+        if (personContainer.isEmpty()) {
+            LOGGER.error("Failed to update username and password for a Applicant (`{}`) to username (`{}`) since no person exists in the database with that id",pnr,username);
+            throw new InvalidPersonException("No person with that pnr exists!");
+        }
+
+        Person person=personContainer.get();
+
+        //We confirm the user is a recruiter, if not this endpoint should not be used
+        if (!person.getRole().getName().equals("applicant")) {
+            LOGGER.error("Failed to update username and password for a Applicant (`{}`) to username (`{}`) since person is not a applicant, they are a (`{}`)",pnr,username,person.getRole().getName());
+            throw new InvalidPersonException("You are not a applicant, so this endpoint is not for you!");
+        }
+
+        person.setUsername(username);
+        person.setPassword(passwordEncoder.encode(password)); 
+        personRepository.save(person);
+
+        LOGGER.info("Updated username and password for a Applicant (`{}`) to username",pnr,username);
+
+        return "Updated username and password for a Applicant "+person.getName()+" to username "+person.getUsername()+" (password excludes :) )";
     }
 }
