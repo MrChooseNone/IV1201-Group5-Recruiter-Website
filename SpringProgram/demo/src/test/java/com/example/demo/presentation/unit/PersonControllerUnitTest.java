@@ -1,11 +1,16 @@
 package com.example.demo.presentation.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,11 +21,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
+import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restControllers.PersonController;
 import com.example.demo.service.PersonService;
+
+import jakarta.persistence.PersistenceException;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonControllerUnitTest {
@@ -51,15 +62,29 @@ public class PersonControllerUnitTest {
 
     @Test
     /**
-     * This is a test for the addPerson method
-     * TODO update this when the controller is updated
+     * This is a test for the registerPerson method
      */
-    void addPersonTest() {
-        // Note we do not mock the personService, this is since the addPerson method
-        // does not return anything
-        // TODO add mock if it is changed to return anything
-        //String result = personController.addPerson("name", "surname","password");
-        //assertEquals("Person added: name surname", result);
+    void registerPersonTest() {
+        // Note we do not mock the personService, this is since the registerPerson method does not return anything
+        PersonRegistrationRequestBody requestBody = new PersonRegistrationRequestBody("name","surname","pnr","email","password","username");
+        ResponseEntity<String> result = personController.registerPerson(requestBody);
+        assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+        assertEquals("User registered successfully!", result.getBody());
+    }
+
+    @Test
+    /**
+     * This is a test that the registerPerson method fail correctly if the service throws a IllegalArgumentException exception
+     */
+    void registerPersonIllegalArgumentExceptionTest() {
+        // Note we do not mock the personService, this is since the registerPerson method does not return anything
+
+        Mockito.doThrow(new IllegalArgumentException("Exception caught correctly!")).when(personService).RegisterPerson(anyString(),anyString(),anyString(),anyString(),anyString(),anyString());
+
+        PersonRegistrationRequestBody requestBody = new PersonRegistrationRequestBody("name","surname","pnr","email","password","username");
+        ResponseEntity<String> result = personController.registerPerson(requestBody);
+        assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+        assertEquals("Exception caught correctly!", result.getBody());
     }
 
     @Test
@@ -110,4 +135,5 @@ public class PersonControllerUnitTest {
         Mockito.verify(this.personService, Mockito.times(3)).FindPeopleByName(anyString());
 
     }
+
 }

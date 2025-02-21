@@ -107,7 +107,7 @@ public class TranslationService {
         List<CompetenceTranslation> translations=null;
         try {
            translations=competenceTranslationRepository.findByLanguage_id(langague.getLanguageId());
-           if (translations==null||translations.size()==0) {
+           if (translations.size()==0) {
             LOGGER.error("Failed to retrive a list of translations since none exist for language (`{}`)", languageName);
             throw new TranslationsNotFoundException(languageName);
             }
