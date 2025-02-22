@@ -28,6 +28,7 @@ export default function LanguageTranslate(){
 
     const fetchCompetenceTranslations = async () => {
         if (!language) return;
+        console.log("language is set");
         try {
             const url = `http://localhost:8080/translation/getCompetenceTranslation?language=${language}`;
             fetch(url, {
@@ -37,7 +38,7 @@ export default function LanguageTranslate(){
                     "Content-Type": "application/x-www-form-urlencoded", 
                 },
             })
-            .then((response) => response.text()) // Parse response as text
+            .then((response) => response.json()) // Parse response as text
             .then((data) => {
                 console.log(data); // Write data
                 setTranslations(data);
@@ -55,7 +56,7 @@ export default function LanguageTranslate(){
         <>
             <Typography variant="h6" style={{ marginTop: "20px" }}>Get Competence Translations</Typography>
             <TextField
-                label="Language Code (e.g., 'en', 'fr')"
+                label="Language name"
                 variant="outlined"
                 fullWidth
                 margin="dense"
@@ -67,8 +68,8 @@ export default function LanguageTranslate(){
             </Button>
             <List>
                 {translations.map((t) => (
-                <ListItem key={t.id}>
-                    <ListItemText primary={t.translation} secondary={`Competence ID: ${t.competenceId}`} />
+                <ListItem key={t.competenceTranslationId}>
+                    <ListItemText primary={t.translation} secondary={`Competence in english: ${t.competence.name}`} />
                 </ListItem>
                 ))}
             </List>
@@ -80,9 +81,9 @@ export default function LanguageTranslate(){
                 Fetch Languages
             </Button>
             <List>
-                {languages.map((lang) => (
-                <ListItem key={lang.code}>
-                    <ListItemText primary={lang.name} secondary={`Code: ${lang.code}`} />
+                {languages.map((l) => (
+                <ListItem key={l.languageId}>
+                    <ListItemText primary={l.languageId} secondary={`Language: ${l.languageName}`} />
                 </ListItem>
                 ))}
             </List>

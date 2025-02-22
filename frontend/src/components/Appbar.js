@@ -43,6 +43,17 @@ export default function Appbar() {
               }}>Competences</Button>
               
               
+              <Button color='inherit' startIcon="" component={Link} to="/addApplicant"
+              sx={{
+                p: 2,
+                px: 4,
+                display: "flex", 
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                gap: 4,
+              }}
+              >Register</Button>
+
               <Button color='inherit' startIcon="" component={Link} to="/JobApplication"
               sx={{
                 p: 2,
@@ -52,7 +63,9 @@ export default function Appbar() {
                 justifyContent: "space-between",
                 gap: 4,
               }}
-              >JobApplication</Button>
+              >Edit Profile</Button>
+
+              
               
           <Button color="inherit" 
           sx={{
