@@ -28,15 +28,28 @@ export default function ApplicationEndPoint() {
     const [toDate, setToDate] = useState("");
     const [applicationResult, setApplicationResult] = useState(null);
     const [competences, setCompetences] = useState([]);
+    //-----------submit application variables----------
+    const [competenceProfileIds, setCompetenceProfileIds] = useState([]);
+    const [availabilityIds, setAvailabilityIds] = useState([]);
     //--------------------Competences-------------
     // Fetch competence profiles
     const getCompetenceProfiles = async () => {
-        const response = await fetch(`${API_URL}/getAllCompetenceProfiles?personId=${personId}`);
-        if (response.ok) {
-        setCompetenceProfiles(await response.json());
-        } else {
-        alert("Failed to fetch competence profiles");
-        }
+        const url = `${API_URL}/getAllCompetenceProfiles?personId=${personId}`;
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((response) => response.json()) // Parsar svaret som JSON
+        .then((data) => {
+            console.log("Received profile: ", data);
+            setCompetenceProfiles(data); // Uppdaterar state med kompetenslistan
+        })
+        .catch((error) => {
+            console.error("Error fetching competences:", error);
+        });
     };
     //function to fetch competences
     const fetchCompetences = () => {
@@ -80,6 +93,10 @@ export default function ApplicationEndPoint() {
         method: "POST",
         });
         if (response.ok) {
+        const data = await response.json();
+        console.log("Creating profile with:", { competenceId, personId, yearsOfExperience });
+        setCompetenceProfileIds((prev) => [...prev, data.competenceProfileId]); //append new id instead of overwriting
+
         alert("Competence profile created successfully!");
         } else {
         alert("Failed to create competence profile");
@@ -108,6 +125,10 @@ export default function ApplicationEndPoint() {
         method: "POST",
         });
         if (response.ok) {
+        const data = await response.json();
+        console.log("Creating availability with:", data);
+        setAvailabilityIds((prev) => [...prev, data.availabilityId]);
+
         alert("Availability period created successfully!");
         } else {
         alert("Failed to create availability");
@@ -125,6 +146,7 @@ export default function ApplicationEndPoint() {
         if (!response.ok) throw new Error("Failed to fetch languages");
         const data = await response.json();
         setLanguages(data);
+        setLanguage("english")
         } catch (error) {
         console.error(error);
         }
@@ -163,7 +185,40 @@ export default function ApplicationEndPoint() {
 
     useEffect(() => {
         fetchCompetenceTranslations();
-    }, [languages])
+    }, [language])
+
+    //-------------submit application---------------------
+    const submitApplication = async () => {
+        if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
+            console.error("Missing required fields.");
+            return;
+        }
+    
+        const requestBody = {
+            personId: personId,
+            availabilityIds: availabilityIds, // Assuming this is an array of selected availability IDs
+            competenceProfileIds: competenceProfileIds // Assuming this is an array of created competence profile IDs
+        };
+    
+        try {
+            const response = await fetch(`${API_URL}/submitApplication`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+    
+            if (!response.ok) throw new Error("Failed to submit application");
+    
+            const data = await response.json();
+            console.log("Application submitted successfully:", data);
+            alert("Application submitted successfully!");
+        } catch (error) {
+            console.error("Error submitting application:", error);
+        }
+    };
+    
 
 
     return (
@@ -172,14 +227,14 @@ export default function ApplicationEndPoint() {
                 bgcolor: "#AFF9C9",
             }}>
 
-                {/* Language Selector */}
+            {/* Language Selector */}
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Select Language</Typography>
                 <FormControl fullWidth margin="dense">
                     <Select value={language} onChange={(e) => setLanguage(e.target.value)} displayEmpty>
                         <MenuItem value="" disabled>Select Language</MenuItem>
-                        {languages.map((lang, index) => (
-                            <MenuItem key={index} value={lang}>{lang}</MenuItem>
+                        {languages.map((lang) => (
+                            <MenuItem key={lang.languageId} value={lang.languageName}>{lang.languageName}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -190,29 +245,34 @@ export default function ApplicationEndPoint() {
                 <Typography variant="h6">Competence Profiles</Typography>
                 <TextField label="Person ID" value={personId} onChange={(e) => setPersonId(e.target.value)} fullWidth />
                 <Button variant="contained" color="primary" onClick={getCompetenceProfiles} style={{ marginTop: "10px" }}>
-                Get Competence Profiles
+                    Get Competence Profiles
                 </Button>
                 <List>
-                {competenceProfiles.map((cp, index) => (
-                    <ListItem key={index}>
-                    <ListItemText  primary={`Competence: ${translations.find(t => t.competenceId === cp.competenceDTO.id)?.name || cp.competenceDTO.name}, Experience: ${cp.yearsOfExperience} years`} />
-                    </ListItem>
-                ))}
+                    {competenceProfiles.map((cp, index) => {
+
+                        
+
+                        return (
+                            <ListItem key={index}>
+                                <ListItemText
+                                    primary={`Competence: ${translations[cp.competenceDTO.competenceId -1] ? translations[cp.competenceDTO.competenceId -1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
+                                />
+                            </ListItem>
+                        );
+                    })}
                 </List>
             </Paper>
 
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Create Competence Profile</Typography>
                 <FormControl fullWidth margin="dense">
-                    
                     {personId !== "" ? (
-                        
                         competences.length > 0 ? (
                             
                             <Select value={competenceId} onChange={(e) => setCompetenceId(e.target.value)}>
                                 {competences.map((comp) => (
                                     <MenuItem key={comp.competenceId} value={comp.competenceId}>
-                                        {comp.name}
+                                         {translations.find(t => t.competence.competenceId === comp.competenceId)?.translation || "Unknown"}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -273,7 +333,7 @@ export default function ApplicationEndPoint() {
 
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 
-                <Button variant="contained" color="primary" >
+                <Button variant="contained" color="primary" onClick={submitApplication}>
                 Submit Application
                 </Button>
                 
