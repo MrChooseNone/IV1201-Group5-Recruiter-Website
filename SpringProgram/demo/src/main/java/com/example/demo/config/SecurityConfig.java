@@ -36,9 +36,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())  // ✅ New way to disable CSRF in Spring Security 6.1+
+            .csrf(csrf -> csrf.disable())  // New way to disable CSRF in Spring Security 6.1+
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()  // ✅ Allows all endpoints without authentication (for testing)
+                .anyRequest().permitAll()  // Allows all endpoints without authentication (for testing)
             );
 
         return http.build();

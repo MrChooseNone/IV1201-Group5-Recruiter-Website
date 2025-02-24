@@ -10,14 +10,14 @@ import {Link} from 'react-router-dom';
 
 export default function Appbar() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
       <AppBar position="sticky">
         <Toolbar sx={{
             display: "flex",
             flexWrap: "wrap", // Prevents text overlap
             justifyContent: "space-between",
             alignItems: "center",
-            bgcolor: "#2A4D14"
+            bgcolor: "#006649",
+            
           }}>
               
               <Button color='inherit' startIcon="" component={Link} to="/" 
@@ -80,6 +80,6 @@ export default function Appbar() {
           >Login</Button>
         </Toolbar>
       </AppBar>
-    </Box>
+    
   );
 }

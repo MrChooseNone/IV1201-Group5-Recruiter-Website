@@ -11,17 +11,11 @@ export default function JobApplication(){
     return (
         <>
         <Appbar/>
-            <React.Fragment>
-                <CssBaseline />
-                <Container maxWidth="sm">
-                    <Box sx={{ bgcolor: '#AFF9C9', height: '100%', p: 2 }} >
-
-                        
-                         
-                        <ApplicationEndPoint/>
-                    </Box>
-                </Container>
-            </React.Fragment>
+            <Container maxWidth="sm">
+                <Box sx={{ height: '100%', p: 2 }} >                     
+                    <ApplicationEndPoint/>
+                </Box>
+            </Container>
         </>
        
     )

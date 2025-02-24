@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {Link} from 'react-router-dom';
+import { Typography, Stack, Container } from '@mui/material';
 
 // Used "Material UI" as reference https://mui.com/material-ui/react-text-field/
 
@@ -82,88 +83,50 @@ export default function ApplicationForm() {
   };
   
   return (
-    <Box
+      <Box
       component="form"
-      sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' }, 
-          bgcolor: "#AFF9C9",
-          display: "flex",
-          flexDirection: {xs: "column", md: "row"},
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 3
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <div>
-        <TextField
-          required
-          id="standard-required"
-          label="First name"
-          
-          variant="outlined"
-          value={name}
-          onChange={(e) => setName(e.target.value)} // Save inputed data on change
-        />
-        <TextField
-          required
-          id="standard-required"
-          label="Surname"
-          
-          variant="outlined"
-          value={surname}
-          onChange={(e) => setSurname(e.target.value)} // Save inputed data on change
-        />
-        <TextField
-          required
-          id="standard-required"
-          label="Person number"
-          
-          variant="outlined"
-          value={personNumber}
-          onChange={(e) => setPersonNumber(e.target.value)} // Save inputed data on change
-        />
-        <TextField
-          required
-          id="standard-required"
-          label="E-mail"
-          type='email'
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)} // Save inputed data on change
-        />
-        <TextField
-          required
-          id="standard-required"
-          label="Username"
-          
-          variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)} // Save inputed data on change
-        />
-        <TextField
-          required
-          id="standard-required"
-          label="Password"
-          type='password'
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)} // Save inputed data on change
-        />
-        <Box sx={{
-          bgcolor: "#AFF9C9",
-          display: "flex",
-          flexDirection: {xs: "column", md: "row"},
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 3
-        }}>
-
-          <Button variant="outlined" onClick={handleSubmit}>Submit</Button>
-          <Button variant="outlined" component={Link} to="/JobApplication" >Next</Button>
+      sx={{
+        bgcolor: "#AFF9C9",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        p: 4,
+          borderRadius: 2,
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        {/* Title Section */}
+        <Box sx={{ textAlign: "center", mb: 3 }}>
+          <Typography variant="h5" fontWeight="bold">
+            Create Your Account & Join the Fun!
+          </Typography>
+          <Typography variant="h6">
+            Sign up to start your application.
+          </Typography>
         </Box>
-      
-      </div>
-    </Box>
+
+        {/* Input Fields */}
+        <Stack spacing={2} sx={{ width: "100%"}}>
+          <TextField required label="First Name" variant="outlined" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
+          <TextField required label="Surname" variant="outlined" value={surname} onChange={(e) => setSurname(e.target.value)} fullWidth />
+          <TextField required label="Person Number" placeholder='YYYYMMDD XXXX' variant="outlined" value={personNumber} onChange={(e) => setPersonNumber(e.target.value)} fullWidth />
+          <TextField required label="E-mail" type="email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
+          <TextField required label="Username" variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)} fullWidth />
+          <TextField required label="Password" type="password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} fullWidth />
+        </Stack>
+
+        {/* Buttons Section */}
+        <Stack direction={{ xs: "column", md: "row" }} spacing={2} mt={3}>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
+            Submit
+          </Button>
+          <Button variant="contained" color="secondary" component={Link} to="/JobApplication">
+            Next →
+          </Button>
+        </Stack>
+      </Box>
+
   );
 }

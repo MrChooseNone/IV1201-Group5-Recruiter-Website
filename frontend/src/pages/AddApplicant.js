@@ -11,17 +11,11 @@ export default function AddApplicant(){
     return (
         <>
         <Appbar/>
-            <React.Fragment>
-                <CssBaseline />
-                <Container maxWidth="sm">
-                    <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }} >
-
-                        
-                        <Application/>  
-                    </Box>
-                </Container>
-            </React.Fragment>
+            <Container maxWidth="sm">
+                <Box sx={{  height: '100vh' }} >   
+                    <Application/>  
+                </Box>
+            </Container>
         </>
-       
     )
 }

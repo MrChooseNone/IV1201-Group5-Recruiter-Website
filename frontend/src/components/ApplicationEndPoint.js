@@ -223,7 +223,9 @@ export default function ApplicationEndPoint() {
 
     return (
             <Container maxWidth="md" sx={{ 
-                marginTop: "20px",
+                marginTop: "10px",
+                p: 4,
+                borderRadius: 4,
                 bgcolor: "#AFF9C9",
             }}>
 

@@ -3,12 +3,13 @@ import React from "react";
 import Button from '@mui/material/Button';
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import {Link} from 'react-router-dom';
+import LoginIcon from '@mui/icons-material/Login';
 
 export default function HomePageComp() {
     return (
       <Box
         sx={{
-          bgcolor: "#8E8C8C",
+          bgcolor: "#18624B",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -46,7 +47,7 @@ export default function HomePageComp() {
         {/* Top Layer */}
         <Box
           sx={{
-            bgcolor: "#8E8C8C",
+            bgcolor: "#18624B",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -69,7 +70,7 @@ export default function HomePageComp() {
         {/* Over Top Layer */}
         <Box
           sx={{
-            bgcolor: "#8E8C8C",
+            bgcolor: "#18624B",
             display: "flex", 
             justifyContent: "center", 
             alignItems: "center",
@@ -98,6 +99,7 @@ export default function HomePageComp() {
                 <CardContent>
                 <Typography variant="h4">Step 1</Typography>
                 <Typography variant="h6">Sign up!</Typography>
+                <LoginIcon fontSize="large"></LoginIcon>
                 </CardContent>
             </Card>
 
