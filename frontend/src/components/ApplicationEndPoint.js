@@ -16,7 +16,7 @@ import {
   CircularProgress
 } from "@mui/material";
 
-const API_URL = "http://localhost:8080/application"; // Adjust for your backend
+const API_URL = "http://localhost:8080/application"; // Adjust for backend
 
 export default function ApplicationEndPoint() {
     const [personId, setPersonId] = useState("");

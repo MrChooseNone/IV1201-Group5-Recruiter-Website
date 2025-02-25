@@ -7,6 +7,8 @@ import JobApplication from "./pages/JobApplication";
 import NoPage from "./pages/NoPage";
 import CompetencesPage from './pages/CompetencesPage';
 import AddApplicant from './pages/AddApplicant';
+import ReviewerDashboard from './pages/ReviewerDashboard';
+import ApplicationEndPoint from './components/ApplicationEndPoint';
 
 function App() {
   return (
@@ -18,6 +20,10 @@ function App() {
       <Route path='/Competences' element={<CompetencesPage/>}/>
       <Route path='/JobApplication' element={<JobApplication/>}/>
       <Route path='/addApplicant' element={<AddApplicant/>}/>
+      {/* add security*/ }
+      <Route path='/review' element={<ReviewerDashboard/>}/>
+      <Route path='/applicant/:id' element={<ApplicationEndPoint/>}/>
+
       <Route path='*' element={<NoPage/>}/> {/*Catch wrong URL end points to a error page */}
     </Routes>
     

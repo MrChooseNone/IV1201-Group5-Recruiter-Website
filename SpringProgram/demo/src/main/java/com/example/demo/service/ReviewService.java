@@ -51,6 +51,15 @@ public class ReviewService {
     }
 
     /**
+     * Returns a application by id
+     * @return a application by id
+     */
+    public ApplicationDTO GetApplicationsById(Integer id)
+    {
+        return applicationRepository.findByApplicationId(id);
+    }
+
+    /**
      * Returns a list of all applications matching the specified application status
      * @param status the application status to find a match for
      * @return a list of applications matching the status
