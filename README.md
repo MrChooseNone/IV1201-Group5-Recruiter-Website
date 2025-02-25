@@ -33,3 +33,10 @@ In visual studio code this can be done automatically, by creating a launch.json 
         }
     ]
 }
+
+## Project Structure
+
+## Setup instructions
+
+## Future development plans and suggestions
+
