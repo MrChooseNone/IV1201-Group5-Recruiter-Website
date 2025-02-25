@@ -3,12 +3,13 @@ import React from "react";
 import Button from '@mui/material/Button';
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import {Link} from 'react-router-dom';
+import LoginIcon from '@mui/icons-material/Login';
 
 export default function HomePageComp() {
     return (
       <Box
         sx={{
-          bgcolor: "#8E8C8C",
+          bgcolor: "#18624B",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -46,7 +47,7 @@ export default function HomePageComp() {
         {/* Top Layer */}
         <Box
           sx={{
-            bgcolor: "#8E8C8C",
+            bgcolor: "#18624B",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -69,7 +70,7 @@ export default function HomePageComp() {
         {/* Over Top Layer */}
         <Box
           sx={{
-            bgcolor: "#8E8C8C",
+            bgcolor: "#18624B",
             display: "flex", 
             justifyContent: "center", 
             alignItems: "center",
@@ -96,16 +97,26 @@ export default function HomePageComp() {
                 
                 }}>
                 <CardContent>
-                <Typography variant="h6">Step 1</Typography>
-                <Typography variant="body2">Sign up!</Typography>
+                <Typography variant="h4">Step 1</Typography>
+                <Typography variant="h6">Sign up!</Typography>
+                <LoginIcon fontSize="large"></LoginIcon>
+                </CardContent>
+            </Card>
+
+            {/* Card 3 */}
+            <Card sx={{bgcolor: "#67E0A3", width: 300, height: 200, p: 2, textAlign: "center", boxShadow: 3 }}>
+                <CardContent>
+                <Typography variant="h4">Step 2</Typography>
+                <Typography variant="h6">Register as a applicant!</Typography>
+                
                 </CardContent>
             </Card>
 
             {/* Card 2 */}
             <Card sx={{bgcolor: "#67E0A3", width: 300, height: 200, p: 2, textAlign: "center", boxShadow: 3 }}>
                 <CardContent>
-                <Typography variant="h6">Step 2</Typography>
-                <Typography variant="body2">Apply for the job!</Typography>
+                <Typography variant="h4">Step 3</Typography>
+                <Typography variant="h6">Apply for the job!</Typography>
                 <Button
                     sx={{
                     position: "relative",
@@ -119,9 +130,9 @@ export default function HomePageComp() {
                     boxShadow: "none",
                     cursor: "pointer",
                     overflow: "hidden",
-                    marginTop: 11,
+                    m: 2,
                     "&:hover": {
-                        backgroundColor: "#B89B6D", 
+                        backgroundColor: "#7CF0BD", 
                     },
                     "&:before": {
                         content: '""',
@@ -137,8 +148,8 @@ export default function HomePageComp() {
                     },
                     }}
                     >
-                    <Typography variant="button" component={Link} to="/JobApplication" sx={{ color: "#000" }}>
-                    Apply!
+                    <Typography variant="button" component={Link} to="/addApplicant" sx={{ color: "#000" }}>
+                    Register Now!
                     </Typography>
                 </Button>
                 </CardContent>
