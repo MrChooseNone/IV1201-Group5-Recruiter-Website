@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -20,12 +21,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.TransientDataAccessException;
 
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.entity.Application;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.ApplicationNotUpdatedException;
+import com.example.demo.presentation.restException.CustomDatabaseException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
 import com.example.demo.repository.ApplicationRepository;
 
@@ -100,6 +103,12 @@ public class ReviewServiceTest {
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals(application, results.get(0));
+
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(applicationRepository).findAll();
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> reviewService.GetApplications());
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 
     @Test
@@ -157,6 +166,12 @@ public class ReviewServiceTest {
         //We then test the results are as expected, aka only 0 applications
         assertNotNull(results);
         assertEquals(0, results.size());
+
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(applicationRepository).findAllByApplicationStatus(any(ApplicationStatus.class));
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> reviewService.GetApplicationsByStatus(ApplicationStatus.unchecked));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 
     @Test
@@ -219,6 +234,12 @@ public class ReviewServiceTest {
         assertEquals(applicant, result.getApplicant());
         assertEquals(application.getApplicationId(), result.getApplicationId());
         assertEquals(ApplicationStatus.accepted, result.getApplicationStatus());
+
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(applicationRepository).findById(anyInt());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> reviewService.SetApplicationStatus(application.getApplicationId(),ApplicationStatus.accepted,0));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
 
     }
 }

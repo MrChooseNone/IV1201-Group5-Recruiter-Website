@@ -97,11 +97,11 @@ Before any of the project's systems are run, there are a few steps which should 
    - JDBC_DATABASE_URL= This should be a url to the newly created database to use, for example jdbc:postgresql://localhost:5432/testdatabase
    - JDBC_DATABASE_USERNAME= This should be the username to use in the database, for example postgres
    - JDBC_DATABASE_PASSWORD= This should be the password to use, for example "1234" if the password is 1234
-5. Run npm install in the frontend folder, it should be installed directly in the folder.
+5. Run `npm install` in the frontend folder, it should be installed directly in the folder.
 
-It should now be possible to run the frontend and backend systems locally, with the frontend being started by running "npm start" in the frontend folder, however the backend needs to be run with a few parameters, with the exact method used depending on how you run wish to run the Spring Boot program.
+It should now be possible to run the frontend and backend systems locally, with the frontend being started by running `npm start` in the frontend folder, however the backend needs to be run with a few parameters, with the exact method used depending on how you wish to run the Spring Boot program.
 
-To be more specific, we need to import the values from the .env file into the system environment, which results in execution (which is done by running the DemoApplication.java file) looking, for example, like the following:
+To be more specific, we need to import the values from the .env file into the system environment, which results in execution looking, something like the following:
 
 `${env:JDBC_DATABASE_URL}='jdbc:postgresql://localhost:5432/testdatabase'; ${env:JDBC_DATABASE_USERNAME}='postgres'; ${env:JDBC_DATABASE_PASSWORD}='1234'; ${env:jwt_secret}='ukopQPur+a8DXUypzUuLjPy1IrYKqRsaWBa0F0TxgehMcrfaXbgKLj5VoiSR97qG+5uAXIW8BpRjcp7hFUbZEg=='; ${env:CROSS_ORIGIN}='http://localhost:5173'; & 'C:\Program Files\Eclipse Adoptium\jdk-21.0.6.7-hotspot\bin\java.exe' '@C:\Users\carin\AppData\Local\Temp\cp_cmra2d8z0wr7ga0go4bi06mw.argfile' 'com.example.demo.DemoApplication'`
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.presentation.restException.AlreadyExistsException;
+import com.example.demo.presentation.restException.CustomDatabaseException;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
@@ -73,6 +74,17 @@ public class GeneralRestAdvice {
   @ExceptionHandler(InvalidPersonException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
   String InvalidPersonExceptionHandler(InvalidPersonException ex) {
+    return ex.getMessage();
+  }
+
+  /**
+   * This function is responsible for handeling the CustomDatabaseException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 500 error message with the CustomDatabaseException error message as the text
+   */
+  @ExceptionHandler(CustomDatabaseException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  String CustomDatabaseExceptionHandler(CustomDatabaseException ex) {
     return ex.getMessage();
   }
 }

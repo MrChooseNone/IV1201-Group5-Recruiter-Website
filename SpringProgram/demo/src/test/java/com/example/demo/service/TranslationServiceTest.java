@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -21,13 +22,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.TransientDataAccessException;
 
+import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.domain.dto.CompetenceTranslationDTO;
 import com.example.demo.domain.dto.LanguageDTO;
 import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
+import com.example.demo.presentation.restException.CustomDatabaseException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.LanguageNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.SpecificCompetenceNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.TranslationsNotFoundException;
@@ -116,6 +120,11 @@ public class TranslationServiceTest {
         assertEquals(competence, competenceRepositoryReturnValue.get(0));
         Mockito.verify(this.competenceRepository, Mockito.times(2)).findAll();
 
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(competenceRepository).findAll();
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> translationService.GetCompetences());
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 
     @Test
@@ -167,6 +176,12 @@ public class TranslationServiceTest {
         assertEquals(competence.getCompetenceId(), result.getCompetenceId());
         assertEquals(competence.getName(), result.getName());
         Mockito.verify(this.competenceRepository, Mockito.times(2)).findById(anyInt());
+
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(competenceRepository).findById(anyInt());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> translationService.GetSpecificCompetence(0));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 
 
@@ -238,7 +253,6 @@ public class TranslationServiceTest {
         assertThrowsExactly(TranslationsNotFoundException.class, ()->translationService.GetCompetenceTranslation(language.getLanguageName()));
         Mockito.verify(this.languageRepository, Mockito.times(4)).findByName(anyString());
 
-
         competenceTranslationRepository.save(translation);
 
         //Here we test the competence translation manually
@@ -252,6 +266,11 @@ public class TranslationServiceTest {
         assertNotNull(translations);
         assertEquals(translation, translations.get(0));
 
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(languageRepository).findByName(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> translationService.GetCompetenceTranslation(language.getLanguageName()));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 
     @Test
@@ -298,5 +317,10 @@ public class TranslationServiceTest {
         assertEquals(language, returnValue.get(0));
         Mockito.verify(this.languageRepository, Mockito.times(2)).findAll();
 
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(languageRepository).findAll();
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> translationService.GetLanguages());
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 }

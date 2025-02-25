@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.sql.Date;
@@ -22,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.TransientDataAccessException;
 
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.dto.AvailabilityDTO;
@@ -32,6 +35,7 @@ import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceProfile;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.AlreadyExistsException;
+import com.example.demo.presentation.restException.CustomDatabaseException;
 import com.example.demo.presentation.restException.FromDateAfterToDateException;
 import com.example.demo.presentation.restException.PeriodAlreadyCoveredException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.AvailabilityInvalidException;
@@ -164,36 +168,38 @@ public class ApplicationServiceTest {
         // We then test that the method throws the correct exceptions, starting with the
         // exception for if no competence with that id exists, afterwards we add that
         // competence
-        var e = assertThrowsExactly(SpecificCompetenceNotFoundException.class, () -> applicationService
-                .CreateCompetenceProfile(competence.getCompetenceId(), person.getId(), yearsOfExperience));
+        var e = assertThrowsExactly(SpecificCompetenceNotFoundException.class, () -> applicationService .CreateCompetenceProfile(competence.getCompetenceId(), person.getId(), yearsOfExperience));
         assertEquals("Could not find specific competence with id : 0", e.getMessage());
         competenceRepository.save(competence);
 
         // We then test the exception for if a person does not exist, and afterwards add
         // it
-        var e2 = assertThrowsExactly(PersonNotFoundException.class, () -> applicationService
-                .CreateCompetenceProfile(competence.getCompetenceId(), person.getId(), yearsOfExperience));
+        var e2 = assertThrowsExactly(PersonNotFoundException.class, () -> applicationService.CreateCompetenceProfile(competence.getCompetenceId(), person.getId(), yearsOfExperience));
         assertEquals("Could not find a person with the following id : 0", e2.getMessage());
         personRepository.save(person);
 
         // We then test if the method can add a competence profile correctly
-        assertEquals(false, competenceProfileRepository.existsByPersonAndCompetenceAndYearsOfExperience(person,
-                competence, yearsOfExperience));
-        CompetenceProfileDTO result = applicationService.CreateCompetenceProfile(competence.getCompetenceId(),
-                person.getId(), yearsOfExperience);
-        assertEquals(true, competenceProfileRepository.existsByPersonAndCompetenceAndYearsOfExperience(person,
-                competence, yearsOfExperience));
+        assertEquals(false, competenceProfileRepository.existsByPersonAndCompetenceAndYearsOfExperience(person,competence, yearsOfExperience));
+        CompetenceProfileDTO result = applicationService.CreateCompetenceProfile(competence.getCompetenceId(),person.getId(), yearsOfExperience);
+        assertEquals(true, competenceProfileRepository.existsByPersonAndCompetenceAndYearsOfExperience(person,competence, yearsOfExperience));
 
         assertNotNull(result);
         assertEquals(person, result.getPerson());
         assertEquals(competence, result.getCompetenceDTO());
 
         // And finally we confirm that duplicate profiles can not exist
-        var e3 = assertThrowsExactly(AlreadyExistsException.class, () -> applicationService
-                .CreateCompetenceProfile(competence.getCompetenceId(), person.getId(), yearsOfExperience));
-        assertEquals(
-                "The requested resource already exists : This competence profile already exists, so it does not need to be created",
-                e3.getMessage());
+        var e3 = assertThrowsExactly(AlreadyExistsException.class, () -> applicationService.CreateCompetenceProfile(competence.getCompetenceId(), person.getId(), yearsOfExperience));
+        assertEquals("The requested resource already exists : This competence profile already exists, so it does not need to be created",e3.getMessage());
+
+        //We then test that it handles database exceptions correctly
+
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
+
+        savedApplications.clear(); //We clear the application database, which should allow this application to be submitted again
+
+        var e4 = assertThrowsExactly(CustomDatabaseException.class, () -> applicationService.CreateCompetenceProfile(competence.getCompetenceId(), person.getId(), yearsOfExperience));
+        assertEquals("Failed due to database error, please try again",e4.getMessage());
 
     }
 
@@ -251,8 +257,7 @@ public class ApplicationServiceTest {
 
         // We then test that the PersonNotFoundException is thrown if the person does
         // not exist
-        var e = assertThrowsExactly(PersonNotFoundException.class,
-                () -> applicationService.GetCompetenceProfilesForAPerson(person.getId()));
+        var e = assertThrowsExactly(PersonNotFoundException.class,() -> applicationService.GetCompetenceProfilesForAPerson(person.getId()));
         assertEquals("Could not find a person with the following id : 0", e.getMessage());
         personRepository.save(person);
 
@@ -268,6 +273,14 @@ public class ApplicationServiceTest {
         result = applicationService.GetCompetenceProfilesForAPerson(person.getId());
         assertEquals(1, result.size());
         assertEquals(profile, result.get(0));
+
+        //We then test that it handles database exceptions correctly
+
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
+
+        var e4 = assertThrowsExactly(CustomDatabaseException.class, () -> applicationService.GetCompetenceProfilesForAPerson(person.getId()));
+        assertEquals("Failed due to database error, please try again",e4.getMessage());
 
     }
 
@@ -362,8 +375,7 @@ public class ApplicationServiceTest {
         assertEquals(fromDate, results.getFromDate());
         assertEquals(toDate, results.getToDate());
 
-        var e3 = assertThrowsExactly(AlreadyExistsException.class, () -> applicationService
-                .CreateAvailability(person.getId(), availability.getFromDate(), availability.getToDate()));
+        var e3 = assertThrowsExactly(AlreadyExistsException.class, () -> applicationService.CreateAvailability(person.getId(), availability.getFromDate(), availability.getToDate()));
         assertEquals(
                 "The requested resource already exists : This availability period already exists, so it does not need to be created",
                 e3.getMessage());
@@ -374,6 +386,15 @@ public class ApplicationServiceTest {
         assertEquals(
                 "Could not create availability period since range start date 2001-02-01 to end date 2001-12-01 is fully covered by an existing availability period ",
                 e4.getMessage());
+
+        //We then test that it handles database exceptions correctly
+
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> applicationService.CreateAvailability(person.getId(), availability.getFromDate(), availability.getToDate()));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+
 
     }
 
@@ -444,6 +465,14 @@ public class ApplicationServiceTest {
         result = applicationService.GetAvailabilityForAPerson(person.getId());
         assertEquals(1, result.size());
         assertEquals(availability, result.get(0));
+
+        //We then test that it handles database exceptions correctly
+
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> applicationService.GetCompetenceProfilesForAPerson(person.getId()));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
 
     }
 
@@ -608,6 +637,13 @@ public class ApplicationServiceTest {
         //And finally we verify that it saved the correct application
         assertEquals(result.getApplicationId(), savedApplications.get(0).getApplicationId());
         assertEquals(person, savedApplications.get(0).getApplicant());
+
+        //We then test that it handles database exceptions correctly
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
 
     }
 }

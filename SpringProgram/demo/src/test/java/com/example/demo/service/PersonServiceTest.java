@@ -30,12 +30,14 @@ import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Application;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.domain.entity.Role;
+import com.example.demo.presentation.restException.CustomDatabaseException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
 import com.example.demo.repository.PersonRepository;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
@@ -191,6 +193,15 @@ public class PersonServiceTest {
 
         Mockito.verify(this.personRepository, Mockito.times(2)).save(Mockito.any(Person.class));
 
+        //We then test that it handles database exceptions correctly
+
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).existsByPnr(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.RegisterPerson(name, surname,"pnr2","email2","password","username"));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+
+
     }
 
     @Test
@@ -250,6 +261,14 @@ public class PersonServiceTest {
 
         Mockito.verify(this.personRepository, Mockito.times(1)).save(Mockito.any(Person.class));
         Mockito.verify(this.personRepository, Mockito.times(2)).findByName(anyString());
+        
+        //We then test that it handles database exceptions correctly
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByName(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.FindPeopleByName(name));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+        
     }
 
     @Test
@@ -310,6 +329,14 @@ public class PersonServiceTest {
 
         Mockito.verify(this.personRepository, Mockito.times(1)).save(Mockito.any(Person.class));
         Mockito.verify(this.personRepository, Mockito.times(2)).findByEmail(anyString());
+
+        //We then test that it handles database exceptions correctly
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByEmail(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.FindPersonByEmail(email));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+        
     }
 
     @Test
@@ -370,6 +397,14 @@ public class PersonServiceTest {
 
         Mockito.verify(this.personRepository, Mockito.times(1)).save(Mockito.any(Person.class));
         Mockito.verify(this.personRepository, Mockito.times(2)).findByUsername(anyString());
+
+        //We then test that it handles database exceptions correctly
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByUsername(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.FindPersonByUsername(username));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+        
     }
 
     
@@ -431,6 +466,13 @@ public class PersonServiceTest {
 
         Mockito.verify(this.personRepository, Mockito.times(1)).save(Mockito.any(Person.class));
         Mockito.verify(this.personRepository, Mockito.times(2)).findByPnr(anyString());
+
+        //We then test that it handles database exceptions correctly
+        // We then define the implementation for the mock repository functions
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByPnr(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.FindPersonByPnr(pnr));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 
     @Test
@@ -483,6 +525,12 @@ public class PersonServiceTest {
         String returnFromService=personService.UpdateReviewer(0,"test","test");
         assertEquals("Updated pnr and email for a reviwer "+person.getName()+" to pnr test and email test" ,returnFromService);
 
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.UpdateReviewer(0,"test","test"));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+        
     }
 
     @Test
@@ -535,7 +583,12 @@ public class PersonServiceTest {
 
         //We then call the function we wish to test
         String returnFromService=personService.UpdateApplicant(pnr,"test","test");
-        assertEquals("Updated username and password for a Applicant "+person.getName()+" to username test (password excludes :) )",returnFromService);
+        assertEquals("Updated username and password for a applicant "+person.getName()+" to username test (password excludes :) )",returnFromService);
 
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByPnr(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.UpdateApplicant(pnr,"test","test"));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
     }
 }
