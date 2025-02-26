@@ -3,9 +3,12 @@ package com.example.demo.domain.entity;
 import java.sql.Date;
 import java.util.List;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.ApplicationDTO;
 
+import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +22,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 
 @Entity
 /**
@@ -34,14 +40,21 @@ public class Application implements ApplicationDTO{
 
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     @ManyToOne
+    @NotNull(message="Each application must be for a specific person")
     private Person applicant;
 
     @JoinColumn(name = "applicationId", referencedColumnName  = "application_id")
     @OneToMany //TODO Change to many-to-many if the same availability period should be usable in multiple applications
+    @UniqueElements(message = "No availability period should be included multiple times in the application")
+    @NotEmpty(message = "You must specify at least one availability period") 
+    @NotNull(message = "availabilityPeriodsForApplication may not be null")
     private List<Availability> availabilityPeriodsForApplication;
 
     @JoinColumn(name = "applicationId", referencedColumnName  = "application_id")
     @OneToMany  //TODO Change to many-to-many if the same competence profile should be usable in multiple applications
+    @UniqueElements(message = "No competence profile should be included multiple times in the application")
+    @NotEmpty(message="You must specify at least one competence profile")
+    @NotNull(message = "competenceProfilesForApplication may not be null")
     private List<CompetenceProfile> competenceProfilesForApplication;
 
     @Version //Note that this is what marks this as a version number, and will be used to handle the multi-reviewer update scenario¨
@@ -51,9 +64,11 @@ public class Application implements ApplicationDTO{
 
     @Enumerated(EnumType.STRING) //This specifies how the enum should be saved in the database, 
     @Column(name="application_status")
+    @NotNull(message = "Application status should never be null")
     private ApplicationStatus applicationStatus;
 
     @Column(name="application_date")
+    @PastOrPresent(message = "Application date should never be in the future!")
     private Date applicationDate;
 
     /** 

@@ -1,14 +1,19 @@
 package com.example.demo.repository;import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.example.demo.domain.entity.Competence;
+import com.example.demo.domain.entity.Language;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * This a unit test of the CompetenceRepository class
@@ -63,5 +68,28 @@ public class CompetenceRepositoryTest {
 
         result = competenceRepository.findByName("notARealName");
         assertNull(result);
+    }
+
+    @Test
+    /**
+     * This method tests the competence entities constraints
+     */
+    void testCompetenceConstraint()
+    {
+        Competence competence2=new Competence();
+        competence2.setName(null);
+
+        var e = assertThrowsExactly(ConstraintViolationException.class, () -> competenceRepository.save(competence2));
+        assertEquals(true,e.getConstraintViolations().toString()
+        .contains("ConstraintViolationImpl{interpolatedMessage='Each competence must have a non-blank name', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Competence, messageTemplate='Each competence must have a non-blank name'")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("ConstraintViolationImpl{interpolatedMessage='Competence name can not be null', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Competence, messageTemplate='Competence name can not be null'")
+        );
+    
+        Competence competence3=new Competence();
+        competence3.setName("");
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> competenceRepository.save(competence3));
+        assertEquals("[ConstraintViolationImpl{interpolatedMessage='Each competence must have a non-blank name', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Competence, messageTemplate='Each competence must have a non-blank name'}]",e.getConstraintViolations().toString());
     }
 }

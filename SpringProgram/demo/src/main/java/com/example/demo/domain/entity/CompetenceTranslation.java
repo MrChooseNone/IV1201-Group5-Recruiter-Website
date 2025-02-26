@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Represents a competence translation entity in the system.
@@ -24,13 +26,17 @@ public class CompetenceTranslation implements CompetenceTranslationDTO{
 
     @JoinColumn(name = "competence_id", referencedColumnName = "competence_id")
     @ManyToOne
+    @NotNull(message = "Each translation must be for a specific competence")
     private Competence competence;
 
     @JoinColumn(name = "language_id", referencedColumnName = "language_id")
     @ManyToOne
+    @NotNull(message = "Each translation must be for a specific language")
     private Language language;
 
     @Column(name="translation")
+    @NotNull(message = "Each translation must have a non-null translation")
+    @NotBlank(message = "Each translation must have an actual translation")
     private String translation;
 
     /**

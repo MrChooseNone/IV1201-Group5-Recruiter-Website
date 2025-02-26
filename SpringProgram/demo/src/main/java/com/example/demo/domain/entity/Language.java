@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 /**
@@ -22,7 +24,9 @@ public class Language implements LanguageDTO{
 
     //Note this will ensure new languages added have unique names, if the table is created using JPA, otherwise this needs to be specified in the SQL create table statement
     //Link to stackoverflow topic about this: https://stackoverflow.com/questions/3496028/columnunique-true-does-not-seem-to-work 
-    @Column(name="name",unique = true)
+    @Column(name="name")
+    @NotNull(message = "Language name can not be null")
+    @NotBlank(message = "Language name can not be blank")
     private String name;
 
     /**

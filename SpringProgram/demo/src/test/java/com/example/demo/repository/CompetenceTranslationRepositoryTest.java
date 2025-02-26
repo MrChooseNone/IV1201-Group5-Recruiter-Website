@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import java.util.List;
 
@@ -11,8 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * This a unit test of the CompetenceTranslationRepository class
@@ -25,6 +29,11 @@ import com.example.demo.domain.entity.Language;
 }) //This is done to only load the neccesary context for testing the repository + creating a in-memory database for testing purposes + ensuring test are run in transactions
 
 public class CompetenceTranslationRepositoryTest {
+
+    @Autowired 
+    private CompetenceRepository competenceRepository;
+    private Competence competence;
+
     @Autowired
     private LanguageRepository languageRepository;
 
@@ -44,8 +53,14 @@ public class CompetenceTranslationRepositoryTest {
         language.SetLanguageName("testLanguage");
         languageRepository.save(language);
 
+        competence=new Competence();
+        competence.setName("testCompetence");
+        competenceRepository.save(competence);
+
         competenceTranslation = new CompetenceTranslation();
         competenceTranslation.SetLanguage(language);
+        competenceTranslation.SetCompetence(competence);
+        competenceTranslation.SetTranslation("translation");
         competenceTranslationRepository.save(competenceTranslation);
     }
 
@@ -54,6 +69,7 @@ public class CompetenceTranslationRepositoryTest {
         // Release test data after each test method
         competenceTranslationRepository.delete(competenceTranslation);
         languageRepository.delete(language);
+        competenceRepository.delete(competence);
     }
 
     @Test
@@ -79,5 +95,73 @@ public class CompetenceTranslationRepositoryTest {
 
         result = competenceTranslationRepository.findByLanguage_id(language.getLanguageId()+1);
         assertEquals(0, result.size());
+    }
+
+    @Test
+    void testCompetenceTranslationConstraints()
+    {
+       
+        competenceTranslation = new CompetenceTranslation();    
+        var e = assertThrowsExactly(ConstraintViolationException.class, () -> competenceTranslationRepository.save(competenceTranslation));
+
+        assertEquals(true,e.getConstraintViolations().toString()
+        .contains("Each translation must be for a specific competence")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("Each translation must be for a specific language")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("Each translation must have a non-null translation")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("Each translation must have an actual translation")
+        );
+
+        competenceTranslation = new CompetenceTranslation();   
+        competenceTranslation.SetLanguage(language);
+
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> competenceTranslationRepository.save(competenceTranslation));
+
+        assertEquals(true,e.getConstraintViolations().toString()
+        .contains("Each translation must be for a specific competence")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("Each translation must have a non-null translation")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("Each translation must have an actual translation")
+        );
+
+        competenceTranslation = new CompetenceTranslation();   
+        competenceTranslation.SetLanguage(language);
+        competenceTranslation.SetCompetence(competence);
+
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> competenceTranslationRepository.save(competenceTranslation));
+
+        assertEquals(true,e.getConstraintViolations().toString()
+        .contains("Each translation must have a non-null translation")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("Each translation must have an actual translation")
+        );
+
+        competenceTranslation = new CompetenceTranslation();   
+        competenceTranslation.SetLanguage(language);
+        competenceTranslation.SetCompetence(competence);
+        competenceTranslation.SetTranslation("");
+
+
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> competenceTranslationRepository.save(competenceTranslation));
+
+        assertEquals(true,e.getConstraintViolations().toString()
+        .contains("Each translation must have an actual translation")
+        );
+
+        competenceTranslation = new CompetenceTranslation();   
+        competenceTranslation.SetLanguage(language);
+        competenceTranslation.SetCompetence(competence);
+        competenceTranslation.SetTranslation("translation");
+
+        competenceTranslationRepository.save(competenceTranslation);
     }
 }

@@ -4,6 +4,8 @@ import java.sql.Date;
 
 import com.example.demo.domain.dto.AvailabilityDTO;
 
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -28,12 +30,17 @@ public class Availability implements AvailabilityDTO{
 
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     @ManyToOne
+    @NotNull(message="Each availability period must belong to one individual")
     private Person person;
 
     @Column(name="from_date")
+    @NotNull(message="From date must be non-null")
+    @FutureOrPresent(message = "From date must be some time in the future")
     private Date fromDate;
 
     @Column(name="to_date")
+    @NotNull(message="To date must be non-null")
+    @FutureOrPresent(message = "To date must be some time in the future")
     private Date toDate;
 
     /**

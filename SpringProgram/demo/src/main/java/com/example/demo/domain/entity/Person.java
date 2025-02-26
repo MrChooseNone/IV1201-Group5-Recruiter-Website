@@ -11,6 +11,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * Represents a person entity in the system.
@@ -26,25 +30,40 @@ public class Person implements PersonDTO{
     private Integer id;
 
     @Column(name="name")
+    @NotNull(message = "Name must not be null")
+    @NotBlank(message="Name can not be an empty string")
     private String name;
 
     @Column(name="surname")
+    @NotNull(message = "Surname should not be null")
+    @NotBlank(message="Surname can not be an empty string")
     private String surname;
 
     @Column(name="pnr")
+    @Pattern(regexp="\\d{8}-\\d{4}", message = "Pnr must follow the following format yyyymmdd-nnnn, with each char replaced with appropriate numbers") //Not the same regex as frontend
+    @NotBlank(message="Pnr may not be an empty string")
+    @NotNull(message = "Pnr may not be null")
     private String pnr;
 
     @Column(name="email")
+    @Email(message = "Email must be a possible email address, following the format something@something.something, with something being any alphanumeric text")
+    @NotBlank(message="Email may not be an empty string")
+    @NotNull(message="Email must not be null")
     private String email;
 
     @Column(name="password")
+    @NotNull(message = "Password must not be null")
+    @NotBlank(message="Password can not be an empty string")
     private String password;
 
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @ManyToOne
+    @NotNull(message = "Each person must have a role")
     private Role role;
 
     @Column(name="username")
+    @NotNull(message = "Username must not be null")
+    @NotBlank(message="Username can not be an empty string")
     private String username;
 
     /**

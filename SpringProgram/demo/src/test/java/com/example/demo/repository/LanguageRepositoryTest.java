@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.demo.domain.entity.Language;
+import com.example.demo.domain.entity.Role;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * This a unit test of the LanguageRepository class
@@ -68,5 +72,28 @@ public class LanguageRepositoryTest {
 
         result = languageRepository.findByName("notARealName");
         assertNull(result);
+    }
+
+    @Test
+    /**
+     * This tests the constrains of the language entity
+     */
+    void languageConstraintTest()
+    {
+        languge = new Language();
+        languge.SetLanguageName(null);
+        var e = assertThrowsExactly(ConstraintViolationException.class, () -> languageRepository.saveAndFlush(languge));
+
+        assertEquals(true,e.getConstraintViolations().toString()
+        .contains("ConstraintViolationImpl{interpolatedMessage='Language name can not be null', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Language, messageTemplate='Language name can not be null'}")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("ConstraintViolationImpl{interpolatedMessage='Language name can not be blank', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Language, messageTemplate='Language name can not be blank'}")
+        );
+
+        languge = new Language();
+        languge.SetLanguageName("");
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> languageRepository.saveAndFlush(languge));
+        assertEquals("[ConstraintViolationImpl{interpolatedMessage='Language name can not be blank', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Language, messageTemplate='Language name can not be blank'}]",e.getConstraintViolations().toString());
     }
 }

@@ -3,6 +3,8 @@ package com.example.demo.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.demo.domain.entity.Role;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * This a unit test of the RoleRepository class
@@ -31,7 +35,6 @@ public class RoleRepositoryTest {
     public void setUp() {
         // Initialize test data before each test method
         testRole = new Role();
-        testRole.setId(0);
         testRole.setName("password");
         roleRepository.save(testRole);
     }
@@ -48,7 +51,7 @@ public class RoleRepositoryTest {
      */
     void testSaveAndFindById()
     {
-        Role role = roleRepository.findById(0).orElse(null);
+        Role role = roleRepository.findById(testRole.getRoleId()).orElse(null);
         assertNotNull(role);
         assertEquals(testRole.getName(), role.getName());
     }
@@ -66,5 +69,30 @@ public class RoleRepositoryTest {
         //And then that it will not find anything for a name that does not exist
         role = roleRepository.findByName("nonExistentName");
         assertNull(role);
+    }
+
+    @Test
+    /**
+     * This tests the constrains for the role entity
+     */
+    void roleConstraintTest()
+    {
+
+        testRole = new Role();
+        testRole.setName(null);    
+        var e = assertThrowsExactly(ConstraintViolationException.class, () -> roleRepository.saveAndFlush(testRole));
+        System.out.println(e.getMessage());
+        assertEquals(true,e.getConstraintViolations().toString()
+        .contains("ConstraintViolationImpl{interpolatedMessage='Each role must have descriptor!', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Role, messageTemplate='Each role must have descriptor!'}")
+        &&
+        e.getConstraintViolations().toString()
+        .contains("ConstraintViolationImpl{interpolatedMessage='Each role must have non-null descriptor!', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Role, messageTemplate='Each role must have non-null descriptor!'}")
+        );
+
+        testRole = new Role();
+        testRole.setName("");    
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> roleRepository.saveAndFlush(testRole));
+        assertEquals("[ConstraintViolationImpl{interpolatedMessage='Each role must have descriptor!', propertyPath=name, rootBeanClass=class com.example.demo.domain.entity.Role, messageTemplate='Each role must have descriptor!'}]",e.getConstraintViolations().toString());
+
     }
 }

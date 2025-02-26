@@ -35,6 +35,7 @@ import com.example.demo.presentation.restException.EntryNotFoundExceptions.Appli
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
 import com.example.demo.repository.PersonRepository;
+import com.example.demo.repository.RoleRepository;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessException;
@@ -55,9 +56,12 @@ public class PersonServiceTest {
     @Spy
     private PasswordEncoder passwordEncoder;
 
-    //This is used to create a fake personRepository, to avoid actually interacting with the database, since this is a unit test for a service, not an integration test
+    //This is used to create fake repository, to avoid actually interacting with the database, since this is a unit test for a service, not an integration test
     @Spy 
     private PersonRepository personRepository;
+
+    @Spy 
+    private RoleRepository roleRepository;
 
     //This ensures above is used in place of a real instance in the constructor
     @InjectMocks
@@ -145,6 +149,13 @@ public class PersonServiceTest {
                 }
             }
             return matchingPeople;
+        });
+
+        when(roleRepository.findByName(anyString())).thenAnswer(invocation -> {
+            String string =(String)invocation.getArguments()[0];
+            Role role = new Role();
+            role.setName(string);
+            return role;
         });
 
         //We then call the function we wish to test

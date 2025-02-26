@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Represents a competence profile entity in the system.
@@ -28,14 +29,17 @@ public class CompetenceProfile implements CompetenceProfileDTO{
 
     @JoinColumn(name="person_id", referencedColumnName = "person_id")
     @ManyToOne
+    @NotNull(message = "Each profile must belong to a person")
     private Person person;
 
     @JoinColumn(name="competence_id", referencedColumnName = "competence_id")
     @ManyToOne
+    @NotNull(message = "Each profile must correspond to a competence")
     private Competence competence;
 
     @Column
-    @Min(value =0L,message="The value must be non-negative") //Test for jakarta validation
+    @NotNull(message="Years of experience must be non-null")
+    @Min(value =0L,message="Years of experience must be non-negative") 
     private Double yearsOfExperience;
 
     /**

@@ -2,7 +2,9 @@ package com.example.demo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +15,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.entity.Application;
+import com.example.demo.domain.entity.Availability;
+import com.example.demo.domain.entity.Competence;
+import com.example.demo.domain.entity.CompetenceProfile;
+import com.example.demo.domain.entity.Person;
+import com.example.demo.domain.entity.Role;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * This a unit test of the Application repository class
@@ -25,6 +34,27 @@ import com.example.demo.domain.entity.Application;
 }) //This is done to only load the neccesary context for testing the repository + creating a in-memory database for testing purposes + ensuring test are run in transactions
 
 public class ApplicationRepositoryTest {
+
+    @Autowired
+    private RoleRepository roleRepository;
+    private Role testRole;
+
+    @Autowired
+    private PersonRepository personRepository;
+    private Person testPerson;
+
+    @Autowired 
+    private CompetenceRepository competenceRepository;
+    private Competence competence;
+
+    @Autowired 
+    private CompetenceProfileRepository competenceProfileRepository;
+    private List<CompetenceProfile> competenceProfiles;
+
+    @Autowired 
+    private AvailabilityRepository availabilityRepository;
+    private List<Availability> availabilityList;
+
     @Autowired 
     private ApplicationRepository applicationRepository;
 
@@ -33,10 +63,43 @@ public class ApplicationRepositoryTest {
 
     @BeforeEach
     public void setUp() {
+
+        long systemTime=System.currentTimeMillis();
+
         // Initialize test data before each test method
 
-        application= new Application(null, null, null);
-        application2= new Application(null, null, null);
+        testRole = new Role();
+        testRole.setName("test role");
+        roleRepository.save(testRole);
+
+        testPerson=new Person();
+        testPerson.setName("test");
+        testPerson.setSurname("testsson");
+        testPerson.setEmail("test@test.test");
+        testPerson.setPassword("testPassword");
+        testPerson.setPnr("12345678-1234");
+        testPerson.setRole(testRole);
+        testPerson.setUsername("username");
+        personRepository.save(testPerson);
+
+        availabilityList= new ArrayList<Availability>();
+        Availability availability = new Availability(testPerson, new java.sql.Date(systemTime+44444), new java.sql.Date(systemTime+44444));
+        availabilityRepository.save(availability);
+        availabilityList.add(availability);
+
+        
+        competence = new Competence();
+        competence.setName("competence");
+        competenceRepository.save(competence);
+
+        CompetenceProfile profile = new CompetenceProfile(testPerson, competence, 2.0);
+        competenceProfileRepository.save(profile);        
+        
+        competenceProfiles= new ArrayList<CompetenceProfile>();
+        competenceProfiles.add(profile);
+
+        application= new Application(testPerson, availabilityList,competenceProfiles );
+        application2= new Application(testPerson, availabilityList,competenceProfiles );
         applicationRepository.save(application);
         applicationRepository.save(application2);
 
@@ -84,5 +147,60 @@ public class ApplicationRepositoryTest {
         assertEquals(1, findResult.size());
         assertEquals(application, findResult.get(0));
 
+    }
+
+    @Test
+    /**
+     * This tests the application entities constraints
+     */
+    void applicationConstraintTest()
+    {
+        application= new Application(null, availabilityList,competenceProfiles );
+        var e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("Each application must be for a specific person"));
+
+        //We then test the availability period constraints
+        application= new Application(testPerson, new ArrayList<Availability>() ,competenceProfiles );
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("You must specify at least one availability period"));
+        
+        application= new Application(testPerson, null ,competenceProfiles );
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("availabilityPeriodsForApplication may not be null"));
+        
+        availabilityList.add(availabilityList.get(0));
+
+        application= new Application(testPerson, availabilityList ,competenceProfiles );
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("No availability period should be included multiple times in the application"));
+        availabilityList.remove(1);
+
+        //We then test the competence profile constraints
+        application= new Application(testPerson, availabilityList,new ArrayList<CompetenceProfile>() );
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("You must specify at least one competence profile"));
+        
+        application= new Application(testPerson, availabilityList,null );
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("competenceProfilesForApplication may not be null"));
+        
+        competenceProfiles.add(competenceProfiles.get(0));
+        application= new Application(testPerson, availabilityList,competenceProfiles);
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("No competence profile should be included multiple times in the application"));
+        competenceProfiles.remove(0);
+
+        //We then test application status constraint
+        application= new Application(testPerson, availabilityList,competenceProfiles);
+        application.setApplicationStatus(null);
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("Application status should never be null"));
+
+        //And finally we test application_date constraint
+        application= new Application(testPerson, availabilityList,competenceProfiles);
+        application.setApplicationDate(new java.sql.Date(System.currentTimeMillis()+10000));
+        e = assertThrowsExactly(ConstraintViolationException.class, () -> applicationRepository.save(application));
+        assertEquals(true,e.getConstraintViolations().toString().contains("Application date should never be in the future!"));
+ 
     }
 }

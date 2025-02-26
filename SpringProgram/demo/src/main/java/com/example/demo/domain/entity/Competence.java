@@ -2,12 +2,15 @@ package com.example.demo.domain.entity;
 
 import com.example.demo.domain.dto.CompetenceDTO;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.UniqueConstraint;
 
 /**
  * Represents a competence entity in the system.
@@ -16,12 +19,14 @@ import jakarta.persistence.Id;
 @Entity
 public class Competence implements CompetenceDTO{
     @Id 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "competence_id")
     private Integer competenceId;
 
     @Column(name="name")
+    @NotBlank(message = "Each competence must have a non-blank name")
+    @NotNull(message="Competence name can not be null")
     private String name;
 
     /**

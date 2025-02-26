@@ -18,11 +18,13 @@ import com.example.demo.presentation.restException.CustomDatabaseException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
 import com.example.demo.repository.PersonRepository;
+import com.example.demo.repository.RoleRepository;
 
 @Service
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW) 
 public class PersonService {
     private final PersonRepository personRepository;
+    private final RoleRepository roleRepository;
 
     //We create the logger
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class.getName()); 
@@ -35,8 +37,9 @@ public class PersonService {
      *
      * @param personRepository the repository for accessing person database data
      */
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository,RoleRepository roleRepository) {
         this.personRepository = personRepository;
+        this.roleRepository=roleRepository;
     }
 
     /**
@@ -91,6 +94,7 @@ public class PersonService {
             person.setEmail(email);
             person.setPassword(passwordEncoder.encode(password));
             person.setUsername(username);
+            person.setRole(roleRepository.findByName("applicant"));
 
             LOGGER.info("Registering new person: Name: `{}`, Surname: `{}`, PNR: `{}`, Email: `{}`, Username: `{}`", name, surname, pnr, email, username);
             personRepository.save(person);
