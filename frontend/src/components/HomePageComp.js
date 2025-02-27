@@ -4,6 +4,8 @@ import Button from '@mui/material/Button';
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import {Link} from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
+import Grid from "./Grid";
+import { ThemeContext } from "@emotion/react";
 
 export default function HomePageComp() {
     return (
@@ -26,7 +28,7 @@ export default function HomePageComp() {
         {/* Middle Layer */}
         <Box
           sx={{
-            bgcolor: "#FFFFFF", 
+            bgcolor: "#18624B", 
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -38,10 +40,12 @@ export default function HomePageComp() {
             zIndex: 1,
             top: 0,
             
-            p: 4, 
+            p: 0, 
           }}
         >
-          <h1 style={{ color: "#2E3532", position: "relative", top: "-10px"}} >Application Website</h1>
+          <Grid rows={10}>
+
+          </Grid>
         </Box>
   
         {/* Top Layer */}
@@ -66,7 +70,6 @@ export default function HomePageComp() {
         >
           
         </Box>
-
         {/* Over Top Layer */}
         <Box
           sx={{
@@ -75,7 +78,7 @@ export default function HomePageComp() {
             justifyContent: "center", 
             alignItems: "center",
             gap: 3, 
-            padding: 3, 
+            padding: 8, 
             flexDirection: {xs: "column", md: "row"},
             
             borderRadius: 4,
@@ -85,6 +88,8 @@ export default function HomePageComp() {
             
           }}
         >
+          <Typography variant="h4" sx={{ color: "white", position: "absolute", top: 0}} >Theme park application</Typography>
+        
           {/* Card 1 */}
             <Card sx={{
                 bgcolor: "#67E0A3", 

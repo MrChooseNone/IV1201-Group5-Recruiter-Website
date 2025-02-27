@@ -68,7 +68,7 @@ export default function ReviewerDashboard() {
         }}>
             {/*Get all applications */}
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
-                <Button onClick={fetchApplicants}>Get all applications</Button>
+                <Button variant="contained" onClick={fetchApplicants}>Get all applications</Button>
                 <List>
                     {applications.map((allApplications) => {
                         return (
@@ -92,7 +92,7 @@ export default function ReviewerDashboard() {
                         <MenuItem key={"denied"} value={"denied"}>Denied</MenuItem>                                          
                     </Select>
                 </FormControl>
-                <Button onClick={fetchApplicantsByStatus}>Get applications by Status: {status}</Button>
+                <Button variant="contained" onClick={fetchApplicantsByStatus}>Get applications by Status: {status}</Button>
                 <List>
                     {applicationsByStatus.length > 0 ? (
                         applicationsByStatus.map((statusApplicants) => {
