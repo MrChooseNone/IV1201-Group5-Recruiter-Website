@@ -37,7 +37,7 @@ export default function ApplicationDetailsComp() {
     }
 
     const UpdateStatus = () => {
-        setVersionNumber(application.versionNumber + 1)
+        setVersionNumber(application.versionNumber)
         
         fetch(`http://localhost:8080/review/updateApplicationStatus`, {
             method: "POST",

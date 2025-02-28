@@ -18,7 +18,7 @@ export default function ApplicationForm() {
     // Handle the submition of data to database
     // Validation functions
   const validatePersonNumber = (pnr) => {
-    return /^\d+$/.test(pnr); // Only numbers
+    return /^\d+$/.test(pnr) && pnr.length >= 12;
   };
 
   const validateEmail = (email) => {
@@ -37,7 +37,7 @@ export default function ApplicationForm() {
 
       // Validate fields
       if (!validatePersonNumber(personNumber)) {
-        alert("Person number must contain only numbers");
+        alert("Person number must contain only 12 numbers");
         return;
       }
 
@@ -64,22 +64,36 @@ export default function ApplicationForm() {
       
   
       console.log("Sending: ", applicant); // remove (just debug)
-  
-      fetch(url, {
-          method: "POST",
-          headers: {
-              // Send as form data, to comply with us using @Requestparam in controller
-              "Content-Type": "application/json", 
-          },
-          body: JSON.stringify(applicant),
-      })
-      .then((response) => response.text()) // Parse response as text
-      .then((data) => {
-          console.log(data); // Write data
-      })
-      .catch((error) => {
-          console.error("Error adding applicant:", error);
-      });
+      if(applicant.name && applicant.surname && applicant.username){
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                // Send as form data, to comply with us using @Requestparam in controller
+                "Content-Type": "application/json", 
+            },
+            body: JSON.stringify(applicant),
+        })
+        .then((response) => response.text()) // Parse response as text
+        .then((data) => {
+            console.log("data: " + data); // Write data
+            if(data === "User registered successfully!"){
+              alert(`Welcome ${applicant.name}!`);
+            } else if (data === "PNR is already in use!"){
+              alert(`Person number is already in use!`);
+            } else if (data === "Email is already registered!"){
+              alert(`Email is already registered!`);
+            } else if (data === "Username is already taken!"){
+              alert(`Username is already taken!`);
+            }
+        })
+        .catch((error) => {
+            console.error("Error adding applicant:", error);
+            alert("Something went wrong, try again later")
+        });
+      } else{
+        alert("Please fill in all the information!");
+      }
   };
   
   return (

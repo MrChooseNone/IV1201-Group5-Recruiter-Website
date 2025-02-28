@@ -191,6 +191,7 @@ export default function ApplicationEndPoint() {
     const submitApplication = async () => {
         if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
+            alert("Please fill in competences and availability")
             return;
         }
     

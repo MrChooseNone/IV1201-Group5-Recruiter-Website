@@ -70,16 +70,53 @@ export default function ReviewerDashboard() {
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Button variant="contained" onClick={fetchApplicants}>Get all applications</Button>
                 <List>
-                    {applications.map((allApplications) => {
-                        return (
-                            <ListItem key={allApplications.applicationId}>
-                                <ListItemText
-                                primary={`Applicant: ${allApplications.applicant.name + " " + allApplications.applicant.surname}, Status: ${allApplications.applicationStatus}`}
-                                secondary={`Submition date: ${allApplications.applicationDate}` }
-                                />
-                            </ListItem>
-                        );
-                    })}
+                    {applications.length > 0 ? (
+                        applications.map((Applicants) => {
+                            return (
+                                <ListItem key={Applicants.applicationId}>
+                                        <Box
+                                              component="form"
+                                              sx={{
+                                                bgcolor: "#AFF9C9",
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                width: "100%",
+                                                height: "auto",
+                                                p: 1,
+                                                  borderRadius: 2,
+                                                }}
+                                              >
+                                                <Typography variant="h6" sx={{
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    
+                                                    }}>
+                                                    Applicant: {Applicants.applicant.name + " " + Applicants.applicant.surname}
+                                                </Typography>
+                                                <Typography variant="h8" sx={{
+                                                    color: "secondary.main",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",}}>
+                                                    Status: {Applicants.applicationStatus}
+                                                </Typography>
+                                                <Typography variant="h9" sx={{
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    
+                                                    }}>
+                                                    Submition date: {Applicants.applicationDate}
+                                                </Typography>
+                                        <Button variant="contained" component={Link} to={`/applicant/${Applicants.applicationId}`} sx={{m: 1}}>View Applicant</Button>
+                                    </Box>
+                                </ListItem>
+                            );
+                        })
+
+                    ) : (
+                        <Typography variant="h6">No applicants with that status</Typography>
+                    )}
                 </List>
             </Paper>
 
@@ -98,11 +135,42 @@ export default function ReviewerDashboard() {
                         applicationsByStatus.map((statusApplicants) => {
                             return (
                                 <ListItem key={statusApplicants.applicationId}>
-                                    <ListItemText
-                                    primary={`Applicant: ${statusApplicants.applicant.name + " " + statusApplicants.applicant.surname}, Status: ${statusApplicants.applicationStatus}`}
-                                    secondary={`Submition date: ${statusApplicants.applicationDate}` }
-                                    />
-                                    <Button variant="contained" component={Link} to={`/applicant/${statusApplicants.applicationId}`}>View Applicant</Button>
+                                        <Box
+                                              component="form"
+                                              sx={{
+                                                bgcolor: "#AFF9C9",
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                width: "100%",
+                                                height: "auto",
+                                                p: 1,
+                                                  borderRadius: 2,
+                                                }}
+                                              >
+                                                <Typography variant="h6" sx={{
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    
+                                                    }}>
+                                                    Applicant: {statusApplicants.applicant.name + " " + statusApplicants.applicant.surname}
+                                                </Typography>
+                                                <Typography variant="h8" sx={{
+                                                    color: "secondary.main",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",}}>
+                                                    Status: {statusApplicants.applicationStatus}
+                                                </Typography>
+                                                <Typography variant="h9" sx={{
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    
+                                                    }}>
+                                                    Submition date: {statusApplicants.applicationDate}
+                                                </Typography>
+                                        <Button variant="contained" component={Link} to={`/applicant/${statusApplicants.applicationId}`} sx={{m: 1}}>View Applicant</Button>
+                                    </Box>
                                 </ListItem>
                             );
                         })
