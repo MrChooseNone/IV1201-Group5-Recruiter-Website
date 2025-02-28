@@ -1,4 +1,3 @@
-
 import React, {useState, useEffect} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -6,10 +5,13 @@ import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 
 export default function Competences() {
-    const[competences,setCompetences] = useState([])
+    const[competences,setCompetences] = useState([]);
+
+    // Get API URL from .env file
+    const API_URL = process.env.REACT_APP_API_URL;
 
     const fetchCompetences = () => {
-        const url = "http://localhost:8080/translation/getStandardCompetences";
+        const url = `${API_URL}/translation/getStandardCompetences`;
 
         console.log("Fetching competences from:", url);
 

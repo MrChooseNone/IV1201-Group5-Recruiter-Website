@@ -17,15 +17,17 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const API_URL = "http://localhost:8080/review"; // Adjust for your backend
 
 export default function ReviewerDashboard() {
     const [applications, setApplications] = useState([]);
-    const [status, setStatus] = useState("unchecked")
+    const [status, setStatus] = useState("unchecked");
     const [applicationsByStatus, setApplicationsByStatus] = useState([]);
 
+    // Get API URL from .env file
+    const API_URL = process.env.REACT_APP_API_URL;
+
     const fetchApplicants = () => {
-        const url = `${API_URL}/getApplications`
+        const url = `${API_URL}/review/getApplications`
         fetch(url, {
             method: "GET",
             headers: {
@@ -42,7 +44,7 @@ export default function ReviewerDashboard() {
     }
 
     const fetchApplicantsByStatus = () => {
-        const url = `${API_URL}/getApplicationsByStatus/${status}`
+        const url = `${API_URL}/review/getApplicationsByStatus/${status}`
         fetch(url, {
             method: "GET",
             headers: {

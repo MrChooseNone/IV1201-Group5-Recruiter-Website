@@ -16,7 +16,6 @@ import {
   CircularProgress
 } from "@mui/material";
 
-const API_URL = "http://localhost:8080/application"; // Adjust for backend
 
 export default function ApplicationEndPoint() {
     const [personId, setPersonId] = useState("");
@@ -32,9 +31,13 @@ export default function ApplicationEndPoint() {
     const [competenceProfileIds, setCompetenceProfileIds] = useState([]);
     const [availabilityIds, setAvailabilityIds] = useState([]);
     //--------------------Competences-------------
+
+    // Get API URL from .env file
+    const API_URL = process.env.REACT_APP_API_URL;
+    
     // Fetch competence profiles
     const getCompetenceProfiles = async () => {
-        const url = `${API_URL}/getAllCompetenceProfiles?personId=${personId}`;
+        const url = `${API_URL}/application/getAllCompetenceProfiles?personId=${personId}`;
 
         fetch(url, {
             method: "GET",
@@ -53,7 +56,7 @@ export default function ApplicationEndPoint() {
     };
     //function to fetch competences
     const fetchCompetences = () => {
-        const url = "http://localhost:8080/translation/getStandardCompetences";
+        const url = `${API_URL}/translation/getStandardCompetences`;
 
         console.log("Fetching competences from:", url);
 
@@ -89,7 +92,7 @@ export default function ApplicationEndPoint() {
 
     // Create a new competence profile
     const createCompetenceProfile = async () => {
-        const response = await fetch(`${API_URL}/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
+        const response = await fetch(`${API_URL}/application/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
         });
         if (response.ok) {
@@ -105,7 +108,7 @@ export default function ApplicationEndPoint() {
 
     // Fetch availability periods
     const getAvailability = async () => {
-        const response = await fetch(`${API_URL}/getAllAvailability?personId=${personId}`);
+        const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`);
         if (response.ok) {
         setAvailability(await response.json());
         } else {
@@ -121,7 +124,7 @@ export default function ApplicationEndPoint() {
 
     // Create a new availability period
     const createAvailability = async () => {
-        const response = await fetch(`${API_URL}/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
+        const response = await fetch(`${API_URL}/application/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
         });
         if (response.ok) {
@@ -142,7 +145,7 @@ export default function ApplicationEndPoint() {
     
     const fetchLanguages = async () => {
         try {
-        const response = await fetch(`http://localhost:8080/translation/getLanguages`);
+        const response = await fetch(`${API_URL}/translation/getLanguages`);
         if (!response.ok) throw new Error("Failed to fetch languages");
         const data = await response.json();
         setLanguages(data);
@@ -156,7 +159,7 @@ export default function ApplicationEndPoint() {
         if (!language) return;
         console.log("language is set");
         try {
-            const url = `http://localhost:8080/translation/getCompetenceTranslation?language=${language}`;
+            const url = `${API_URL}/translation/getCompetenceTranslation?language=${language}`;
             fetch(url, {
                 method: "GET",
                 headers: {
@@ -202,7 +205,7 @@ export default function ApplicationEndPoint() {
         };
     
         try {
-            const response = await fetch(`${API_URL}/submitApplication`, {
+            const response = await fetch(`${API_URL}/application/submitApplication`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

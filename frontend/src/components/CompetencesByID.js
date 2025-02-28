@@ -14,11 +14,14 @@ export default function CompetencesByID(){
 
     const [competenceId, setCompetenceId] = useState("");
     const [specificCompetence, setSpecificCompetence] = useState(null);
+
+    // Get API URL from .env file
+    const API_URL = process.env.REACT_APP_API_URL;
     
     const fetchSpecificCompetence = async () => {
         if (!competenceId) return;
         try {
-          const response = await fetch(`http://localhost:8080/translation/getSpecificCompetence/${competenceId}`);
+          const response = await fetch(`${API_URL}/translation/getSpecificCompetence/${competenceId}`);
           if (!response.ok) throw new Error("Competence not found");
           const data = await response.json();
           setSpecificCompetence(data);
