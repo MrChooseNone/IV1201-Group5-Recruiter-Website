@@ -60,6 +60,15 @@ public class ReviewService {
     }
 
     /**
+     * Returns a application by id
+     * @return a application by id
+     */
+    public ApplicationDTO GetApplicationsById(Integer id)
+    {
+        return applicationRepository.findByApplicationId(id);
+    }
+
+    /**
      * Returns a list of all applications matching the specified application status
      * @param status the application status to find a match for
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason

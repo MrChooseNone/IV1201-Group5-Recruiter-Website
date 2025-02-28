@@ -16,7 +16,7 @@ import {
   CircularProgress
 } from "@mui/material";
 
-const API_URL = "http://localhost:8080/application"; // Adjust for your backend
+const API_URL = "http://localhost:8080/application"; // Adjust for backend
 
 export default function ApplicationEndPoint() {
     const [personId, setPersonId] = useState("");
@@ -191,6 +191,7 @@ export default function ApplicationEndPoint() {
     const submitApplication = async () => {
         if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
+            alert("Please fill in competences and availability")
             return;
         }
     

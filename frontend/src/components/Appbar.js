@@ -65,6 +65,17 @@ export default function Appbar() {
               }}
               >Edit Profile</Button>
 
+              <Button color='inherit' startIcon="" component={Link} to="/review"
+              sx={{
+                p: 2,
+                px: 4,
+                display: "flex", 
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                gap: 4,
+              }}
+              >Review Dashboard</Button>
+
               
               
           <Button color="inherit" 

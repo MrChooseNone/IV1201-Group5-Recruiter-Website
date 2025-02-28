@@ -84,6 +84,20 @@ public class ReviewerEndpointController {
     }
 
     /**
+     * This function returns the specified application
+     * 
+     * @param id the application id to find application
+     * @return This function will return the application of the application id
+     */
+    @GetMapping("/getApplicationsById/{id}")
+    public ApplicationDTO GetApplicationsById(@PathVariable Integer id) {
+        LOGGER.info("Application with ID (`{}`) requested",id); //TODO add authentication info here, aka who accessed this
+
+        ApplicationDTO application = reviewService.GetApplicationsById(id);
+        return application;
+    }
+
+    /**
      * This function updates the application status of a specific application
      * 
      * @param applicationId the application id

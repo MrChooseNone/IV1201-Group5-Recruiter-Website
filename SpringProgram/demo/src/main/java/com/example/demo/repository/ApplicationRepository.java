@@ -28,4 +28,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
      * @return A list of matching applications
      */
     List<Application> findAllByApplicationStatus(ApplicationStatus applicationStatus);
+    /**
+     * @param applicationId the application status to find applications matching
+     * @return A application
+     */
+    Application findByApplicationId(Integer applicationId);
 }
