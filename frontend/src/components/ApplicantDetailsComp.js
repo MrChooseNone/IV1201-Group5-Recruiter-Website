@@ -9,15 +9,14 @@ import { Typography, Divider, CircularProgress } from '@mui/material';
 export default function ApplicationDetailsComp() {
     const { id } = useParams();
     const[application,setApplication] = useState(null);
-
-    
-    const url = `http://localhost:8080/review/getApplicationsById/${id}`;
-
-    console.log("Fetching Application from:", url); 
+    const [versionNumber, setVersionNumber] = useState("0");
+    const [status, setStatus] = useState("unchecked");
+    const [isPressedAccepted, setIsPressedAccepted] = useState(false);
+    const [isPressedDenied, setIsPressedDenied] = useState(false);
  
     // Hämta kompetenser automatiskt vid sidladdning
     useEffect(() => {
-        fetch(url, {
+        fetch(`http://localhost:8080/review/getApplicationsById/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -35,6 +34,43 @@ export default function ApplicationDetailsComp() {
 
     if (!application) {
         return <CircularProgress></CircularProgress>;
+    }
+
+    const UpdateStatus = () => {
+        setVersionNumber(application.versionNumber + 1)
+        
+        fetch(`http://localhost:8080/review/updateApplicationStatus`, {
+            method: "POST",
+            headers: {
+                // Send as form data, to comply with us using @Requestparam in controller
+                "Content-Type": "application/x-www-form-urlencoded", 
+            },
+            body: new URLSearchParams({
+                applicationId: id,
+                status: status,
+                versionNumber: versionNumber.toString()
+            })
+            
+        })
+        .then((response) => response.text()) // Parse response as text
+        .then((data) => {
+            console.log(data); // Write data
+        })
+        .catch((error) => {
+            console.error("Error adding applicant:", error);
+        });
+    }
+
+    const handleAccept = () => {
+        setStatus("accepted");
+        setIsPressedAccepted(!isPressedAccepted);
+        setIsPressedDenied(false);
+    }
+
+    const handleDecline = () => {
+        setStatus("denied");
+        setIsPressedDenied(!isPressedDenied);
+        setIsPressedAccepted(false);
     }
 
   return (
@@ -57,7 +93,20 @@ export default function ApplicationDetailsComp() {
         <Typography variant='h6'>{"Submition date: " +application.applicationData}</Typography>
         <Typography variant='h6'>{"Version: " +application.versionNumber}</Typography>
         <Divider></Divider>
-        <Typography variant='h6'>{"Status: " +application.applicationStatus}</Typography>
+        
+        <Button onClick={handleAccept} variant='contained' sx={{
+            bgcolor: isPressedAccepted ? "success.main" : "primary",
+            transform: isPressedAccepted ? "translateY(2px)" : "none",
+            m: 1
+        }}>Accept!</Button>
+        <Button onClick={handleDecline} variant='contained' sx={{
+            bgcolor: isPressedDenied ? "#D33F49" : "primary",
+            transform: isPressedDenied ? "translateY(2px)" : "none",
+            m: 1,
+        }}>Decline</Button>
+        <Button variant='contained' onClick={UpdateStatus} sx={{
+            m: 1
+        }}> submit</Button>
     </Box>
   );
 }
