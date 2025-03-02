@@ -78,13 +78,30 @@ export default function ReviewerDashboard() {
         <Container sx={{
             bgcolor: "#AFF9C9",
             display: "flex",
-            p: 4,
+            flexDirection: {xs: "column", md: "row"},
+            width: "80%",
+            height: "100%",
+            justifySelf: "center",
+            p: 2,
             borderRadius: 4,
-            m:2,
+            marginTop:2,
+            gap: 2,
+            overflow: "hidden"
         }}>
             {/*Get all applications */}
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
-                <Button variant="contained" onClick={fetchApplicants}>Get all applications</Button>
+            <Paper elevation={3} sx={{ 
+                p: 1, 
+                marginBottom: "20px", 
+                bgcolor: "#67E0A3",
+                display: "flex",
+                flexDirection: "column",
+                
+                alignContent: "center",
+                alignItems: "center",
+                textAlign: "center"
+
+            }}>
+                <Button variant="contained" onClick={fetchApplicants} sx={{top: 2}}>Get all applications</Button>
                 <List>
                     {applications.length > 0 ? (
                         applications.map((Applicants) => {
@@ -137,7 +154,18 @@ export default function ReviewerDashboard() {
             </Paper>
 
             {/*Get all applications by status */}
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+            <Paper elevation={3} sx={{
+                p: 1, 
+                marginBottom: "20px", 
+                bgcolor: "#67E0A3",
+                display: "flex",
+                flexDirection: "column",
+                
+                alignContent: "center",
+                alignItems: "center",
+                textAlign: "center"
+
+                 }}>
                 <FormControl fullWidth margin="dense">
                     <Select value={status} onChange={(e) => setStatus(e.target.value)}>
                         <MenuItem key={"unchecked"} value={"unchecked"}>Unchecked</MenuItem>  
