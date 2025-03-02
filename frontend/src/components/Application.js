@@ -18,7 +18,7 @@ export default function ApplicationForm() {
     // Handle the submition of data to database
     // Validation functions
   const validatePersonNumber = (pnr) => {
-    return /^\d+$/.test(pnr) && pnr.length >= 12;
+    return /^\d+-?\d+$/.test(pnr);
   };
 
   const validateEmail = (email) => {
@@ -37,7 +37,7 @@ export default function ApplicationForm() {
 
       // Validate fields
       if (!validatePersonNumber(personNumber)) {
-        alert("Person number must contain only 12 numbers");
+        alert("Person number must follow this format: yyyymmdd-xxxx");
         return;
       }
 
@@ -125,7 +125,7 @@ export default function ApplicationForm() {
         <Stack spacing={2} sx={{ width: "100%"}}>
           <TextField required label="First Name" variant="outlined" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
           <TextField required label="Surname" variant="outlined" value={surname} onChange={(e) => setSurname(e.target.value)} fullWidth />
-          <TextField required label="Person Number" placeholder='YYYYMMDD XXXX' variant="outlined" value={personNumber} onChange={(e) => setPersonNumber(e.target.value)} fullWidth />
+          <TextField required label="Person Number" placeholder='YYYYMMDD-XXXX' variant="outlined" value={personNumber} onChange={(e) => setPersonNumber(e.target.value)} fullWidth />
           <TextField required label="E-mail" type="email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
           <TextField required label="Username" variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)} fullWidth />
           <TextField required label="Password" type="password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} fullWidth />

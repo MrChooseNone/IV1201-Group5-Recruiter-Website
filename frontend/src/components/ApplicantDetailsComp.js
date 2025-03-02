@@ -22,7 +22,15 @@ export default function ApplicationDetailsComp() {
                 "Content-Type": "application/json"
             }
         })
-        .then((response) => response.json())
+        .then((response) => { 
+            if (response.ok) {
+                return response.json(); // Parse JSON if response is OK
+            } else {
+                return response.text().then((errorText) => { 
+                    throw new Error(`Failed to fetch: ${errorText}`); 
+                });
+            }
+        })
         .then((data) => {
             console.log(data);
             setApplication(data);
@@ -52,7 +60,15 @@ export default function ApplicationDetailsComp() {
             })
             
         })
-        .then((response) => response.text()) // Parse response as text
+        .then((response) => { 
+            if (response.ok) {
+                return response.text(); // Parse JSON if response is OK
+            } else {
+                return response.text().then((errorText) => { 
+                    throw new Error(`Failed to fetch: ${errorText}`); 
+                });
+            }
+        }) // Parse response as text
         .then((data) => {
             console.log(data); // Write data
         })

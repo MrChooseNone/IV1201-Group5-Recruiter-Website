@@ -32,7 +32,15 @@ export default function ReviewerDashboard() {
                 "Content-type": "application/json"
             }
         })
-        .then((response) => response.json())
+        .then((response) => { 
+            if (response.ok) {
+                return response.json(); // Parse JSON if response is OK
+            } else {
+                return response.text().then((errorText) => { 
+                    throw new Error(`Failed to fetch: ${errorText}`); 
+                });
+            }
+        })
         .then((data) => {
             setApplications(data);
         })
@@ -49,7 +57,15 @@ export default function ReviewerDashboard() {
                 "Content-type": "application/json"
             }
         })
-        .then((response) => response.json())
+        .then((response) => { 
+            if (response.ok) {
+                return response.json(); // Parse JSON if response is OK
+            } else {
+                return response.text().then((errorText) => { 
+                    throw new Error(`Failed to fetch: ${errorText}`); 
+                });
+            }
+        })
         .then((data) => {
             setApplicationsByStatus(data);
         })

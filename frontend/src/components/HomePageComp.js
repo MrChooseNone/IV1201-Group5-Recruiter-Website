@@ -17,6 +17,7 @@ export default function HomePageComp() {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "100vh",
+          
           textAlign: "center",
           margin: 0,
           position: "relative", 
@@ -77,14 +78,17 @@ export default function HomePageComp() {
             display: "flex", 
             justifyContent: "center", 
             alignItems: "center",
-            gap: 3, 
-            padding: 8, 
+            gap: 2, 
+            padding: {xs: 8, md: 0}, 
             flexDirection: {xs: "column", md: "row"},
-            
+            width: "100%",
+            height: "100vh",
             borderRadius: 4,
-            position: "absolute",
+            position: "relative",
             top: 150,
             zIndex: 3,
+            marginTop: {xs: 2, md: 0},
+            marginBottom: {xs: 15, md: 1},
             
           }}
         >
@@ -96,6 +100,7 @@ export default function HomePageComp() {
                 width: 300, 
                 height: 200, 
                 p: 2, 
+                top: 0,
                 textAlign: "center", 
                 boxShadow: 3, 
                 overflow: "hidden",

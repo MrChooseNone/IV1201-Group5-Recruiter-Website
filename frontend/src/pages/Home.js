@@ -10,9 +10,14 @@ export default function Home(){
     return (
         <>
             <Appbar/>
-            <FollowMouse></FollowMouse>
-            <HomePageComp>
-            </HomePageComp>
+            <div style={{
+                height: "100vh"
+            }}>
+
+                <FollowMouse></FollowMouse>
+                <HomePageComp>
+                </HomePageComp>
+            </div>
             
             
         </>

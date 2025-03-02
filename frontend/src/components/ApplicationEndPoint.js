@@ -42,7 +42,15 @@ export default function ApplicationEndPoint() {
                 "Content-Type": "application/json",
             },
         })
-        .then((response) => response.json()) // Parsar svaret som JSON
+        .then((response) => { 
+            if (response.ok) {
+                return response.json(); // Parse JSON if response is OK
+            } else {
+                return response.text().then((errorText) => { 
+                    throw new Error(`Failed to fetch: ${errorText}`); 
+                });
+            }
+        })
         .then((data) => {
             console.log("Received profile: ", data);
             setCompetenceProfiles(data); // Uppdaterar state med kompetenslistan
@@ -63,7 +71,15 @@ export default function ApplicationEndPoint() {
                 "Content-Type": "application/json",
             },
         })
-        .then((response) => response.json()) // Parsar svaret som JSON
+        .then((response) => { 
+            if (response.ok) {
+                return response.json(); // Parse JSON if response is OK
+            } else {
+                return response.text().then((errorText) => { 
+                    throw new Error(`Failed to fetch: ${errorText}`); 
+                });
+            }
+        }) // Parsar svaret som JSON
         .then((data) => {
             console.log("Received competences:", data);
             setCompetences(data); // Uppdaterar state med kompetenslistan
@@ -164,7 +180,15 @@ export default function ApplicationEndPoint() {
                     "Content-Type": "application/x-www-form-urlencoded", 
                 },
             })
-            .then((response) => response.json()) // Parse response as text
+            .then((response) => { 
+                if (response.ok) {
+                    return response.json(); // Parse JSON if response is OK
+                } else {
+                    return response.text().then((errorText) => { 
+                        throw new Error(`Failed to fetch: ${errorText}`); 
+                    });
+                }
+            }) // Parse response as text
             .then((data) => {
                 console.log(data); // Write data
                 setTranslations(data);
@@ -252,9 +276,6 @@ export default function ApplicationEndPoint() {
                 </Button>
                 <List>
                     {competenceProfiles.map((cp, index) => {
-
-                        
-
                         return (
                             <ListItem key={index}>
                                 <ListItemText
@@ -269,7 +290,7 @@ export default function ApplicationEndPoint() {
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Create Competence Profile</Typography>
                 <FormControl fullWidth margin="dense">
-                    {personId !== "" ? (
+                    {personId !== "" && competences ? (
                         competences.length > 0 ? (
                             
                             <Select value={competenceId} onChange={(e) => setCompetenceId(e.target.value)}>
