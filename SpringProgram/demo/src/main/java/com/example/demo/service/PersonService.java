@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.CustomDatabaseException;
@@ -22,24 +26,24 @@ import com.example.demo.repository.RoleRepository;
 
 @Service
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW) 
-public class PersonService {
+public class PersonService implements UserDetailsService{
     private final PersonRepository personRepository;
     private final RoleRepository roleRepository;
-
+    private final PasswordEncoder passwordEncoder;
     //We create the logger
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class.getName()); 
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    
 
     /**
      * Constructs a new instance of the PersonService (Spring boot managed).
      *
      * @param personRepository the repository for accessing person database data
      */
-    public PersonService(PersonRepository personRepository,RoleRepository roleRepository) {
+    public PersonService(PersonRepository personRepository,RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.roleRepository=roleRepository;
+        this.passwordEncoder=passwordEncoder;
     }
 
     /**
@@ -241,5 +245,12 @@ public class PersonService {
             LOGGER.error("Failed to update username and password for an applicant (`{}`) to username (`{}`) due to a database error : (`{}`)",pnr,username,e.getMessage());
             throw new CustomDatabaseException();
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+        Optional<Person> personDetail = personRepository.findByEmail(username);
+
+        return personDetail.map(PersonDetails::new).orElseThrow(() -> new UsernameNotFoundException("Could not find " + username));
     }
 }
