@@ -97,7 +97,11 @@ Before any of the project's systems are run, there are a few steps which should 
    - JDBC_DATABASE_URL= This should be a url to the newly created database to use, for example jdbc:postgresql://localhost:5432/testdatabase
    - JDBC_DATABASE_USERNAME= This should be the username to use in the database, for example postgres
    - JDBC_DATABASE_PASSWORD= This should be the password to use, for example "1234" if the password is 1234
-5. Run `npm install` in the frontend folder, it should be installed directly in the folder.
+   - ALLOWED_ORIGINS = This should be the url for the frontend that connects to the backend, for example http://localhost:3000
+5. Create another .env file in the frontend folder
+6. Write the following line into the .env file
+    - REACT_APP_API_URL= This should be the url for the backend that the frontend sends requests to, for example http://localhost:8080
+7. Run `npm install` in the frontend folder, it should be installed directly in the folder.
 
 It should now be possible to run the frontend and backend systems locally, with the frontend being started by running `npm start` in the frontend folder, however the backend needs to be run with a few parameters, with the exact method used depending on how you wish to run the Spring Boot program.
 
