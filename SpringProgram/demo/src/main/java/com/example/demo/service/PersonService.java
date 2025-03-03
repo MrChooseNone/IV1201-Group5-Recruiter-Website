@@ -250,7 +250,7 @@ public class PersonService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        Optional<Person> personDetail = personRepository.findByEmail(username);
+        Optional<Person> personDetail = personRepository.findByUsername(username);
 
         return personDetail.map(PersonDetails::new).orElseThrow(() -> new UsernameNotFoundException("Could not find " + username));
     }
