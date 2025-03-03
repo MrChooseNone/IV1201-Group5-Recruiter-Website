@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +19,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.PersonDTO;
+import com.example.demo.domain.dto.dtoExample;
+import com.example.demo.domain.entity.ApplicantReset;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.CustomDatabaseException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
+import com.example.demo.repository.ApplicantResetRepository;
 import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.RoleRepository;
 
@@ -31,19 +35,23 @@ public class PersonService implements UserDetailsService{
     private final PersonRepository personRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final ApplicantResetRepository applicantResetRepository;
     //We create the logger
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class.getName()); 
 
-    
-
     /**
      * Constructs a new instance of the PersonService (Spring boot managed).
-     *
      * @param personRepository the repository for accessing person database data
+     * @param roleRepository the repository for accessing role database information
+     * @param jwtService this service provides jwt token related functionality
+     * @param passwordEncoder this is responsible for encoding passwords
      */
-    public PersonService(PersonRepository personRepository,RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public PersonService(PersonRepository personRepository,RoleRepository roleRepository,ApplicantResetRepository applicantResetRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.roleRepository=roleRepository;
+        this.applicantResetRepository=applicantResetRepository;
+        this.jwtService=jwtService;
         this.passwordEncoder=passwordEncoder;
     }
 
@@ -207,51 +215,113 @@ public class PersonService implements UserDetailsService{
     }
 
     /**
-     * This method is used to update username and password for a applicant
-     * @param pnr The pnr for the applicant to update
-     * @param pnr 
-     * @param email
+     * This method is used to request an update of username and password for a applicant, which is done by generating a unique link to the users email
+     * @param pnr The pnr for the applicant to generate a reset link for
      * @throws InvalidPersonException if the pnr does not match a existing person or that person is not an applicant
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
      * @return If no exception is thrown, a string describing the success
      */
-    public String UpdateApplicant(String pnr, String username, String password)
+    public String ApplicantResetLinkGeneration(String email)
     {
         try {
-            Optional<Person> personContainer = personRepository.findByPnr(pnr);
+            Optional<Person> personContainer = personRepository.findByEmail(email);
             
             if (personContainer.isEmpty()) {
-                LOGGER.error("Failed to update username and password for a applicant (`{}`) to username (`{}`) since no person exists in the database with that id",pnr,username);
+                LOGGER.error("Failed to generate reset link for a applicant with email (`{}`) since no person with that pnr exists in the database",email);
+                throw new InvalidPersonException("No person with that email exists!");
+            }
+
+            Person person=personContainer.get();
+
+            //We confirm the user is a applicant, if not this endpoint should not be used
+            if (!person.getRole().getName().equals("applicant")) {
+                LOGGER.error("Failed to generate reset link for a applicant with email (`{}`) since person is not a applicant, they are a (`{}`)",email,person.getRole().getName());
+                throw new InvalidPersonException("You are not a applicant, so this endpoint is not for you!");
+            }
+
+            //We then generate the unique link, by creating a jwt token with a unique random number + timestamp, then
+
+            String uniqueToken=jwtService.generateResetToken(email);
+            Date expirationDate=jwtService.extractExpiration(uniqueToken);
+
+            ApplicantReset reset = new ApplicantReset();
+            reset.setPerson(person);
+            reset.setResetDate(expirationDate.toString());
+
+            //Here the link is sent using "email"
+            LOGGER.info("Unique token generated is : " + uniqueToken);
+
+            applicantResetRepository.save(reset);
+
+            return "Reset link sent to email " + person.getEmail();
+        }
+        catch(DataAccessException e)
+        {
+            LOGGER.error("Failed to generate reset link for a applicant with email (`{}`) due to a database error : (`{}`)",email,e.getMessage());
+            throw new CustomDatabaseException();
+        }
+    }
+
+    /**
+     * This method is used to request an update of username and password for a applicant, which is done by generating a unique link to the users email
+     * @param pnr The pnr for the applicant to generate a reset link for
+     * @throws InvalidPersonException if the pnr does not match a existing person or that person is not an applicant
+     * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
+     * @return If no exception is thrown, a string describing the success
+     */
+    public String ApplicantUseResetLink(String resetToken,String username, String password)
+    {
+        try {            
+            
+            //TODO we then search that the generated token is valid and real
+            
+            if (!jwtService.validateResetToken(resetToken)) {
+                LOGGER.error("Failed to reset applicant following link with token (`{}`) since token is either invalid or out of date",resetToken);
+                //TODO add custom exception here
+                throw new InvalidPersonException("Token invalid, please request a new one since it may be out of date");
+            }
+
+            String email = jwtService.extractUserName(resetToken);
+
+            Optional<Person> personContainer = personRepository.findByEmail(email);
+            
+            if (personContainer.isEmpty()) {
+                LOGGER.error("Failed to update applicant following link with token (`{}`) which contains email (`{}`) since no person with that pnr exists in the database",resetToken, email);
                 throw new InvalidPersonException("No person with that pnr exists!");
             }
 
             Person person=personContainer.get();
 
-            //We confirm the user is a recruiter, if not this endpoint should not be used
+            //We confirm the user is a applicant, if not this endpoint should not be used
             if (!person.getRole().getName().equals("applicant")) {
-                LOGGER.error("Failed to update username and password for a applicant (`{}`) to username (`{}`) since person is not a applicant, they are a (`{}`)",pnr,username,person.getRole().getName());
+                LOGGER.error("Failed to update applicant following link with token (`{}`) which contains email (`{}`) since person is not a applicant, they are a (`{}`)",resetToken,email,person.getRole().getName());
                 throw new InvalidPersonException("You are not a applicant, so this endpoint is not for you!");
             }
 
+            if (!applicantResetRepository.existsByPersonAndResetDate(person,jwtService.extractExpiration(resetToken).toString())) {
+                LOGGER.error("Failed to update applicant following link with token (`{}`) which contains email (`{}`) since no reset request for that person was found",resetToken,email,person.getRole().getName());
+                //TODO add custom exception here
+                throw new InvalidPersonException("You gave a fake token, no request for that person exists in the system");
+            }
+
+            //We then update the username and password for the user
             person.setUsername(username);
-            person.setPassword(passwordEncoder.encode(password)); 
+            person.setPassword(passwordEncoder.encode(password));
             personRepository.save(person);
 
-            LOGGER.info("Updated username and password for a applicant (`{}`) to username",pnr,username);
-
-            return "Updated username and password for a applicant "+person.getName()+" to username "+person.getUsername()+" (password excludes :) )";
+            return "User updated, it now has the username " + person.getUsername();
         }
         catch(DataAccessException e)
         {
-            LOGGER.error("Failed to update username and password for an applicant (`{}`) to username (`{}`) due to a database error : (`{}`)",pnr,username,e.getMessage());
+            LOGGER.error("Failed to update applicant following link with token (`{}`) due to a database error : (`{}`)",resetToken,e.getMessage());
             throw new CustomDatabaseException();
         }
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        Optional<Person> personDetail = personRepository.findByEmail(username);
-
+        Optional<Person> personDetail = personRepository.findByUsername(username);
         return personDetail.map(PersonDetails::new).orElseThrow(() -> new UsernameNotFoundException("Could not find " + username));
     }
 }
