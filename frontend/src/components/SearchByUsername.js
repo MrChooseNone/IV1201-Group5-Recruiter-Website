@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -9,15 +8,30 @@ import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/mate
 
 export default function SearchApplication() {
     const[search,setSearch] = useState("");
-    const[result,setResult] = useState([]);
+    const[result,setResult] = useState(null);
 
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
+    const parseSearch = () => {
+        if(/^\d+-?\d+$/.test(search)) return "pnr";
+        if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(search)) return "email";
+        else return "username";
+    }
 
     const handleSearch = (e) => {
         e.preventDefault(); // Prevents page refresh
-        const param = new URLSearchParams({name: search});
-        const url = new URL(`${API_URL}/person/find`);
+
+        const type = parseSearch();
+        let param;
+        if(type == "email"){
+            param = new URLSearchParams({email: search});
+        }else if (type == "pnr"){
+            param = new URLSearchParams({pnr: search});
+        } else{
+            param = new URLSearchParams({username: search});
+        }
+        
+        const url = new URL(`${API_URL}/person/findPerson`);
         
 
         // Add the params to the URL
@@ -76,7 +90,7 @@ export default function SearchApplication() {
       onSubmit={handleSearch} // Allows Enter key to trigger search
     >
       <div>
-        <Typography>Search for registered by name</Typography>
+        <Typography>Search for registered by Username, Email or Pnr</Typography>
         <TextField
           required
           id="standard-required"
@@ -87,26 +101,14 @@ export default function SearchApplication() {
           onChange={(e) => setSearch(e.target.value)} // Save inputed data on change
         />
         <Button variant="outlined" onClick={handleSearch}>Submit</Button>
-        
-            <Typography variant='h6'>Results for {search}</Typography>
-            <List sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                {result.length > 0 ? (
-                    result.map((person) => {
-                        return(
-                            <ListItem sx={{justifyContent: "center"}} key={person.id}>
-                                <Box sx={{boxShadow: 5, p: 2, borderRadius: 2, justifySelf: "center",}}>
-                                    <Typography>{person.name} {person.surname}, E-mail: {person.email}, Pnr: {person.pnr}, Role: {person.role.name}, Username: {person.username} </Typography>
-                                </Box>
-                            </ListItem>
-                        );
-                    })
-
-                ) : (
-                    <Typography>No person by that name</Typography>
-                )}
-            </List>
-        
-        
+        <Typography variant='h6'>Results for {search}</Typography>               
+        <Box sx={{boxShadow: 5, p: 2, borderRadius: 2, justifySelf: "center",}}>
+            {result ? (
+                <Typography>{result.name} {result.surname}, E-mail: {result.email}, Pnr: {result.pnr}, Role: {result.role.name}, Username: {result.username} </Typography>
+            ) : (
+                <Typography>Person not found</Typography>
+            )}
+        </Box>
       </div>
     </Box>
   );
