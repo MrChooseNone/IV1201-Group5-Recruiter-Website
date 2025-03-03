@@ -4,7 +4,8 @@ import Box from '@mui/material/Box';
 
 import Button from '@mui/material/Button';
 
-import { Typography, Divider, CircularProgress } from '@mui/material';
+import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
+import { ThemeContext } from '@emotion/react';
 
 export default function ApplicationDetailsComp() {
     const { id } = useParams();
@@ -114,6 +115,65 @@ export default function ApplicationDetailsComp() {
         <Typography variant='h6'>{"Submition date: " +application.applicationData}</Typography>
         <Typography variant='h6'>{"Version: " +application.versionNumber}</Typography>
         <Divider></Divider>
+         
+        <Box sx={{
+            bgcolor: "#AFF9C9",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 4,
+            borderRadius: 2,
+            alignItems: "center",
+        }}>
+            <Typography variant='h6'>Competence Profiles</Typography>
+            <List>
+                {application.competenceProfilesForApplication.length > 0 ? (
+                    application.competenceProfilesForApplication.map((competences) => {
+                        return(
+                            <ListItem key={competences.competenceProfileId}>
+                                <Box>
+                                    <Typography>{"Competence: "+competences.competenceDTO.name}</Typography>
+                                    <Typography>{"Years of experience: "+competences.yearsOfExperience} </Typography>
+                                </Box>
+                            </ListItem>
+                        );
+                    })
+
+                ) : (
+                    <Typography>No competences</Typography>
+                )}
+            </List>
+        </Box>
+
+        <Box sx={{
+            bgcolor: "#AFF9C9",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 4,
+            borderRadius: 2,
+            alignItems: "center",
+        }}>
+            <Typography variant='h6'>Availability</Typography>
+            <List>
+                {application.availabilityPeriodsForApplication.length > 0 ? (
+                    application.availabilityPeriodsForApplication.map((availability) => {
+                        return (
+                            <ListItem key={availability.availabilityId}>
+                                <Box>
+                                    <Typography>{"From date: "+availability.fromDate} </Typography>
+                                    <Typography>{"To date :"+availability.toDate} </Typography>
+                                </Box>
+                            </ListItem>
+                        );
+                    })
+                ) : (
+                    <Typography>No availability</Typography>
+                )}
+            </List>
+        </Box>
         
         <Button onClick={handleAccept} variant='contained' sx={{
             bgcolor: isPressedAccepted ? "success.main" : "primary",
