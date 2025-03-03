@@ -4,6 +4,9 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
+
+import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
+
 export default function SearchApplication() {
     const[search,setSearch] = useState("");
     const[result,setResult] = useState([]);
@@ -21,15 +24,23 @@ export default function SearchApplication() {
         url.search = param.toString();
     
         console.log("Sending request with params:", url); // remove (just debug)
-    
+        
         fetch(url, {
-            method: "GET",
-            headers: {
-                // Send as form data, to comply with us using @Requestparam in controller
-                "Content-Type": "application/x-www-form-urlencoded", 
-            },
+          method: "GET",
+          headers: {
+            
+            "Content-Type": "application/json", 
+          },
         })
-        .then((response) => response.text()) // Parse response as text
+        .then((response) => { 
+          if (response.ok) {
+              return response.json(); // Parse JSON if response is OK
+          } else {
+              return response.text().then((errorText) => { 
+                  throw new Error(`Failed to fetch: ${errorText}`); 
+              });
+          }
+        }) 
         .then((data) => {
             console.log(data); // Write data
             setResult(data)
@@ -42,19 +53,30 @@ export default function SearchApplication() {
   return (
     <Box
       component="form"
-      sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } ,
-      bgcolor: "#8E8C8C",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",}}
+      sx={{
+        width: "40%",
+        height: "100%",
+        justifySelf: "center",
+        p: 2,
+        borderRadius: 4,
+        marginTop:2,
+        gap: 2,
+        overflow: "hidden",
+        bgcolor: "#AFF9C9",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        
+
+      }}
       
       noValidate
       autoComplete="off"
       onSubmit={handleSearch} // Allows Enter key to trigger search
     >
       <div>
-       
+        <Typography>Search for registered by name</Typography>
         <TextField
           required
           id="standard-required"
@@ -65,7 +87,26 @@ export default function SearchApplication() {
           onChange={(e) => setSearch(e.target.value)} // Save inputed data on change
         />
         <Button variant="outlined" onClick={handleSearch}>Submit</Button>
-        <h3>{result}</h3>
+        
+            <Typography variant='h6'>Results for {search}</Typography>
+            <List sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                {result.length > 0 ? (
+                    result.map((person) => {
+                        return(
+                            <ListItem sx={{justifyContent: "center"}} key={person.id}>
+                                <Box sx={{boxShadow: 5, p: 2, borderRadius: 2, justifySelf: "center",}}>
+                                    <Typography>{person.name} {person.surname}, E-mail: {person.email}, Pnr: {person.pnr}, Role: {person.role.name} </Typography>
+                                </Box>
+                            </ListItem>
+                        );
+                    })
+
+                ) : (
+                    <Typography>No person by that name</Typography>
+                )}
+            </List>
+        
+        
       </div>
     </Box>
   );
