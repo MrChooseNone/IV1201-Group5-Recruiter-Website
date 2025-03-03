@@ -1,15 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from "react-router-dom";
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
+
 import Button from '@mui/material/Button';
-import List from '@mui/material/List';
+
 import { Typography, Divider, CircularProgress } from '@mui/material';
 
 export default function ApplicationDetailsComp() {
     const { id } = useParams();
     const[application,setApplication] = useState(null);
-    const [versionNumber, setVersionNumber] = useState("0");
     const [status, setStatus] = useState("unchecked");
     const [isPressedAccepted, setIsPressedAccepted] = useState(false);
     const [isPressedDenied, setIsPressedDenied] = useState(false);
@@ -37,6 +36,7 @@ export default function ApplicationDetailsComp() {
         .then((data) => {
             console.log(data);
             setApplication(data);
+            
         })
         .catch((error) => {
             console.error("faild to get application by id: " + error);
@@ -48,7 +48,7 @@ export default function ApplicationDetailsComp() {
     }
 
     const UpdateStatus = () => {
-        setVersionNumber(application.versionNumber)
+        
         
         fetch(`${API_URL}/review/updateApplicationStatus`, {
             method: "POST",
@@ -59,7 +59,7 @@ export default function ApplicationDetailsComp() {
             body: new URLSearchParams({
                 applicationId: id,
                 status: status,
-                versionNumber: versionNumber.toString()
+                versionNumber: application.versionNumber
             })
             
         })
@@ -96,13 +96,15 @@ export default function ApplicationDetailsComp() {
     <Box
       component="form"
       sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' }, 
-      bgcolor: "#8E8C8C",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",}}
-      
-      
+        bgcolor: "#AFF9C9",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        p: 4,
+        borderRadius: 2,
+        alignItems: "center",
+        }}
     >
         <Typography variant='h4'>{application.applicant.name + " " + application.applicant.surname}</Typography>
         <Typography variant='h6'>{"E-mail: " + application.applicant.email}</Typography>
@@ -123,7 +125,7 @@ export default function ApplicationDetailsComp() {
             transform: isPressedDenied ? "translateY(2px)" : "none",
             m: 1,
         }}>Decline</Button>
-        <Button variant='contained' onClick={UpdateStatus} sx={{
+        <Button disabled={!isPressedAccepted && !isPressedDenied} variant='contained' onClick={UpdateStatus} sx={{
             m: 1
         }}> submit</Button>
     </Box>
