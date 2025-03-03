@@ -103,36 +103,38 @@ export default function ApplicationDetailsComp() {
         justifyContent: "center",
         alignItems: "center",
         p: 4,
+        gap: 2,
         borderRadius: 2,
         alignItems: "center",
+        
         }}
     >
         <Typography variant='h4'>{application.applicant.name + " " + application.applicant.surname}</Typography>
         <Typography variant='h6'>{"E-mail: " + application.applicant.email}</Typography>
         <Typography variant='h6'>{"Person number: " + application.applicant.pnr}</Typography>
-        <Divider></Divider>
         <Typography variant='h6'>{"Status: " +application.applicationStatus}</Typography>
         <Typography variant='h6'>{"Submition date: " +application.applicationData}</Typography>
         <Typography variant='h6'>{"Version: " +application.versionNumber}</Typography>
-        <Divider></Divider>
+        <Divider flexItem  sx={{bgcolor: "#67E0A3", height: 2, width: "75%", alignSelf: "center"}}></Divider>
          
-        <Box sx={{
+        <Box  sx={{
             bgcolor: "#AFF9C9",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            p: 4,
+            
+            p: 2,
             borderRadius: 2,
-            alignItems: "center",
+            
         }}>
             <Typography variant='h6'>Competence Profiles</Typography>
-            <List>
+            <List sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                 {application.competenceProfilesForApplication.length > 0 ? (
                     application.competenceProfilesForApplication.map((competences) => {
                         return(
-                            <ListItem key={competences.competenceProfileId}>
-                                <Box>
+                            <ListItem sx={{justifyContent: "center"}} key={competences.competenceProfileId}>
+                                <Box sx={{boxShadow: 5, p: 2, borderRadius: 2, justifySelf: "center",}}>
                                     <Typography>{"Competence: "+competences.competenceDTO.name}</Typography>
                                     <Typography>{"Years of experience: "+competences.yearsOfExperience} </Typography>
                                 </Box>
@@ -145,24 +147,26 @@ export default function ApplicationDetailsComp() {
                 )}
             </List>
         </Box>
-
+        <Divider flexItem  sx={{bgcolor: "#67E0A3", height: 2, width: "75%", alignSelf: "center"}}></Divider>
         <Box sx={{
             bgcolor: "#AFF9C9",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            alignContent: "center",
+            justifyItems: "center",
             p: 4,
             borderRadius: 2,
-            alignItems: "center",
+            
         }}>
             <Typography variant='h6'>Availability</Typography>
-            <List>
+            <List sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                 {application.availabilityPeriodsForApplication.length > 0 ? (
                     application.availabilityPeriodsForApplication.map((availability) => {
                         return (
-                            <ListItem key={availability.availabilityId}>
-                                <Box>
+                            <ListItem sx={{justifyContent: "center"}} key={availability.availabilityId}>
+                                <Box sx={{boxShadow: 5, p: 2, borderRadius: 2}}>
                                     <Typography>{"From date: "+availability.fromDate} </Typography>
                                     <Typography>{"To date :"+availability.toDate} </Typography>
                                 </Box>
@@ -174,7 +178,7 @@ export default function ApplicationDetailsComp() {
                 )}
             </List>
         </Box>
-        
+        <Divider flexItem  sx={{bgcolor: "#67E0A3", height: 2, width: "75%", alignSelf: "center"}}></Divider>
         <Button onClick={handleAccept} variant='contained' sx={{
             bgcolor: isPressedAccepted ? "success.main" : "primary",
             transform: isPressedAccepted ? "translateY(2px)" : "none",
