@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import DynamicBorderBox from "./BackgroudReactive";
 import Box from "@mui/material/Box";
 
-const Grid = ({rows = 5}) => {
-    const [cols, setCols] = useState(5);
+const Grid = ({rows = 10}) => {
+    const [cols, setCols] = useState(99);
 
     useEffect(() => {
         const handleResize = () => {
