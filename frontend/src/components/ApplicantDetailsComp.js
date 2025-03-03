@@ -13,10 +13,13 @@ export default function ApplicationDetailsComp() {
     const [status, setStatus] = useState("unchecked");
     const [isPressedAccepted, setIsPressedAccepted] = useState(false);
     const [isPressedDenied, setIsPressedDenied] = useState(false);
+
+    // Get API URL from .env file
+    const API_URL = process.env.REACT_APP_API_URL;
  
     // Hämta kompetenser automatiskt vid sidladdning
     useEffect(() => {
-        fetch(`http://localhost:8080/review/getApplicationsById/${id}`, {
+        fetch(`${API_URL}/review/getApplicationsById/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -47,7 +50,7 @@ export default function ApplicationDetailsComp() {
     const UpdateStatus = () => {
         setVersionNumber(application.versionNumber)
         
-        fetch(`http://localhost:8080/review/updateApplicationStatus`, {
+        fetch(`${API_URL}/review/updateApplicationStatus`, {
             method: "POST",
             headers: {
                 // Send as form data, to comply with us using @Requestparam in controller

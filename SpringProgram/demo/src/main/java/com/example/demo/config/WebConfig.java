@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -12,17 +13,24 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 
 public class WebConfig implements WebMvcConfigurer {
+
+    @Value("${ALLOWED_ORIGINS:http://localhost:3000}") // Reads allowed origins from environment variables, defaulting to localhost:3000
+    private String allowedOrigins;
     
     @Override
     /**
-     * This function tells spring to allow cross-origin access to everything from http://localhost:3000, which is reacts development server port, for the purpose of development
+     * Configures CORS to allow cross-origin access from the specified origins.
+     * The allowed origins are fetched from an environment variable (ALLOWED_ORIGINS).
+     * Multiple origins can be specified as a comma-separated list.
      */
     public void addCorsMappings(@NonNull CorsRegistry registry) {
+        String[] origins = allowedOrigins.split(","); // Convert comma-separated values to an array
+
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000/")  // React's development server URL
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Allowed HTTP methods
-                .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowedOrigins(origins)  // Use environment-defined origins
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Allowed HTTP methods
+                .allowedHeaders("*")  // Allow all headers
+                .allowCredentials(true);  // Allow credentials (e.g., cookies, authorization headers)
     }
 }
 

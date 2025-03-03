@@ -5,13 +5,16 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 export default function SearchApplication() {
-    const[search,setSearch] = useState("")
-    const[result,setResult] = useState([])
+    const[search,setSearch] = useState("");
+    const[result,setResult] = useState([]);
+
+    // Get API URL from .env file
+    const API_URL = process.env.REACT_APP_API_URL;
 
     const handleSearch = (e) => {
         e.preventDefault(); // Prevents page refresh
         const param = new URLSearchParams({name: search});
-        const url = new URL("http://localhost:8080/person/find");
+        const url = new URL(`${API_URL}/person/find`);
         
 
         // Add the params to the URL

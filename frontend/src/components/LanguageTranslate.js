@@ -14,10 +14,13 @@ export default function LanguageTranslate(){
     const [language, setLanguage] = useState("");
     const [translations, setTranslations] = useState([]);
     const [languages, setLanguages] = useState([]);
+
+    // Get API URL from .env file
+    const API_URL = process.env.REACT_APP_API_URL;
     
     const fetchLanguages = async () => {
         try {
-        const response = await fetch(`http://localhost:8080/translation/getLanguages`);
+        const response = await fetch(`${API_URL}/translation/getLanguages`);
         if (!response.ok) throw new Error("Failed to fetch languages");
         const data = await response.json();
         setLanguages(data);
@@ -30,7 +33,7 @@ export default function LanguageTranslate(){
         if (!language) return;
         console.log("language is set");
         try {
-            const url = `http://localhost:8080/translation/getCompetenceTranslation?language=${language}`;
+            const url = `${API_URL}/translation/getCompetenceTranslation?language=${language}`;
             fetch(url, {
                 method: "GET",
                 headers: {

@@ -8,15 +8,19 @@ import { Typography, Stack, Container } from '@mui/material';
 // Used "Material UI" as reference https://mui.com/material-ui/react-text-field/
 
 export default function ApplicationForm() {
-    // UseState to save users inputed data and later send to database
-    const[name,setName] = useState("")
-    const[surname,setSurname] = useState("")
-    const[email,setEmail] = useState("")
-    const[username,setUsername] = useState("")
-    const[personNumber,setPersonNumber] = useState("")
-    const[password,setPassword] = useState("")
-    // Handle the submition of data to database
-    // Validation functions
+  // UseState to save users inputed data and later send to database
+  const[name,setName] = useState("");
+  const[surname,setSurname] = useState("");
+  const[email,setEmail] = useState("");
+  const[username,setUsername] = useState("");
+  const[personNumber,setPersonNumber] = useState("");
+  const[password,setPassword] = useState("");
+
+  // Get API URL from .env file
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  // Handle the submition of data to database
+  // Validation functions
   const validatePersonNumber = (pnr) => {
     return /^\d+-?\d+$/.test(pnr);
   };
@@ -60,7 +64,7 @@ export default function ApplicationForm() {
         password: password
        }; // Prepare the data to be sent
       
-      const url = "http://localhost:8080/person/register"
+      const url = `${API_URL}/person/register`;
       
   
       console.log("Sending: ", applicant); // remove (just debug)
