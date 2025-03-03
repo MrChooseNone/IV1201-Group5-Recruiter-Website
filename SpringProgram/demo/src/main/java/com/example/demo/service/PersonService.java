@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.CustomDatabaseException;
