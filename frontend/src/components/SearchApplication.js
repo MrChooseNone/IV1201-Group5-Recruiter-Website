@@ -56,13 +56,13 @@ export default function SearchApplication() {
       sx={{
         width: {xs: "70%", md: "40%"},
         height: "100%",
-        justifySelf: "center",
+        
         p: 2,
         borderRadius: 4,
         marginTop:2,
         gap: 2,
         overflow: "hidden",
-        bgcolor: "#AFF9C9",
+        bgcolor: "#67E0A3",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

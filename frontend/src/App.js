@@ -17,7 +17,7 @@ function App() {
     <Routes>
       <Route index element={<Home/>}/> {/*Default end point "/" */}
       <Route path='/home'element={<Home/>}/>
-      <Route path='/Competences' element={<CompetencesPage/>}/>
+      
       <Route path='/JobApplication' element={<JobApplication/>}/>
       <Route path='/addApplicant' element={<AddApplicant/>}/>
       {/* add security*/ }

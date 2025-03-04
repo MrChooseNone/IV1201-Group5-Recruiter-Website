@@ -81,13 +81,9 @@ export default function ReviewerDashboard() {
             bgcolor: "#AFF9C9",
             display: "flex",
             flexDirection: {xs: "column", md: "row"},
-            width: "80%",
-            height: "100%",
-            justifySelf: "center",
-            p: 2,
-            borderRadius: 4,
-            marginTop:2,
             gap: 2,
+            justifySelf: "center",
+            
             overflow: "hidden"
         }}>
             {/*Get all applications */}
@@ -97,7 +93,9 @@ export default function ReviewerDashboard() {
                 bgcolor: "#67E0A3",
                 display: "flex",
                 flexDirection: "column",
-                
+                marginTop: 2,
+                borderRadius: 4,
+                top: 0, 
                 alignContent: "center",
                 alignItems: "center",
                 textAlign: "center"
@@ -162,7 +160,9 @@ export default function ReviewerDashboard() {
                 bgcolor: "#67E0A3",
                 display: "flex",
                 flexDirection: "column",
-                
+                marginTop: 2,
+                borderRadius: 4,
+                top: 0,                
                 alignContent: "center",
                 alignItems: "center",
                 textAlign: "center"
