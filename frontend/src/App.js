@@ -1,6 +1,6 @@
 
 import './App.css';
-import {Routes, Route} from 'react-router-dom';
+import {HashRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from "./pages/Home";
 
 import JobApplication from "./pages/JobApplication";
@@ -13,7 +13,7 @@ import ApplicantDetails from './pages/ApplicantDetails';
 function App() {
   return (
     
-    
+    <Router>
     <Routes>
       <Route index element={<Home/>}/> {/*Default end point "/" */}
       <Route path='/home'element={<Home/>}/>
@@ -26,6 +26,7 @@ function App() {
 
       <Route path='*' element={<NoPage/>}/> {/*Catch wrong URL end points to a error page */}
     </Routes>
+    </Router>
     
   );
 }
