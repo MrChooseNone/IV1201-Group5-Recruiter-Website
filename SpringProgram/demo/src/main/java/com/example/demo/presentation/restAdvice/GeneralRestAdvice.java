@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.presentation.restException.AlreadyExistsException;
 import com.example.demo.presentation.restException.CustomDatabaseException;
+import com.example.demo.presentation.restException.InvalidJWTException;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
@@ -60,12 +61,11 @@ public class GeneralRestAdvice {
    * This function is responsible for handeling the AlreadyExistsException error
    * @param ex the error which was thrown to active this handler
    * @return this sends a http 409 error message with the AlreadyExistsException error message as the text
-   * 
    */
   //409 is used since the request was correct, but it could not be fulfilled
   @ExceptionHandler(AlreadyExistsException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
-  String PersonNotFoundHandler(AlreadyExistsException ex) {
+  String AlreadyExistsExceptionHandler(AlreadyExistsException ex) {
     return ex.getMessage();
   }
 
@@ -107,5 +107,16 @@ public class GeneralRestAdvice {
     }
 
     return errorMessage;
+  }
+
+  /**
+   * This function is responsible for handeling the InvalidJWTException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 400 error message with the InvalidJWTException error message as the text
+   */
+  @ExceptionHandler(InvalidJWTException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  String InvalidJWTExceptionHandler(InvalidJWTException ex) {
+    return ex.getMessage();
   }
 }

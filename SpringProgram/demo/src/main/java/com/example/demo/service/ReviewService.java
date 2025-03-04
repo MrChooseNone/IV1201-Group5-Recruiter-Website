@@ -65,7 +65,14 @@ public class ReviewService {
      */
     public ApplicationDTO GetApplicationsById(Integer id)
     {
-        return applicationRepository.findByApplicationId(id);
+        try {
+            return applicationRepository.findByApplicationId(id);
+        }
+        catch(DataAccessException e)
+        {
+            LOGGER.error("Failed to find retrive applications due to a database error : (`{}`)",e.getMessage());
+            throw new CustomDatabaseException();
+        }
     }
 
     /**

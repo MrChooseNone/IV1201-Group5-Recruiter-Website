@@ -27,7 +27,12 @@ public class ApplicantReset {
     private Person person;
 
     @NotNull(message = "Each reset must have a specific expiration date")
+    @Column()
     private String resetDate;
+
+    @NotNull
+    @Column()
+    private Long randomLong;
 
     /**
      * This is a constructor for ApplicantReset, 
@@ -72,11 +77,29 @@ public class ApplicantReset {
     }
 
     /**
-     * This is a setter for the person attribute
+     * This is a setter for the resetDate attribute
      * @param newResetDate the new date
      */
     public void setResetDate(String newResetDate)
     {
         this.resetDate=newResetDate;
+    }
+
+    /**
+     * This is a getter for the randomLong attribute
+     * @return The instances resetDate attribute
+     */
+    public Long getRandomLong()
+    {
+        return this.randomLong;
+    }
+
+    /**
+     * This is a setter for the randomLong attribute
+     * @param newRandomLong the new random number
+     */
+    public void setRandomLong(Long newRandomLong)
+    {
+        this.randomLong=newRandomLong;
     }
 }

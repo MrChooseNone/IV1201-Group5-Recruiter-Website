@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -25,15 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.dto.PersonDTO;
-import com.example.demo.domain.entity.Application;
+import com.example.demo.domain.entity.ApplicantReset;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.domain.entity.Role;
 import com.example.demo.presentation.restException.CustomDatabaseException;
-import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
+import com.example.demo.presentation.restException.InvalidJWTException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.PersonNotFoundException;
+import com.example.demo.repository.ApplicantResetRepository;
 import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.RoleRepository;
 
@@ -49,7 +50,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * https://www.java67.com/2023/04/difference-between-mockitomock-mock-and.html 
  * 
  */
-@SpringBootTest(properties = { "spring.profiles.active=test" })
 public class PersonServiceTest {
 
     //This inserts a mock of the the password encoder
@@ -57,25 +57,31 @@ public class PersonServiceTest {
     private PasswordEncoder passwordEncoder;
 
     //This is used to create fake repository, to avoid actually interacting with the database, since this is a unit test for a service, not an integration test
-    @Spy 
+    @Mock 
     private PersonRepository personRepository;
 
-    @Spy 
+    @Mock 
     private RoleRepository roleRepository;
 
+    @Mock
+    private ApplicantResetRepository applicantResetRepository;
+
+    @Mock
+    private JwtService jwtService;
     //This ensures above is used in place of a real instance in the constructor
+    
     @InjectMocks
     private PersonService personService;
 
     //This list is used as the mock repository, accessed using the above repository, avoids real database accesses being made to ensure test results are entirely correct
     static private List<Person> savedPeople=new ArrayList<Person>(); 
 
-    //This ensures mocks are created correctly
+    // This ensures mocks are created correctly
     @BeforeAll
     public static void beforeAll() {
-        MockitoAnnotations.openMocks(PersonServiceTest.class);
+        MockitoAnnotations.openMocks(ApplicationServiceTest.class);
     }
-    
+
     //This ensures the mock "databases" are clean after each attempt
     @AfterEach
     public void afterEach()
@@ -546,29 +552,30 @@ public class PersonServiceTest {
 
     @Test
     /**
-     * This tests the UpdateApplicant method
+     * This tests the ApplicantResetLinkGeneration method
      */
-    void UpdateApplicantTest()
+    void ApplicantResetLinkGenerationTest()
     {
 
         //We first create an example person, with test parameters
         String name="test";
         String surname="testsson";
         String pnr="pnr";
+        String email="email";
         Person person=new Person();
         person.setName(name);
         person.setSurname(surname);
         person.setPnr(pnr);
+        person.setEmail(email);
         Role role =new Role();
         role.setName("notApplicant");
         person.setRole(role);
 
-        //We then mock the repository function
-        when(personRepository.findByPnr(anyString())).thenAnswer(invocation -> {
-            String pnrArgument=(String)invocation.getArguments()[0];
+        when(personRepository.findByEmail(anyString())).thenAnswer(invocation -> {
+            String emailArg=(String)invocation.getArguments()[0];
             Optional<PersonDTO> pContainer;
             for (PersonDTO a : savedPeople) {
-                if (a.getPnr()==pnrArgument) {
+                if (a.getEmail()==emailArg) {
                     pContainer=Optional.of(a);
                     return pContainer;
                 }
@@ -578,14 +585,26 @@ public class PersonServiceTest {
         });
 
 
+        when(jwtService.generateResetToken(anyString())).thenAnswer(invocation -> {
+            return "thisisnotarealJWT";
+        });
+
+        when(jwtService.extractExpiration(anyString())).thenAnswer(invocation -> {
+            return new java.util.Date(1234);
+        });
+
+        when(jwtService.extractRandomNumber(anyString())).thenAnswer(invocation -> {
+            return Long.valueOf(0);
+        });
+
         //We then test it throws the correct exceptions
 
-        var e=assertThrowsExactly(InvalidPersonException.class, ()->personService.UpdateApplicant("fakePNR","test","test"));
-        assertEquals("Specified person invalid due to : No person with that pnr exists!", e.getMessage());
+        var e=assertThrowsExactly(InvalidPersonException.class, ()->personService.ApplicantResetLinkGeneration(email));
+        assertEquals("Specified person invalid due to : No person with that email exists!", e.getMessage());
 
         savedPeople.add(person);
 
-        e=assertThrowsExactly(InvalidPersonException.class, ()->personService.UpdateApplicant(pnr,"test","test"));
+        e=assertThrowsExactly(InvalidPersonException.class, ()->personService.ApplicantResetLinkGeneration(email));
         assertEquals("Specified person invalid due to : You are not a applicant, so this endpoint is not for you!", e.getMessage());
 
         //And then that it works correctly in a "real" situation
@@ -593,13 +612,126 @@ public class PersonServiceTest {
         person.setRole(role);
 
         //We then call the function we wish to test
-        String returnFromService=personService.UpdateApplicant(pnr,"test","test");
-        assertEquals("Updated username and password for a applicant "+person.getName()+" to username test (password excludes :) )",returnFromService);
+        String returnFromService=personService.ApplicantResetLinkGeneration(email);
+        assertEquals("Reset link sent to email "+person.getEmail(),returnFromService);
 
         //We then test that it handles database exceptions correctly
-        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByPnr(anyString());
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByEmail(anyString());
 
-        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.UpdateApplicant(pnr,"test","test"));
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.ApplicantResetLinkGeneration(email));
         assertEquals("Failed due to database error, please try again",e5.getMessage());
+    }
+
+    @Test
+    /**
+     * This tests the ApplicantUseResetLink method
+     */
+    void ApplicantUseResetLinkTest()
+    {
+        //We first create the dummy data
+
+        String fakeToken="blablafaketoken";
+        String username="username";
+        String password="password";
+        String email="testEmail";
+        
+        Person person=new Person();
+        person.setUsername(username);
+        person.setPassword(password);
+        person.setEmail(email);
+        Role role =new Role();
+        role.setName("notApplicant");
+        person.setRole(role);
+
+        //We then create the mocked function's implementations
+
+        when(jwtService.validateResetToken(anyString())).thenAnswer(invocation -> {
+            String arg=(String)invocation.getArguments()[0];
+            if (arg.equals(fakeToken)) {
+                return true;
+            }
+            return false;
+        });
+
+        when(jwtService.extractUserName(anyString())).thenAnswer(invocation -> {
+            String arg=(String)invocation.getArguments()[0];
+            if (arg.equals(fakeToken)) {
+                return email;
+            }
+            return "fake";
+        });
+
+        when(jwtService.extractExpiration(anyString())).thenAnswer(invocation -> {
+            return null;
+        });
+
+        when(jwtService.extractExpiration(anyString())).thenAnswer(invocation -> {
+            String arg=(String)invocation.getArguments()[0];
+            if (arg.equals(fakeToken)) {
+                return new java.util.Date(1234);
+            }
+            return null;
+        });
+
+        when(personRepository.findByEmail(anyString())).thenAnswer(invocation -> {
+            String emailArg=(String)invocation.getArguments()[0];
+            Optional<PersonDTO> pContainer;
+            for (PersonDTO a : savedPeople) {
+                if (a.getEmail()==emailArg) {
+                    pContainer=Optional.of(a);
+                    return pContainer;
+                }
+            }
+            pContainer=Optional.empty();
+            return pContainer;
+        });
+
+        when(applicantResetRepository.findByPersonAndResetDateAndRandomLong(any(Person.class),anyString(),anyLong())).thenAnswer(invocation -> {
+            String expirationDate=(String)invocation.getArguments()[1];
+            Optional<ApplicantReset> pContainer;
+            if (expirationDate.equals(new java.util.Date(100).toString())) {
+                ApplicantReset reset = new ApplicantReset();
+                return Optional.of(reset);
+            }
+            pContainer=Optional.empty();
+            return pContainer;
+        });
+
+        //We then perform the tests
+
+        var e = assertThrowsExactly(InvalidJWTException.class, () -> personService.ApplicantUseResetLink("AnotherFakeToken",username,password));
+        assertEquals("The provided token is invalid due to : Token invalid, either out of date or not generated by this system",e.getMessage());
+
+        var e2=assertThrowsExactly(InvalidPersonException.class, ()->personService.ApplicantUseResetLink(fakeToken,username,password));
+        assertEquals("Specified person invalid due to : No person with that email exists!", e2.getMessage());
+
+        savedPeople.add(person);
+
+        e2=assertThrowsExactly(InvalidPersonException.class, ()->personService.ApplicantUseResetLink(fakeToken,username,password));
+        assertEquals("Specified person invalid due to : You are not a applicant, so this endpoint is not for you!", e2.getMessage());
+
+        role.setName("applicant");
+        person.setRole(role);
+
+        e = assertThrowsExactly(InvalidJWTException.class, () -> personService.ApplicantUseResetLink(fakeToken,username,password));
+        assertEquals("The provided token is invalid due to : You gave an invalid but potentially real token, no current request for that person exists in the system. The link may have already been used, in which case you must request a new one.",e.getMessage());
+
+
+        when(jwtService.extractExpiration(anyString())).thenAnswer(invocation -> {
+            String arg=(String)invocation.getArguments()[0];
+            if (arg.equals(fakeToken)) {
+                return new java.util.Date(100);
+            }
+            return null;
+        });
+        //We then finally test that a real execution works correctly
+        assertEquals("User updated, it now has the username username",personService.ApplicantUseResetLink(fakeToken,username,password));
+        
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByEmail(anyString());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.ApplicantUseResetLink(fakeToken,username,password));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+       
     }
 }

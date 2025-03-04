@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -27,7 +28,8 @@ public interface ApplicantResetRepository extends JpaRepository<ApplicantReset, 
      * This interface function tells JPA to generate a query to find if the specific person has requested an applicant reset
      * @param person The person to find a reset for
      * @param date The date to find a request for
+     * @param randomLong the random long to find a match with
      * @return A boolean representing if a reset request existed or not
      */
-    public Boolean existsByPersonAndResetDate(Person person, String resetDate);
+    public Optional<ApplicantReset> findByPersonAndResetDateAndRandomLong(Person person, String resetDate, Long randomLong);
 }

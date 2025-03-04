@@ -107,7 +107,6 @@ public class PersonController {
      */
     @PostMapping("/requestApplicantReset")
     public String RequestApplicantReset(@RequestParam String email) {
-
         LOGGER.info("Update of username and password for applicant with email (`{}`) requested",email); //TODO add authentication info here, aka who accessed this
         return personService.ApplicantResetLinkGeneration(email);
     }

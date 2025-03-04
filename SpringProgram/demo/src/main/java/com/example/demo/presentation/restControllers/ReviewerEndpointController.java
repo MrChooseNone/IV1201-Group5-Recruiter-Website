@@ -90,10 +90,22 @@ public class ReviewerEndpointController {
      * @return This function will return the application of the application id
      */
     @GetMapping("/getApplicationsById/{id}")
-    public ApplicationDTO GetApplicationsById(@PathVariable Integer id) {
+    public ApplicationDTO GetApplicationsById(@PathVariable String id) {
         LOGGER.info("Application with ID (`{}`) requested",id); //TODO add authentication info here, aka who accessed this
 
-        ApplicationDTO application = reviewService.GetApplicationsById(id);
+        Integer parsedApplicationId=null;
+        try {
+            parsedApplicationId=Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            LOGGER.error("Failed to retrive application with id (`{}`) since id is invalid integer",id);
+            throw new InvalidParameterException("Provided value ("+id+") could not be parsed as a valid integer" );
+        }
+        catch(Exception e) {
+            LOGGER.error("Failed to retrive application with id (`{}`) due to unknown error",id);
+            throw new InvalidParameterException("Unknown cause, but double check formating of request, specifically for the applicationId parameter");
+        }
+
+        ApplicationDTO application = reviewService.GetApplicationsById(parsedApplicationId);
         return application;
     }
 

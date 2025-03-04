@@ -116,6 +116,18 @@ public class ReviewerEndpointControllerUnitTest {
 
     @Test
     /**
+     * This tests the GetApplicationsById method
+     */
+    void GetApplicationsByIdTest()
+    {
+
+        var e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.GetApplicationsById("NotAnInt"));
+        assertEquals("Invalid parameter : Provided value (NotAnInt) could not be parsed as a valid integer", e.getMessage());
+        reviewerEndpointController.GetApplicationsById("1");
+    }
+
+    @Test
+    /**
      * This is a test for the UpdateApplicationsByStatus method
      */
     void UpdateApplicationsByStatusTest()

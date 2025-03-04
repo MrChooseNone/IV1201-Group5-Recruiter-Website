@@ -160,6 +160,21 @@ public class PersonControllerUnitTest {
         String result = personController.UpdateReviewer("0", "notAPersonId", "notaDouble");
         assertEquals("Updated pnr and email for a reviwer 0 to pnr notAPersonId and email notaDouble", result);
     }
+
+    /**
+     * This tests the RequestApplicantReset method
+     */
+    @Test
+    void RequestApplicantResetTest()
+    {
+        // We then define the mock implementation for the service function
+        when(personService.ApplicantResetLinkGeneration(anyString())).thenAnswer(invocation -> {
+            String email = (String) invocation.getArguments()[0];
+            return "Link used for email " + email;
+        });
+        String result=personController.RequestApplicantReset("email");
+        assertEquals("Link used for email email", result);
+    }
     
     /**
      * This tests the UpdateApplicant method
@@ -168,14 +183,11 @@ public class PersonControllerUnitTest {
     void UpdateApplicantTest()
     {
         // We then define the mock implementation for the service function
-        when(personService.UpdateApplicant(anyString(),anyString(),anyString())).thenAnswer(invocation -> {
-            
-            String pnr = (String) invocation.getArguments()[0];
+        when(personService.ApplicantUseResetLink(anyString(),anyString(),anyString())).thenAnswer(invocation -> {
             String username = (String) invocation.getArguments()[1];
-            String password = (String) invocation.getArguments()[2];
-            return "Updated username and password for a Applicant "+pnr+" to username "+username+" and password " + password;
+            return "User updated, it now has the username " + username;
         });
         String result=personController.UpdateApplicant("pnr", "username", "password");
-        assertEquals("Updated username and password for a Applicant pnr to username username and password password", result);
+        assertEquals("User updated, it now has the username username", result);
     }
 }

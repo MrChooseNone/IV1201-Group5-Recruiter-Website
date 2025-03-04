@@ -266,11 +266,19 @@ public class TranslationServiceTest {
         assertNotNull(translations);
         assertEquals(translation, translations.get(0));
 
+
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(competenceTranslationRepository).findByLanguage_id(anyInt());
+
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> translationService.GetCompetenceTranslation(language.getLanguageName()));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());        
+        
         //We then test that it handles database exceptions correctly
         doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(languageRepository).findByName(anyString());
 
-        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> translationService.GetCompetenceTranslation(language.getLanguageName()));
+        e5 = assertThrowsExactly(CustomDatabaseException.class, () -> translationService.GetCompetenceTranslation(language.getLanguageName()));
         assertEquals("Failed due to database error, please try again",e5.getMessage());
+
     }
 
     @Test

@@ -176,6 +176,31 @@ public class ReviewServiceTest {
 
     @Test
     /**
+     * This tests the GetApplicationsById method
+     */
+    void GetApplicationsByIdTest()
+    {
+
+        // We define the implementation for the mock repository
+        when(applicationRepository.findByApplicationId(anyInt())).thenAnswer(invocation -> {
+            Integer status=(Integer)invocation.getArguments()[0];
+            if (status==0) {
+                return new Application();
+            }
+            return null;
+        });
+
+        reviewService.GetApplicationsById(0);
+        Mockito.verify(this.applicationRepository, Mockito.times(1)).findByApplicationId(anyInt());
+
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(applicationRepository).findByApplicationId(anyInt());
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> reviewService.GetApplicationsById(0));
+        assertEquals("Failed due to database error, please try again",e5.getMessage());
+
+    }
+
+    @Test
+    /**
      * This is a test for the SetApplicationStatus method
      */
     void SetApplicationStatusTest()

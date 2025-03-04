@@ -471,7 +471,7 @@ public class ApplicationServiceTest {
         // We then define the implementation for the mock repository functions
         doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
 
-        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> applicationService.GetCompetenceProfilesForAPerson(person.getId()));
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> applicationService.GetAvailabilityForAPerson(person.getId()));
         assertEquals("Failed due to database error, please try again",e5.getMessage());
 
     }
