@@ -16,6 +16,8 @@ import com.example.demo.service.PersonService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import org.springframework.security.core.Authentication;
+
 @RestController
 @RequestMapping("/person")
 @CrossOrigin(origins = "http://localhost:3000") // This uses the config in config/WebConfig.java to allow cross-origin
@@ -154,10 +156,12 @@ public class PersonController {
      */
     @GetMapping("/findPerson")
     @PreAuthorize("hasAuthority('recruiter')")
-    public ResponseEntity<?> findPerson(
+    public ResponseEntity<?> findPerson(Authentication authentication,
             @RequestParam(required = false) String pnr,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String username) {
+
+        LOGGER.info(authentication.getPrincipal().getClass().getName());
 
         Optional<? extends PersonDTO> person = Optional.empty();
 
