@@ -79,9 +79,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())  // New way to disable CSRF in Spring Security 6.1+
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()  // Allows all endpoints without authentication (for testing)
+              /*   .requestMatchers("/person/register", "/person/updateApplicant", "/auth/generateToken" ).permitAll()
+                .requestMatchers("/review/**").hasAuthority("RECRUITER")
+                .anyRequest().authenticated() */
             )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider).addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            //.authenticationProvider(authenticationProvider);//.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -17,8 +17,11 @@ import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ReviewService;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/review")
+@PreAuthorize("hasAuthority('recruiter')")      //only recruiters can access the review page
 /**
  * This endpoint controller is responsible for handeling the requests concerning
  * reviewing application.

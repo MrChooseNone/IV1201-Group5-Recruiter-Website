@@ -14,6 +14,8 @@ import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.PersonService;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/person")
 @CrossOrigin(origins = "http://localhost:3000") // This uses the config in config/WebConfig.java to allow cross-origin
@@ -79,6 +81,7 @@ public class PersonController {
      * TODO only allow a logged in reviwer to do this to their own account
      */
     @PostMapping("/updateReviwer")
+    @PreAuthorize("hasAuthority('recruiter')")
     public String UpdateReviewer(@RequestParam String personId, @RequestParam String pnr, @RequestParam String email) {
 
         LOGGER.info("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) requested",personId,pnr,email); //TODO add authentication info here, aka who accessed this
@@ -138,6 +141,7 @@ public class PersonController {
      *         found.
      */
     @GetMapping("/findPerson")
+    @PreAuthorize("hasAuthority('recruiter')")
     public ResponseEntity<?> findPerson(
             @RequestParam(required = false) String pnr,
             @RequestParam(required = false) String email,
