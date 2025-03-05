@@ -31,21 +31,33 @@ public class JwtAuthFilter extends OncePerRequestFilter{
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
+        System.out.println("Filter started");
 
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
             username = jwtService.extractUserName(token);
+            System.out.println("Header contains " + token + " username "+username);
+        }
+        else
+        {
+            System.out.println("Header is incorrectly equal to " + authHeader);
         }
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if(username != null && (SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals("anonymousUser"))){
+            System.out.println("Username retrived and security context null");
             UserDetails userDetails = personService.loadUserByUsername(username);
-
             if(jwtService.validateToken(token, userDetails)){
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                                                                userDetails,null,userDetails.getAuthorities());
+                System.out.println("Token validated ");
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+        }
+        else
+        {
+            System.out.println(SecurityContextHolder.getContext().getAuthentication().toString());
+
+            System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
         }
 
         filterChain.doFilter(request,response);
