@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -60,6 +61,7 @@ public class PersonControllerMockMVCTest {
      * 
      * @throws Exception
      */
+    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     @Test
     void findPersonNoParameterEndpointTest() throws Exception {
         this.mockMvc.perform(get("/person/findPerson")).andDo(print()).andExpect(status().isBadRequest())
@@ -74,6 +76,7 @@ public class PersonControllerMockMVCTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonPnrEndpointTest() throws Exception {
         this.mockMvc.perform(get("/person/findPerson?pnr=20070114-1252")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":\"badUsername\"}"));
@@ -87,6 +90,7 @@ public class PersonControllerMockMVCTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonEmailEndpointTest() throws Exception {
         // We first set up the mock implementation of the function
         this.mockMvc.perform(get("/person/findPerson?email=l_crane118@finnsinte.se")).andDo(print())
@@ -100,7 +104,8 @@ public class PersonControllerMockMVCTest {
      * 
      * @throws Exception
      */
-    @Test
+    @Test    
+    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonUsernameEndpointTest() throws Exception {
 
         this.mockMvc.perform(get("/person/findPerson?username=JoelleWilkinson")).andDo(print())
@@ -115,6 +120,7 @@ public class PersonControllerMockMVCTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonUsernameMissingUsernameEndpointTest() throws Exception {
 
         this.mockMvc.perform(get("/person/findPerson?username=notARealPerson")).andDo(print())
