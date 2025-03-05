@@ -15,6 +15,7 @@ export default function ApplicationForm() {
   const[username,setUsername] = useState("");
   const[personNumber,setPersonNumber] = useState("");
   const[password,setPassword] = useState("");
+  const[isSubmited, setIsSubmited] = useState(false);
 
   // Get API URL from .env file
   const API_URL = process.env.REACT_APP_API_URL;
@@ -81,6 +82,7 @@ export default function ApplicationForm() {
         .then((response) => response.text()) // Parse response as text
         .then((data) => {
             console.log("data: " + data); // Write data
+            setIsSubmited(true);
             if(data === "User registered successfully!"){
               alert(`Welcome ${applicant.name}!`);
             } else if (data === "PNR is already in use!"){
@@ -140,7 +142,7 @@ export default function ApplicationForm() {
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
-          <Button variant="contained" color="secondary" component={Link} to="/JobApplication">
+          <Button disabled={!isSubmited} variant="contained" color="secondary" component={Link} to="/JobApplication">
             Next →
           </Button>
         </Stack>

@@ -20,28 +20,16 @@ export default function Appbar() {
             
           }}>
               
-              <Button color='inherit' startIcon="" component={Link} to="/" 
+              <Button color='inherit'  component={Link} to="/" 
               sx={{
                 p: 2,
                 px: 4,
                 display: "flex", 
                 flexWrap: "wrap",
                 justifyContent: "space-between",
-                gap: 4,
+                
+                
               }}>Home</Button>
-              
-              
-              <Button color='inherit' startIcon="" component={Link} to="/competences"
-              sx={{
-                p: 2,
-                px: 4,
-                alignSelf: "right",
-                display: "flex", 
-                flexWrap: "wrap",
-                justifyContent: "space-between",
-                gap: 4,
-              }}>Competences</Button>
-              
               
               <Button color='inherit' startIcon="" component={Link} to="/addApplicant"
               sx={{
@@ -50,7 +38,7 @@ export default function Appbar() {
                 display: "flex", 
                 flexWrap: "wrap",
                 justifyContent: "space-between",
-                gap: 4,
+                
               }}
               >Register</Button>
 
@@ -61,7 +49,7 @@ export default function Appbar() {
                 display: "flex", 
                 flexWrap: "wrap",
                 justifyContent: "space-between",
-                gap: 4,
+                
               }}
               >Edit Profile</Button>
 
@@ -72,7 +60,7 @@ export default function Appbar() {
                 display: "flex", 
                 flexWrap: "wrap",
                 justifyContent: "space-between",
-                gap: 4,
+                
               }}
               >Review Dashboard</Button>
 
@@ -86,7 +74,7 @@ export default function Appbar() {
             display: "flex", 
             flexWrap: "wrap",
             justifyContent: "space-between",
-            gap: 4,
+            
           }}
           >Login</Button>
         </Toolbar>

@@ -30,6 +30,9 @@ export default function ApplicationEndPoint() {
     //-----------submit application variables----------
     const [competenceProfileIds, setCompetenceProfileIds] = useState([]);
     const [availabilityIds, setAvailabilityIds] = useState([]);
+    //-------------Get Id based on Username-----------
+    const [searchedPerson, setSearchedPerson] = useState();
+    const [result, setResult] = useState();
     //--------------------Competences-------------
 
     // Get API URL from .env file
@@ -62,6 +65,63 @@ export default function ApplicationEndPoint() {
             console.error("Error fetching competences:", error);
         });
     };
+
+    //fetch id based on username or email or pnr
+    //function to determin what param was entered
+    const parseSearch = () => {
+        if(/^\d+-?\d+$/.test(searchedPerson)) return "pnr";
+        if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(searchedPerson)) return "email";
+        else return "username";
+    }
+    //fetch the id
+    const fetchId = (e) => {
+        e.preventDefault(); // Prevents page refresh
+
+        const type = parseSearch();
+        let param;
+        if(type == "email"){
+            param = new URLSearchParams({email: searchedPerson});
+        }else if (type == "pnr"){
+            param = new URLSearchParams({pnr: searchedPerson});
+        } else{
+            param = new URLSearchParams({username: searchedPerson});
+        }
+        
+        const url = new URL(`${API_URL}/person/findPerson`);
+        
+
+        // Add the params to the URL
+        url.search = param.toString();
+    
+        console.log("Sending request with params:", url); // remove (just debug)
+        
+        fetch(url, {
+          method: "GET",
+          headers: {
+            
+            "Content-Type": "application/json", 
+          },
+        })
+        .then((response) => { 
+          if (response.ok) {
+              return response.json(); // Parse JSON if response is OK
+          } else {
+              return response.text().then((errorText) => { 
+                  throw new Error(`Failed to fetch: ${errorText}`); 
+              });
+          }
+        }) 
+        .then((data) => {
+            console.log(data); // Write data
+            setResult(data);
+            setPersonId(data.id);
+        })
+        .catch((error) => {
+            console.error("Error Searching for:", error);
+        });
+    
+    };
+
     //function to fetch competences
     const fetchCompetences = () => {
         const url = `${API_URL}/translation/getStandardCompetences`;
@@ -247,8 +307,6 @@ export default function ApplicationEndPoint() {
         }
     };
     
-
-
     return (
             <Container maxWidth="md" sx={{ 
                 marginTop: "10px",
@@ -268,6 +326,29 @@ export default function ApplicationEndPoint() {
                         ))}
                     </Select>
                 </FormControl>
+            </Paper>
+
+            {/* new enter username instead of id */}
+            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+                <Typography variant="h6">Competence Profiles</Typography>
+                <TextField label="username, email, pnr" value={searchedPerson} onChange={(e) => setSearchedPerson(e.target.value)} fullWidth />
+                <Button variant="contained" color="primary" onClick={fetchId} style={{ marginTop: "10px" }}>
+                    Get id
+                </Button>
+                <Typography>{personId} </Typography>
+                <List>
+                    {
+                    
+                    /*competenceProfiles.map((cp, index) => {
+                        return (
+                            <ListItem key={index}>
+                                <ListItemText
+                                    primary={`Competence: ${translations[cp.competenceDTO.competenceId -1] ? translations[cp.competenceDTO.competenceId -1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
+                                />
+                            </ListItem>
+                        );
+                    })*/}
+                </List>
             </Paper>
             
             
