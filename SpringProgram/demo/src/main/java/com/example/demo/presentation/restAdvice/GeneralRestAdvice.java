@@ -3,6 +3,7 @@ package com.example.demo.presentation.restAdvice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -117,6 +118,17 @@ public class GeneralRestAdvice {
   @ExceptionHandler(InvalidJWTException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   String InvalidJWTExceptionHandler(InvalidJWTException ex) {
+    return ex.getMessage();
+  }
+
+  /**
+   * This function is responsible for handeling the UsernameNotFoundException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http NOT_FOUND error message with the UsernameNotFoundException error message as the text
+   */
+  @ExceptionHandler(UsernameNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  String UsernameNotFoundExceptionHandler(UsernameNotFoundException ex) {
     return ex.getMessage();
   }
 }

@@ -40,6 +40,8 @@ import com.example.demo.repository.RoleRepository;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
@@ -734,4 +736,54 @@ public class PersonServiceTest {
         assertEquals("Failed due to database error, please try again",e5.getMessage());
        
     }
+
+    @Test
+    /**
+     * This tests the loadUserByUsername method
+     */
+    void loadUserByUsernameTest()
+    {
+        //We first create the mock data
+        String username="username";
+        String password="password";
+        String email="testEmail";
+        
+        Person person=new Person();
+        person.setUsername(username);
+        person.setPassword(password);
+        person.setEmail(email);
+
+        //We then define the mock implementations
+        when(personRepository.findByUsername(anyString())).thenAnswer(invocation -> {
+            String usernameArgument=(String)invocation.getArguments()[0];
+            Optional<PersonDTO> pContainer;
+            for (PersonDTO a : savedPeople) {
+                if (a.getUsername()==usernameArgument) {
+                    pContainer=Optional.of(a);
+                    return pContainer;
+                }
+            }
+            pContainer=Optional.empty();
+            return pContainer;
+        });
+
+        //We then test the method
+
+        var e = assertThrowsExactly(UsernameNotFoundException.class, () -> personService.loadUserByUsername(username));
+        assertEquals("Could not find username: username",e.getMessage());
+
+        savedPeople.add(person);
+
+        UserDetails userDetails=personService.loadUserByUsername(username);
+        assertEquals(true,userDetails.getUsername().equals(username));
+        assertEquals(password,userDetails.getPassword());
+
+        //We then test that it handles database exceptions correctly
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findByUsername(anyString());
+
+        var e2 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.loadUserByUsername(username));
+        assertEquals("Failed due to database error, please try again",e2.getMessage());
+
+    }
+
 }
