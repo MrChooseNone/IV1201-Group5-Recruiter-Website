@@ -114,10 +114,9 @@ public class PersonController {
 
     /**
      * This method allows an existing reviwer to specify their pnr and email
-     * 
      * @param personId The reviwerer to update, TODO replace this with auth based id retrival if possible
-     * @param username      The new username
-     * @param password    The new password
+     * @param username The new username
+     * @param password The new password
      * @return A string describing the success status
      *  TODO is this a good level of security, or what else could be used?
      */
