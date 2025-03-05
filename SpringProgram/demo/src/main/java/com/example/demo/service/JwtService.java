@@ -16,7 +16,7 @@ import java.util.function.Function;
 @Component
 public class JwtService {
 
-    public static final String SECRET = "123456789"; //to be replaced
+    public static final String SECRET = "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"; //to be replaced
 
     public String generateToken(String userName){
         Map<String,Object> claims = new HashMap<>();
