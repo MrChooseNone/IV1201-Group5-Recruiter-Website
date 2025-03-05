@@ -9,6 +9,7 @@ import CompetencesPage from './pages/CompetencesPage';
 import AddApplicant from './pages/AddApplicant';
 import ReviewerDashboard from './pages/ReviewerDashboard';
 import ApplicantDetails from './pages/ApplicantDetails';
+import LoginPage from './pages/LoginPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       
       <Route path='/JobApplication' element={<JobApplication/>}/>
       <Route path='/addApplicant' element={<AddApplicant/>}/>
+      <Route path='/login' element={<LoginPage/>}/>
       {/* add security*/ }
       <Route path='/review' element={<ReviewerDashboard/>}/>
       <Route path='/applicant/:id' element={<ApplicantDetails/>}/>
