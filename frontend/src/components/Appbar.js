@@ -66,7 +66,7 @@ export default function Appbar() {
 
               
               
-          <Button color="inherit" 
+          <Button color="inherit" component={Link} to="/login"
           sx={{
             p: 2,
             px: 4,

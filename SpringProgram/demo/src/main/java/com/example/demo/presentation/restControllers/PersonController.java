@@ -20,8 +20,7 @@ import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/person")
-@CrossOrigin(origins = "http://localhost:3000") // This uses the config in config/WebConfig.java to allow cross-origin
-                                                // access
+@CrossOrigin(origins = "${ALLOWED_ORIGINS:http://localhost:3000}") // This uses the config in config/WebConfig.java to allow cross-origin access
 /**
  * This endpoint controller is responsible for handeling the requests concerning
  * people application.

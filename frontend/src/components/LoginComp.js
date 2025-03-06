@@ -1,20 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState,useContext} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {Link} from 'react-router-dom';
 import { Typography, Stack, Container } from '@mui/material';
 
+import { AuthContext } from '../App';
+
 // Used "Material UI" as reference https://mui.com/material-ui/react-text-field/
+
 
 export default function LoginComp() {
   // UseState to save users inputed data and later send to database
   const[username,setUsername] = useState("");
   const[password,setPassword] = useState("");
   const[search,setSearch] = useState("");
-      const[result,setResult] = useState(null);
-      const [token, setToken] = useState(null);
- 
+  const[result,setResult] = useState(null);
+
+  const {auth,setAuth} = useContext(AuthContext);
 
   // Get API URL from .env file
   const API_URL = process.env.REACT_APP_API_URL;
@@ -31,21 +34,21 @@ export default function LoginComp() {
   const handleLogin = (e) => {
       e.preventDefault(); // Prevents page refresh
 
-      // Validate field
+      // Validate field, add this back in after testing!
+      /*
       if (!validatePassword(password)) {
         alert("Password must be at least 8 characters");
         return;
-      }
+      }* */
+
       const params = new URLSearchParams();
       params.append("username", username);
       params.append("password", password);
-      
       
       const url = `${API_URL}/auth/generateToken?${params.toString()}`;
       
       console.log("Sending: ", url); // remove (just debug)
       
-
         fetch(url, {
             method: "POST",
             headers: {
@@ -65,9 +68,18 @@ export default function LoginComp() {
             }
           }) 
         .then((data) => {
-            console.log("data: " + data); // Write data
-            setToken(data);
-            localStorage.setItem("token", data);
+            //We first parse the json we recive, then set the current auth information, and then store it in case the user refreshes the page
+            //Data is in the format {"token":<token>,"role":<role>}
+            const dataParsed = JSON.parse(data);
+            setAuth(dataParsed); 
+            console.log(dataParsed.token)
+
+            //TODO update this to not use local storage
+            localStorage.setItem("token", dataParsed.token);
+            localStorage.setItem("role", dataParsed.role);
+
+            alert("Login Successfull");
+
         })
         .catch((error) => {
             console.error("Error adding applicant:", error);
@@ -97,18 +109,19 @@ const handleSearch = (e) => {
     
     const url = new URL(`${API_URL}/person/findPerson`);
     
-
     // Add the params to the URL
     url.search = param.toString();
 
     console.log("Sending request with params:", url); // remove (just debug)
+    
+
     
     fetch(url, {
       method: "GET",
       headers: {
         
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`, 
+        "Authorization": `Bearer ${auth.token}`, 
       },
     })
     .then((response) => { 
@@ -166,7 +179,6 @@ const handleSearch = (e) => {
           </Button>
           
         </Stack>
-        <Typography>{token}</Typography>
         <Box
       component="form"
       sx={{

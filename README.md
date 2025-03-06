@@ -92,6 +92,9 @@ Before any of the project's systems are run, there are a few steps which should 
 
 1. Create a database in postgres, the names does not matter but it will be used in a later step
 2. Run the existing-database.sql file in the newly created database, this is done to populate it with the existing data, since the SprintBoot program will create any missing tables, but it will not populate it with all the needed data.
+  - Exactly how you do this depends on your system, but to give an example of how to run it using psql, you would run something like the following:
+    - `\i 'D:\\Github Folder\\Spring-Test\\Database code\\existing-database.sql'`;
+
 3. Create an .env file at the top of the project structure, it should be on the same level as this README.
 4. Write the following lines into the .env file, with the correct values being used to substitute the parenthesis.
    - JDBC_DATABASE_URL= This should be a url to the newly created database to use, for example jdbc:postgresql://localhost:5432/testdatabase

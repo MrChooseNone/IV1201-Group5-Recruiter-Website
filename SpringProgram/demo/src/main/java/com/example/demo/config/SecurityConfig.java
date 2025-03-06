@@ -76,16 +76,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider, JwtAuthFilter authFilter) throws Exception {
         http
+            .cors().and() //TODO fix this, currently blocked if not included
             .csrf(csrf -> csrf.disable())  // New way to disable CSRF in Spring Security 6.1+
             .authorizeHttpRequests(auth -> auth
                 //.anyRequest().permitAll()  // Allows all endpoints without authentication (for testing)
                 .requestMatchers("/person/register", "/person/updateApplicant", "/auth/generateToken**" ).permitAll()
-                .requestMatchers("/review/**").hasAuthority("RECRUITER")
+                .requestMatchers("/review/**").hasAuthority("recruiter")
                 .anyRequest().authenticated() 
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider).addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

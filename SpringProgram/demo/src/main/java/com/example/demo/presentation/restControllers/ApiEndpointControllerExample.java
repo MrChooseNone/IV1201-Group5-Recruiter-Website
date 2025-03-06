@@ -1,6 +1,7 @@
 package com.example.demo.presentation.restControllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import com.example.demo.service.ServiceExample;
 //We define this as a rest controller, and mark which endpoint it should handle
 @RestController
 @RequestMapping("/test")
+@CrossOrigin(origins = "${ALLOWED_ORIGINS:http://localhost:3000}") // This uses the config in config/WebConfig.java to allow cross-origin access
 public class ApiEndpointControllerExample {
     @Autowired
     private final ServiceExample exampleService;

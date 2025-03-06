@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   Container,
   TextField,
@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
+import { AuthContext } from '../App';
 
 export default function ReviewerDashboard() {
     const [applications, setApplications] = useState([]);
@@ -26,12 +27,17 @@ export default function ReviewerDashboard() {
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
 
+    //Here we import the auth information from the context
+    const { auth, setAuth } = useContext(AuthContext);
+    
     const fetchApplicants = () => {
         const url = `${API_URL}/review/getApplications`
+        console.log(auth.token);
         fetch(url, {
             method: "GET",
             headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                "Authorization": "Bearer "+auth.token
             }
         })
         .then((response) => { 
@@ -56,7 +62,8 @@ export default function ReviewerDashboard() {
         fetch(url, {
             method: "GET",
             headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                "Authorization": "Bearer "+auth.token
             }
         })
         .then((response) => { 
