@@ -165,23 +165,6 @@ export default function ApplicationEndPoint() {
         }
     }, [competences]); // Trigger only when competences are updated
 
-
-    // Create a new competence profile
-    const createCompetenceProfile = async () => {
-        const response = await fetch(`${API_URL}/application/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
-        method: "POST",
-        });
-        if (response.ok) {
-        const data = await response.json();
-        console.log("Creating profile with:", { competenceId, personId, yearsOfExperience });
-        getCompetenceProfiles();
-
-        alert("Competence profile created successfully!");
-        } else {
-        alert("Failed to create competence profile");
-        }
-    };
-
     // Fetch availability periods
     const getAvailability = async () => {
         const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`);
@@ -194,31 +177,13 @@ export default function ApplicationEndPoint() {
 
     useEffect(() => {
         if(personId !== ""){
+
             getAvailability();
+            console.log(availability);
         }
     }, [personId])
 
-    useEffect(() => {
-        if(personId !== ""){
-            getCompetenceProfiles();
-        }
-    }, [personId])
-
-    // Create a new availability period
-    const createAvailability = async () => {
-        const response = await fetch(`${API_URL}/application/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
-        method: "POST",
-        });
-        if (response.ok) {
-        const data = await response.json();
-        console.log("Creating availability with:", data);
-        getAvailability();
-
-        alert("Availability period created successfully!");
-        } else {
-        alert("Failed to create availability");
-        }
-    };
+    
 
     //-------------Language translation----------------------
     const [language, setLanguage] = useState("");
@@ -312,7 +277,7 @@ export default function ApplicationEndPoint() {
             console.error("Error submitting application:", error);
         }
     };
-    //------------select competneces and availability-----------
+
     // handle the selection of multiple profiles
     const handleSelectCompetence = (selectedID) => {
         console.log("the selected id is: " + selectedID);
@@ -329,7 +294,7 @@ export default function ApplicationEndPoint() {
         } else {
             alert("faild to select competence");
         }
-    };
+    }
     //handle selection of availability
     const handleSelectAvailability = (selectedID) => {
         console.log("the selected id is: " + selectedID);
@@ -346,7 +311,7 @@ export default function ApplicationEndPoint() {
         } else {
             alert("faild to select availability");
         }
-    };
+    }
     
     return (
             <Container maxWidth="md" sx={{ 
@@ -406,40 +371,11 @@ export default function ApplicationEndPoint() {
                                 <ListItemText
                                     primary={`Competence: ${translations[cp.competenceDTO.competenceId -1] ? translations[cp.competenceDTO.competenceId -1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
                                 />
-                                <Button variant="contained" value={cp.competenceProfileId} onClick={() => handleSelectCompetence(cp.competenceProfileId)} sx={{
-                                    transform: competenceProfileIds.includes(cp.competenceProfileId) ? "translateY: 2px" : "none",
-                                    bgcolor: competenceProfileIds.includes(cp.competenceProfileId) ? "primary.main" : "grey",
-                                }}>Select</Button>
+                                <Button value={cp.competenceProfileId} onClick={() => handleSelectCompetence(cp.competenceProfileId)}>Select</Button>
                             </ListItem>
                         );
                     })}
                 </List>
-            </Paper>
-
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
-                <Typography variant="h6">Create Competence Profile</Typography>
-                <FormControl fullWidth margin="dense">
-                    {personId !== "" && competences ? (
-                        competences.length > 0 ? (
-                            
-                            <Select value={competenceId} onChange={(e) => setCompetenceId(e.target.value)}>
-                                {competences.map((comp) => (
-                                    <MenuItem key={comp.competenceId} value={comp.competenceId}>
-                                         {translations.find(t => t.competence.competenceId === comp.competenceId)?.translation || "Unknown"}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        ) : (
-                            <CircularProgress />  // Show loading indicator if no competences are available
-                        )
-                    ) : (
-                        <Typography variant="h8" sx={{color: "red", m: 1}}>Please set person id first</Typography>
-                    )}
-                </FormControl>
-                <TextField label="Years of Experience" value={yearsOfExperience} onChange={(e) => setYearsOfExperience(e.target.value)} fullWidth />
-                <Button variant="contained" color="secondary" onClick={createCompetenceProfile} style={{ marginTop: "10px" }}>
-                Create Profile
-                </Button>
             </Paper>
 
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
@@ -449,16 +385,12 @@ export default function ApplicationEndPoint() {
                 </Button>
                 
                 {personId !== "" ? (
-
                     availability.length > 0 ? (
                         <List>
                         {availability.map((a, index) => (
                             <ListItem key={index}>
                             <ListItemText primary={`From: ${a.fromDate}, To: ${a.toDate}`} />
-                            <Button variant="contained" value={a.availabilityId} onClick={() => handleSelectAvailability(a.availabilityId)} sx={{
-                                transform: availabilityIds.includes(a.availabilityId) ? "translateY: 2px" : "none",
-                                bgcolor: availabilityIds.includes(a.availabilityId) ? "primary.main" : "grey",
-                            }}>Select</Button>
+                            <Button value={a.availabilityId} onClick={() => handleSelectAvailability(a.availabilityId)}>Select</Button>
                             </ListItem>
                         ))}
                         </List>
@@ -471,22 +403,6 @@ export default function ApplicationEndPoint() {
                 }
             </Paper>
 
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
-                <Typography variant="h6">Create Availability</Typography>
-                {personId !== "" ? (
-                    <>
-                        <Typography variant="h8">From date</Typography>
-                        <TextField type="date"  value={fromDate} onChange={(e) => setFromDate(e.target.value)} fullWidth />
-                        <Typography variant="h8">To date</Typography>
-                        <TextField type="date"  value={toDate} onChange={(e) => setToDate(e.target.value)} fullWidth />
-                        <Button variant="contained" color="secondary" onClick={createAvailability} style={{ marginTop: "10px" }}>
-                        Create Availability
-                        </Button>
-                    </>
-                ) : (
-                    <Typography variant="h8" sx={{color: "red", m: 1}}>Please set person id first</Typography>
-                )}
-            </Paper>
 
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 
@@ -500,4 +416,3 @@ export default function ApplicationEndPoint() {
         
     );
 };
-

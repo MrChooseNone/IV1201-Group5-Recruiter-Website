@@ -10,6 +10,7 @@ import AddApplicant from './pages/AddApplicant';
 import ReviewerDashboard from './pages/ReviewerDashboard';
 import ApplicantDetails from './pages/ApplicantDetails';
 import LoginPage from './pages/LoginPage';
+import SubmitApplicationPage from './pages/SubmitApplicationPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route path='/addApplicant' element={<AddApplicant/>}/>
       <Route path='/login' element={<LoginPage/>}/>
       {/* add security*/ }
+      <Route path='/submit' element={<SubmitApplicationPage/>}/>
       <Route path='/review' element={<ReviewerDashboard/>}/>
       <Route path='/applicant/:id' element={<ApplicantDetails/>}/>
 
