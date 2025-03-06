@@ -63,9 +63,7 @@ export default function Appbar() {
                 
               }}
               >Review Dashboard</Button>
-
-              
-              
+ 
           <Button color="inherit" component={Link} to="/login"
           sx={{
             p: 2,
@@ -74,7 +72,6 @@ export default function Appbar() {
             display: "flex", 
             flexWrap: "wrap",
             justifyContent: "space-between",
-            
           }}
           >Login</Button>
         </Toolbar>

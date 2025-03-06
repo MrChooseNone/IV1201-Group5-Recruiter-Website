@@ -493,8 +493,8 @@ export default function ApplicationEndPoint() {
                 <Button variant="contained" color="primary" onClick={submitApplication}>
                 Submit Application
                 </Button>
-                <Typography>{competenceProfileIds}</Typography>
-                <Typography>{availabilityIds}</Typography>
+                <Typography>{competenceProfileIds /*just for debug and testing (remove) */}</Typography> 
+                <Typography>{availabilityIds /*just for debug and testing (remove) */}</Typography>
             </Paper>
             </Container>
         
