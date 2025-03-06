@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.entity.Application;
+import com.example.demo.domain.entity.Availability;
+import com.example.demo.domain.entity.Person;
 
 import org.springframework.transaction.annotation.Propagation;
 
@@ -28,9 +30,18 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
      * @return A list of matching applications
      */
     List<Application> findAllByApplicationStatus(ApplicationStatus applicationStatus);
-    /**
+
+    /** This interface tells JPA to generate a query to find a application with the specific id
      * @param applicationId the application status to find applications matching
-     * @return A application
+     * @return The matching application, or null if none exists
      */
     Application findByApplicationId(Integer applicationId);
+
+    /**
+     * This method checks if an application already exists with these exact availability periods and for a specific person
+     * @param availabilities The list of availabilities to match with
+     * @param person The person to find a match for
+     * @return A boolean for if the application exists
+     */
+    Boolean existsByAvailabilityPeriodsForApplicationAndApplicant(List<Availability> availabilityPeriodsForApplication, Person applicant);
 }

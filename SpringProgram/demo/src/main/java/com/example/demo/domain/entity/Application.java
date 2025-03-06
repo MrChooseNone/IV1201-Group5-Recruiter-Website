@@ -18,9 +18,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -43,15 +45,23 @@ public class Application implements ApplicationDTO{
     @NotNull(message="Each application must be for a specific person")
     private Person applicant;
 
-    @JoinColumn(name = "applicationId", referencedColumnName  = "application_id")
-    @OneToMany //TODO Change to many-to-many if the same availability period should be usable in multiple applications
+    @ManyToMany //This is a many-to-many relations, to allow availability to be re-used
+    @JoinTable(
+        name="application_availability_periods",
+        joinColumns=@JoinColumn(name="application_id"),
+        inverseJoinColumns=@JoinColumn(name="availability_id")
+    )
     @UniqueElements(message = "No availability period should be included multiple times in the application")
     @NotEmpty(message = "You must specify at least one availability period") 
     @NotNull(message = "availabilityPeriodsForApplication may not be null")
     private List<Availability> availabilityPeriodsForApplication;
 
-    @JoinColumn(name = "applicationId", referencedColumnName  = "application_id")
-    @OneToMany  //TODO Change to many-to-many if the same competence profile should be usable in multiple applications
+    @ManyToMany //This is a many-to-many relations, to allow profiles to be re-used
+    @JoinTable(
+        name="application_competence_profile",
+        joinColumns=@JoinColumn(name="application_id"), //This is the column to map this to
+        inverseJoinColumns=@JoinColumn(name="competence_profile_id") //This is the column to map the competence profiles to
+    )    
     @UniqueElements(message = "No competence profile should be included multiple times in the application")
     @NotEmpty(message="You must specify at least one competence profile")
     @NotNull(message = "competenceProfilesForApplication may not be null")

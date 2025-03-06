@@ -282,6 +282,11 @@ public class ApplicationService {
                 availabilities.add(availabilityContainer.get());
             }
 
+            if (applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilities, person)) {
+                LOGGER.error("Failed to create application for a person (`{}`) since they already have an application with the exact same availability periods");
+                throw new AvailabilityInvalidException("You already have an application with the exact same availability period");
+            }
+
             List<CompetenceProfile> competenceProfiles=new ArrayList<CompetenceProfile>();
 
             if (competenceProfileIds.size()==0) {
