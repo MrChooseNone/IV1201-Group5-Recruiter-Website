@@ -79,55 +79,6 @@ export default function ApplicationEndPoint() {
         if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(searchedPerson)) return "email";
         else return "username";
     }
-    //fetch the id
-    const fetchId = (e) => {
-        e.preventDefault(); // Prevents page refresh
-
-        const type = parseSearch();
-        let param;
-        if(type == "email"){
-            param = new URLSearchParams({email: searchedPerson});
-        }else if (type == "pnr"){
-            param = new URLSearchParams({pnr: searchedPerson});
-        } else{
-            param = new URLSearchParams({username: searchedPerson});
-        }
-        
-        const url = new URL(`${API_URL}/person/findPerson`);
-        
-
-        // Add the params to the URL
-        url.search = param.toString();
-    
-        console.log("Sending request with params:", url); // remove (just debug)
-        
-        fetch(url, {
-          method: "GET",
-          headers: {
-            
-            "Content-Type": "application/json", 
-            "Authorization": `Bearer ${auth.token}`, 
-          },
-        })
-        .then((response) => { 
-          if (response.ok) {
-              return response.json(); // Parse JSON if response is OK
-          } else {
-              return response.text().then((errorText) => { 
-                  throw new Error(`Failed to fetch: ${errorText}`); 
-              });
-          }
-        }) 
-        .then((data) => {
-            console.log(data); // Write data
-            setResult(data);
-            setPersonId(data.id);
-        })
-        .catch((error) => {
-            console.error("Error Searching for:", error);
-        });
-    
-    };
 
     //function to fetch competences
     const fetchCompetences = () => {
@@ -172,6 +123,11 @@ export default function ApplicationEndPoint() {
             setCompetenceId(competences[0].competenceId); // Set initial competenceId
         }
     }, [competences]); // Trigger only when competences are updated
+
+    //auto fetch person id from session storage
+    useEffect(() => {
+        setPersonId(sessionStorage.getItem("id"));
+    },[]);
 
 
     // Create a new competence profile
@@ -391,33 +347,12 @@ export default function ApplicationEndPoint() {
                 </FormControl>
             </Paper>
 
-            {/* new enter username instead of id */}
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
-                <Typography variant="h6">Competence Profiles</Typography>
-                <TextField label="username, email, pnr" value={searchedPerson} onChange={(e) => setSearchedPerson(e.target.value)} fullWidth />
-                <Button variant="contained" color="primary" onClick={fetchId} style={{ marginTop: "10px" }}>
-                    Get id
-                </Button>
-                <Typography>{personId} </Typography>
-                <List>
-                    {
-                    
-                    /*competenceProfiles.map((cp, index) => {
-                        return (
-                            <ListItem key={index}>
-                                <ListItemText
-                                    primary={`Competence: ${translations[cp.competenceDTO.competenceId -1] ? translations[cp.competenceDTO.competenceId -1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
-                                />
-                            </ListItem>
-                        );
-                    })*/}
-                </List>
-            </Paper>
+            
             
             
             <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Competence Profiles</Typography>
-                <TextField label="Person ID" value={personId} onChange={(e) => setPersonId(e.target.value)} fullWidth />
+                <TextField label="Person ID just for testing now" value={personId} onChange={(e) => setPersonId(e.target.value)} fullWidth />
                 <Button variant="contained" color="primary" onClick={getCompetenceProfiles} style={{ marginTop: "10px" }}>
                     Get Competence Profiles
                 </Button>

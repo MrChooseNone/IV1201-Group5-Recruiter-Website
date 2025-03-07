@@ -80,7 +80,7 @@ export default function LoginComp() {
             //TODO update this to not use local storage
             sessionStorage.setItem("token", dataParsed.token);
             sessionStorage.setItem("role", dataParsed.role);
-            sessionStorage.setItem("id", dataParsed.id )
+            sessionStorage.setItem("id", dataParsed.id);
             setIsSubmited(true);
             alert("Login Successful");
 
