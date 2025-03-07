@@ -11,10 +11,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.service.JwtService;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import com.example.demo.service.PersonService;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -32,6 +36,9 @@ public class AuthenticationController {
     
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PersonService personService;
 
     /**
      * Constructs an instance of AuthenticationController.
@@ -64,11 +71,18 @@ public class AuthenticationController {
             LOGGER.error("authenticateAndGetToken failed due to user (`{}`) not being correctly authenticated: (`{}`)",username, e.getMessage());
             throw e;
         }
+        PersonDTO user = null;
+        try {
+            user = personService.FindPersonByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        } catch (UsernameNotFoundException e) {
+            LOGGER.error("authenticateAndGetToken failed due to user (`{}`) not being found: (`{}`)",username, e.getMessage());
+            throw e;
+        }
 
         if(authentication.isAuthenticated()){
             LOGGER.info("authenticateAndGetToken success for user (`{}`), returning token",username);
             //This returns a json in the format {"token":[tokenHere],"role":[roleHere, ex "recruiter"]}
-            return "{\"token\":\""+jwtService.generateToken(username)+"\" , \"role\":\""+authentication.getAuthorities().iterator().next().toString()+"\"}";
+            return "{\"token\":\""+jwtService.generateToken(username)+"\" , \"role\":\""+authentication.getAuthorities().iterator().next().toString()+"\" , \"id\":\""+user.getId()+"\"}";
         }
         else{
             throw new UsernameNotFoundException("INVALID USER REQUEST");

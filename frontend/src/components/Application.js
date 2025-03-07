@@ -142,7 +142,7 @@ export default function ApplicationForm() {
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
-          <Button disabled={!isSubmited} variant="contained" color="secondary" component={Link} to="/JobApplication">
+          <Button disabled={!isSubmited} variant="contained" color="secondary" component={Link} to="/login">
             Next →
           </Button>
         </Stack>
