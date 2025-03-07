@@ -655,7 +655,7 @@ public class PersonServiceTest {
             return false;
         });
 
-        when(jwtService.extractUserName(anyString())).thenAnswer(invocation -> {
+        when(jwtService.extractSubject(anyString())).thenAnswer(invocation -> {
             String arg=(String)invocation.getArguments()[0];
             if (arg.equals(fakeToken)) {
                 return email;

@@ -1,40 +1,14 @@
 package com.example.demo.presentation.integration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import com.example.demo.service.JwtService;
 
-import com.example.demo.domain.entity.Application;
-import com.example.demo.domain.entity.Competence;
-import com.example.demo.domain.entity.Person;
-import com.example.demo.presentation.restControllers.PersonController;
-import com.example.demo.presentation.unit.PersonControllerUnitTest;
-import com.example.demo.service.PersonService;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -51,21 +25,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class PersonControllerMockMVCTest {
 
+    @Spy
+    private JwtService jwtService;
+
     // This is used to test endpoint controllers without running the full server
     @Autowired
     private MockMvc mockMvc;
 
     /**
      * This tests that a request without a parameter will return a response with bad
-     * request http code with the correct error message
+     * request http code with the correct error message. Note that it uses jwtService to create a fake but valid token.
      * 
-     * @throws Exception
+     * @throws Exception This throws any exception which occurs
      */
-    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     @Test
     void findPersonNoParameterEndpointTest() throws Exception {
-        this.mockMvc.perform(get("/person/findPerson")).andDo(print()).andExpect(status().isBadRequest())
-                .andExpect(content().string("Please provide PNR, email, or username for search."));
+        this.mockMvc.perform(get("/person/findPerson").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print()).andExpect(content().string("Please provide PNR, email, or username for search.")).andExpect(status().isBadRequest());
     }
 
     /**
@@ -76,10 +51,9 @@ public class PersonControllerMockMVCTest {
      * @throws Exception
      */
     @Test
-    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonPnrEndpointTest() throws Exception {
-        this.mockMvc.perform(get("/person/findPerson?pnr=20070114-1252")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":\"badUsername\"}"));
+        this.mockMvc.perform(get("/person/findPerson?pnr=20070114-1252").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":null}"));
     }
 
     /**
@@ -90,11 +64,10 @@ public class PersonControllerMockMVCTest {
      * @throws Exception
      */
     @Test
-    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonEmailEndpointTest() throws Exception {
         // We first set up the mock implementation of the function
-        this.mockMvc.perform(get("/person/findPerson?email=l_crane118@finnsinte.se")).andDo(print())
-                .andExpect(status().isOk()).andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":\"badUsername\"}"));
+        this.mockMvc.perform(get("/person/findPerson?email=l_crane118@finnsinte.se").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":null}"));
     }
 
     /**
@@ -105,12 +78,11 @@ public class PersonControllerMockMVCTest {
      * @throws Exception
      */
     @Test    
-    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonUsernameEndpointTest() throws Exception {
 
-        this.mockMvc.perform(get("/person/findPerson?username=JoelleWilkinson")).andDo(print())
+        this.mockMvc.perform(get("/person/findPerson?username=JoelleWilkinson").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":1,\"name\":\"Joelle\",\"surname\":\"Wilkinson\",\"pnr\":\"testsson\",\"email\":\"froghead\",\"role\":{\"roleId\":1,\"name\":\"recruiter\"},\"username\":\"JoelleWilkinson\"}"));
+                .andExpect(content().string("{\"id\":1,\"name\":\"Joelle\",\"surname\":\"Wilkinson\",\"pnr\":null,\"email\":null,\"role\":{\"roleId\":1,\"name\":\"recruiter\"},\"username\":\"JoelleWilkinson\"}"));
 
     }
 
@@ -120,10 +92,9 @@ public class PersonControllerMockMVCTest {
      * @throws Exception
      */
     @Test
-    @WithMockUser(authorities = "recruiter") //This mocks the authentication already having been done
     void findPersonUsernameMissingUsernameEndpointTest() throws Exception {
 
-        this.mockMvc.perform(get("/person/findPerson?username=notARealPerson")).andDo(print())
+        this.mockMvc.perform(get("/person/findPerson?username=notARealPerson").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Person not found."));
 

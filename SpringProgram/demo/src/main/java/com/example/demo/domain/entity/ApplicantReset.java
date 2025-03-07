@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 /**
- * This represent the data relevant for an applicant requesting an account reset
+ * This represent the data relevant for an applicant requesting an account reset Note this does not implement a DTO,  since it should NEVER leave the service layer and be returned to a user, since that could allow a user to hijack anothers account
  */
 public class ApplicantReset {
     @Id 
@@ -35,7 +35,7 @@ public class ApplicantReset {
     private Long randomLong;
 
     /**
-     * This is a constructor for ApplicantReset, 
+     * This is a constructor for ApplicantReset
      */
     public ApplicantReset()
     {}
