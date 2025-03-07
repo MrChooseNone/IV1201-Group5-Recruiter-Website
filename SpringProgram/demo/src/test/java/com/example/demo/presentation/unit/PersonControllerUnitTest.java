@@ -145,7 +145,7 @@ public class PersonControllerUnitTest {
     void UpdateReviewerTest()
     {
         // We then define the mock implementation for the service function
-        when(personService.UpdateReviewer(anyInt(),anyString(),anyString())).thenAnswer(invocation -> {
+        when(personService.UpdateRecruiter(anyInt(),anyString(),anyString())).thenAnswer(invocation -> {
             Integer id = (Integer) invocation.getArguments()[0];
             String pnr = (String) invocation.getArguments()[1];
             String email = (String) invocation.getArguments()[2];
@@ -153,11 +153,11 @@ public class PersonControllerUnitTest {
         });
 
         //We test it throws the correct exception
-        var e = assertThrowsExactly(InvalidParameterException.class, () -> personController.UpdateReviewer("notAnInteger", "notAPersonId", "notaDouble"));
+        var e = assertThrowsExactly(InvalidParameterException.class, () -> personController.UpdateRecruiter("notAnInteger", "notAPersonId", "notaDouble"));
         assertEquals("Invalid parameter : Provided value (notAnInteger) could not be parsed as a valid integer",e.getMessage());
         
         //And that it return the correct value if correct parameters
-        String result = personController.UpdateReviewer("0", "notAPersonId", "notaDouble");
+        String result = personController.UpdateRecruiter("0", "notAPersonId", "notaDouble");
         assertEquals("Updated pnr and email for a reviwer 0 to pnr notAPersonId and email notaDouble", result);
     }
 

@@ -529,25 +529,25 @@ public class PersonServiceTest {
 
         //We then test that it throws the correct exceptions
 
-        var e=assertThrowsExactly(PersonNotFoundException.class, ()->personService.UpdateReviewer(0,"test","test"));
+        var e=assertThrowsExactly(PersonNotFoundException.class, ()->personService.UpdateRecruiter(0,"test","test"));
         assertEquals("Could not find a person with the following id : 0", e.getMessage());
 
         savedPeople.add(person);
 
-        var e2=assertThrowsExactly(InvalidPersonException.class, ()->personService.UpdateReviewer(0,"test","test"));
+        var e2=assertThrowsExactly(InvalidPersonException.class, ()->personService.UpdateRecruiter(0,"test","test"));
         assertEquals("Specified person invalid due to : You are not a recruiter, so this endpoint is not for you!", e2.getMessage());
 
         //And then that it works correctly in a "real" situation
         role.setName("recruiter");
         person.setRole(role);
 
-        String returnFromService=personService.UpdateReviewer(0,"test","test");
+        String returnFromService=personService.UpdateRecruiter(0,"test","test");
         assertEquals("Updated pnr and email for a reviwer "+person.getName()+" to pnr test and email test" ,returnFromService);
 
         //We then test that it handles database exceptions correctly
         doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(personRepository).findById(anyInt());
 
-        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.UpdateReviewer(0,"test","test"));
+        var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> personService.UpdateRecruiter(0,"test","test"));
         assertEquals("Failed due to database error, please try again",e5.getMessage());
         
     }

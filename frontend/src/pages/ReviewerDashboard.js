@@ -9,7 +9,7 @@ import SearchByUsername from "../components/SearchByUsername";
 import BlockNonReviewers from "../components/BlockNonRecruiter";
 
 
-export default function AddApplicant() {
+export default function ReviewerDashboard() {
 
     return (
         <>

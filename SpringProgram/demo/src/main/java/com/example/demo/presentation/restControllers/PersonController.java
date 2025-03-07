@@ -73,20 +73,19 @@ public class PersonController {
     }
 
     /**
-     * This method allows an existing reviwer to update their pnr and email
+     * This method allows an existing Recruiter to update their pnr and email
      * 
      * @param authentication This contains the pre-authorized authentication for the user
      * @param pnr      The new pnr
      * @param email    The new email
      * @return A string describing the success status
      */
-    @PostMapping("/updateReviwer")
+    @PostMapping("/updateRecruiter")
     @PreAuthorize("hasAuthority('recruiter')")
-    public String UpdateReviewer(Authentication authentication,@RequestParam String personId, @RequestParam String pnr, @RequestParam String email) {
-
+    public String UpdateRecruiter(Authentication authentication, @RequestParam String pnr, @RequestParam String email) {
         PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
-        LOGGER.info("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) by (`{}`)",personId,pnr,email, userAuthentication.getUsername());
-        return personService.UpdateReviewer(userAuthentication.getPersonId(),pnr,email);
+        LOGGER.info("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) by (`{}`)",userAuthentication.getPersonId(),pnr,email, userAuthentication.getUsername());
+        return personService.UpdateRecruiter(userAuthentication.getPersonId(),pnr,email);
     }
 
     /**
@@ -101,7 +100,6 @@ public class PersonController {
         LOGGER.info("Update of username and password for applicant with email (`{}`) requested",email); //TODO add authentication info here, aka who accessed this
         return personService.ApplicantResetLinkGeneration(email);
     }
-
 
     /**
      * This method allows an existing reviwer to specify their pnr and email

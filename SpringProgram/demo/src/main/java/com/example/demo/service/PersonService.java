@@ -179,7 +179,7 @@ public class PersonService implements UserDetailsService {
     }
 
     /**
-     * This method is used to update pnr and email for a reviewer
+     * This method is used to update pnr and email for a Recruiter
      * 
      * @param personId The person id for the reviwer to update
      * @param pnr      The new pnr
@@ -191,7 +191,7 @@ public class PersonService implements UserDetailsService {
      *                                 for some reason
      * @return If successfull, a string describing this
      */
-    public String UpdateReviewer(Integer personId, String pnr, String email) {
+    public String UpdateRecruiter(Integer personId, String pnr, String email) {
         try {
             Optional<Person> personContainer = personRepository.findById(personId);
 

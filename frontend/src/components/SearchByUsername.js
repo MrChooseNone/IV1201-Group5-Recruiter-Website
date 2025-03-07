@@ -8,7 +8,7 @@ import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/mate
 
 import { AuthContext } from '../App';
 
-export default function SearchApplication() {
+export default function SearchByUsername() {
     const[search,setSearch] = useState("");
     const[result,setResult] = useState(null);
 
