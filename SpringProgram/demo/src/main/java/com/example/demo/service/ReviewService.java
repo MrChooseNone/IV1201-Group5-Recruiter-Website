@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -72,13 +73,20 @@ public class ReviewService {
     public ApplicationDTO GetApplicationsById(Integer id)
     {
         try {
-            return applicationRepository.findByApplicationId(id);
+
+            return applicationRepository.findById(id).get();
         }
         catch(DataAccessException e)
         {
             LOGGER.error("Failed to find retrive applications due to a database error : (`{}`)",e.getMessage());
             throw new CustomDatabaseException();
         }
+        catch(NoSuchElementException e)
+        {
+            LOGGER.error("Failed to find retrive applications since no such application exists : (`{}`)",e.getMessage());
+            throw new ApplicationNotFoundException("No such application");
+        }
+        
     }
 
     /**

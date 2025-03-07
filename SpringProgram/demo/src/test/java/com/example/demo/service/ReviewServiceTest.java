@@ -182,7 +182,7 @@ public class ReviewServiceTest {
     {
 
         // We define the implementation for the mock repository
-        when(applicationRepository.findByApplicationId(anyInt())).thenAnswer(invocation -> {
+        when(applicationRepository.findById(anyInt())).thenAnswer(invocation -> {
             Integer status=(Integer)invocation.getArguments()[0];
             if (status==0) {
                 return new Application();
@@ -191,9 +191,9 @@ public class ReviewServiceTest {
         });
 
         reviewService.GetApplicationsById(0);
-        Mockito.verify(this.applicationRepository, Mockito.times(1)).findByApplicationId(anyInt());
+        Mockito.verify(this.applicationRepository, Mockito.times(1)).findById(anyInt());
 
-        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(applicationRepository).findByApplicationId(anyInt());
+        doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(applicationRepository).findById(anyInt());
         var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> reviewService.GetApplicationsById(0));
         assertEquals("Failed due to database error, please try again",e5.getMessage());
 

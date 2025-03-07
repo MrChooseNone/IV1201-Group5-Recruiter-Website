@@ -31,12 +31,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
      */
     List<Application> findAllByApplicationStatus(ApplicationStatus applicationStatus);
 
-    /** This interface tells JPA to generate a query to find a application with the specific id
-     * @param applicationId the application status to find applications matching
-     * @return The matching application, or null if none exists
-     */
-    Application findByApplicationId(Integer applicationId);
-
     /**
      * This method checks if an application already exists with these exact availability periods and for a specific person
      * @param availabilities The list of availabilities to match with
