@@ -24,7 +24,7 @@ import com.example.demo.service.ApplicationService;
 
 @RestController
 @RequestMapping("/application")
-@PreAuthorize("hasAnyRole('reviewer','applicant')")
+@PreAuthorize("hasAnyAuthority('reviewer','applicant')")
 @CrossOrigin(origins = "${ALLOWED_ORIGINS:http://localhost:3000}") // This uses the config in config/WebConfig.java to allow cross-origin access
 /**
  * This endpoint controller is responsible for handeling the requests concerning submitting an application.
