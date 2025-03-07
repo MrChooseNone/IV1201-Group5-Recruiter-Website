@@ -30,15 +30,16 @@ function App() {
     <AuthContext.Provider value={authContextValue}> {/*This provides access to the auth object for every component within it*/}
       <Router>
         <Routes>
+          {/*Always accessible pages */}
           <Route index element={<Home />} /> {/*Default end point "/" */}
-          <Route path='/home' element={<Home />} />
-
-          <Route path='/JobApplication' element={<JobApplication />} />
+          <Route path='/home' element={<Home />} />          
           <Route path='/addApplicant' element={<AddApplicant />} />
           <Route path='/login' element={<LoginPage />} />
 
-          
-          {/* add security*/}
+          {/*Must be logged in */}
+          <Route path='/JobApplication' element={<JobApplication />} />
+
+          {/* Must be a reviewer*/}
           <Route path='/review' element={<ReviewerDashboard />} />
           <Route path='/applicant/:id' element={<ApplicantDetails />} />
 

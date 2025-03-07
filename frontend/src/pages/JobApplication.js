@@ -7,10 +7,12 @@ import Container from '@mui/material/Container';
 import ApplicationEndPoint from "../components/ApplicationEndPoint";
 import FollowMouse from "../components/FollowMouse";
 
+import BlockNonSignedIn from "../components/BlockNonSignedIn"
 
 export default function JobApplication(){
     return (
         <>
+        <BlockNonSignedIn></BlockNonSignedIn>
         <Appbar/>
         <FollowMouse></FollowMouse>
             <Container maxWidth="sm">

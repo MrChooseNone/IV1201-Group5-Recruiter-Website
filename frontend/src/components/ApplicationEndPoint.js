@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Container,
   TextField,
@@ -16,6 +16,7 @@ import {
   CircularProgress
 } from "@mui/material";
 
+import { AuthContext } from '../App';
 
 export default function ApplicationEndPoint() {
     const [personId, setPersonId] = useState("");
@@ -35,6 +36,10 @@ export default function ApplicationEndPoint() {
     const [result, setResult] = useState();
     //--------------------Competences-------------
 
+    //We load the authentication information from the context
+    const { auth, setAuth } = useContext(AuthContext);
+    
+
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
     
@@ -46,6 +51,7 @@ export default function ApplicationEndPoint() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${auth.token}`, 
             },
         })
         .then((response) => { 
@@ -100,6 +106,7 @@ export default function ApplicationEndPoint() {
           headers: {
             
             "Content-Type": "application/json", 
+            "Authorization": `Bearer ${auth.token}`, 
           },
         })
         .then((response) => { 
@@ -132,6 +139,7 @@ export default function ApplicationEndPoint() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${auth.token}`, 
             },
         })
         .then((response) => { 
@@ -170,6 +178,9 @@ export default function ApplicationEndPoint() {
     const createCompetenceProfile = async () => {
         const response = await fetch(`${API_URL}/application/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
+        headers: {
+            "Authorization": `Bearer ${auth.token}`, 
+        },
         });
         if (response.ok) {
         const data = await response.json();
@@ -184,7 +195,14 @@ export default function ApplicationEndPoint() {
 
     // Fetch availability periods
     const getAvailability = async () => {
-        const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`);
+        const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${auth.token}`, 
+                },
+            }
+        );
         if (response.ok) {
         setAvailability(await response.json());
         } else {
@@ -202,6 +220,9 @@ export default function ApplicationEndPoint() {
     const createAvailability = async () => {
         const response = await fetch(`${API_URL}/application/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
+        headers: {
+            "Authorization": `Bearer ${auth.token}`, 
+        },
         });
         if (response.ok) {
         const data = await response.json();
@@ -293,6 +314,7 @@ export default function ApplicationEndPoint() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${auth.token}`, 
                 },
                 body: JSON.stringify(requestBody),
             });

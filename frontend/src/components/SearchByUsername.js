@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useContext} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -6,9 +6,13 @@ import Button from '@mui/material/Button';
 
 import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
 
+import { AuthContext } from '../App';
+
 export default function SearchApplication() {
     const[search,setSearch] = useState("");
     const[result,setResult] = useState(null);
+
+    const { auth, setAuth } = useContext(AuthContext);
 
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
@@ -42,18 +46,26 @@ export default function SearchApplication() {
         fetch(url, {
           method: "GET",
           headers: {
-            
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
+            "Authorization": "Bearer "+auth.token 
           },
         })
         .then((response) => { 
           if (response.ok) {
               return response.json(); // Parse JSON if response is OK
-          } else {
-              return response.text().then((errorText) => { 
-                  throw new Error(`Failed to fetch: ${errorText}`); 
+          } else {                
+            if(response.status==401) //This checks if the user was not authorized
+            {
+                alert("You are not authorized to search for people");
+                throw new Error(`Unauthorized fetch`); 
+            }
+            else
+            {
+                return response.text().then((errorText) => { 
+                throw new Error(`Failed to fetch: ${errorText}`); 
               });
           }
+        }
         }) 
         .then((data) => {
             console.log(data); // Write data

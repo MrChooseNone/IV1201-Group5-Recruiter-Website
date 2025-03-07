@@ -78,7 +78,7 @@ export default function LoginComp() {
             localStorage.setItem("token", dataParsed.token);
             localStorage.setItem("role", dataParsed.role);
 
-            alert("Login Successfull");
+            alert("Login Successful");
 
         })
         .catch((error) => {
@@ -119,7 +119,6 @@ const handleSearch = (e) => {
     fetch(url, {
       method: "GET",
       headers: {
-        
         "Content-Type": "application/json",
         "Authorization": `Bearer ${auth.token}`, 
       },

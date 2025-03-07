@@ -18,7 +18,7 @@ import com.example.demo.repository.CompetenceTranslationRepository;
 import com.example.demo.repository.LanguageRepository;
 import com.example.demo.repository.PersonRepository;
 
-//@Component
+@Component
 //This class is responsible for loading data into the database
 public class DatabaseLoader implements CommandLineRunner{
 

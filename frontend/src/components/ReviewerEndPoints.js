@@ -44,9 +44,17 @@ export default function ReviewerDashboard() {
             if (response.ok) {
                 return response.json(); // Parse JSON if response is OK
             } else {
-                return response.text().then((errorText) => { 
-                    throw new Error(`Failed to fetch: ${errorText}`); 
-                });
+                if(response.status==401) //This checks if the user was not authorized
+                    {
+                        alert("You are not authorized to requests applications");
+                        throw new Error(`Unauthorized fetch`); 
+                    }
+                    else
+                    {
+                        return response.text().then((errorText) => { 
+                        throw new Error(`Failed to fetch: ${errorText}`); 
+                    });
+                    }
             }
         })
         .then((data) => {
@@ -70,16 +78,25 @@ export default function ReviewerDashboard() {
             if (response.ok) {
                 return response.json(); // Parse JSON if response is OK
             } else {
-                return response.text().then((errorText) => { 
+                if(response.status==401) //This checks if the user was not authorized
+                {
+                    alert("You are not authorized to requests applications by status");
+                    throw new Error(`Unauthorized fetch`); 
+                }
+                else
+                {
+                    return response.text().then((errorText) => { 
                     throw new Error(`Failed to fetch: ${errorText}`); 
                 });
+                }
+                
             }
         })
         .then((data) => {
             setApplicationsByStatus(data);
         })
         .catch((error) => {
-            console.error("Failed to fetch applicants, please use values unchecked, accepted, denied: " + error);
+            console.error("Failed to fetch applications by status, please use values unchecked, accepted, denied: " + error);
         })
     }
 

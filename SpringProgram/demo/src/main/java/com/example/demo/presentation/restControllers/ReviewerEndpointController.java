@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.domain.ApplicationStatus;
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ReviewService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/review")
@@ -48,11 +50,13 @@ public class ReviewerEndpointController {
 
     /**
      * This function returns a list of applications
+     * @param authentication This contains the pre-authorized authentication for the user
      * @return This function will return the list of existing applications as a json object to the user
      */
     @GetMapping("/getApplications")
-    public List<? extends ApplicationDTO> GetApplications() {
-        LOGGER.info("All applications requested"); //TODO add authentication info here, aka who accessed this
+    public List<? extends ApplicationDTO> GetApplications(Authentication authentication) {
+        PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
+        LOGGER.info("All applications requested by (`{}`)",userAuthentication.getUsername());
         List<? extends ApplicationDTO> applications = reviewService.GetApplications();
         return applications;
     }
@@ -60,13 +64,15 @@ public class ReviewerEndpointController {
     /**
      * This function returns the existing standard competences
      * 
+     * @param authentication This contains the pre-authorized authentication for the user
      * @param status the application status to find applications for
      * @throws InvalidParameterException this exceptions is thrown is a parameter is incorrectly specified
      * @return This function will return the list of existing applications with the matching status as a json object to the user
      */
     @GetMapping("/getApplicationsByStatus/{status}")
-    public List<? extends ApplicationDTO> GetApplicationsByStatus(@PathVariable String status) {
-        LOGGER.info("All applications with status (`{}`) requested",status); //TODO add authentication info here, aka who accessed this
+    public List<? extends ApplicationDTO> GetApplicationsByStatus(Authentication authentication,@PathVariable String status) {
+        PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
+        LOGGER.info("All applications with status (`{}`) requested by (`{}`)",status,userAuthentication.getUsername());
 
         ApplicationStatus parsedApplicationStatus=null;
         try {
@@ -91,12 +97,14 @@ public class ReviewerEndpointController {
     /**
      * This function returns the specified application
      * 
+     * @param authentication This contains the pre-authorized authentication for the user
      * @param id the application id to find application
      * @return This function will return the application of the application id
      */
     @GetMapping("/getApplicationsById/{id}")
-    public ApplicationDTO GetApplicationsById(@PathVariable String id) {
-        LOGGER.info("Application with ID (`{}`) requested",id); //TODO add authentication info here, aka who accessed this
+    public ApplicationDTO GetApplicationsById(Authentication authentication,@PathVariable String id) {
+        PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
+        LOGGER.info("Application with ID (`{}`) requested by (`{}`)",id,userAuthentication);
 
         Integer parsedApplicationId=null;
         try {
@@ -117,6 +125,7 @@ public class ReviewerEndpointController {
     /**
      * This function updates the application status of a specific application
      * 
+     * @param authentication This contains the pre-authorized authentication for the user
      * @param applicationId the application id
      * @param status the new application status to set the application to
      * @param versionNumber the application version
@@ -124,8 +133,10 @@ public class ReviewerEndpointController {
      * @return The updated application as a json object
      */
     @PostMapping("/updateApplicationStatus")
-    public ApplicationDTO UpdateApplicationsByStatus(@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber) {
-        LOGGER.info("Status change for application with id (`{}`) version number (`{}`) to (`{}`) requested",applicationId,versionNumber,status); //TODO add authentication info here, aka who accessed this
+    public ApplicationDTO UpdateApplicationsByStatus(Authentication authentication,@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber) {
+        PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
+
+        LOGGER.info("Status change for application with id (`{}`) version number (`{}`) to (`{}`) requested by (`{}`)",applicationId,versionNumber,status,userAuthentication.getUsername()); //TODO add authentication info here, aka who accessed this
 
         ApplicationStatus parsedApplicationStatus=null;
         try {

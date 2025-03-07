@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restException.InvalidParameterException;
@@ -72,34 +73,20 @@ public class PersonController {
     }
 
     /**
-     * This method allows an existing reviwer to specify their pnr and email
+     * This method allows an existing reviwer to update their pnr and email
      * 
-     * @param pnr The reviwerer to update, TODO replace this with auth based id retrival if possible
+     * @param authentication This contains the pre-authorized authentication for the user
      * @param pnr      The new pnr
      * @param email    The new email
-     * @throws InvalidParameterException If personId is not a valid integer
      * @return A string describing the success status
-     * TODO only allow a logged in reviwer to do this to their own account
      */
     @PostMapping("/updateReviwer")
     @PreAuthorize("hasAuthority('recruiter')")
-    public String UpdateReviewer(@RequestParam String personId, @RequestParam String pnr, @RequestParam String email) {
+    public String UpdateReviewer(Authentication authentication,@RequestParam String personId, @RequestParam String pnr, @RequestParam String email) {
 
-        LOGGER.info("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) requested",personId,pnr,email); //TODO add authentication info here, aka who accessed this
-
-        Integer parsedPersonId = null;
-        try {
-            parsedPersonId = Integer.parseInt(personId);
-        } catch (NumberFormatException e) {
-            LOGGER.error("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) requested",personId,pnr,email); //TODO add authentication info here, aka who accessed this
-            throw new InvalidParameterException(
-                    "Provided value (" + personId + ") could not be parsed as a valid integer");
-        } catch (Exception e) {
-            LOGGER.error("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) requested",personId,pnr,email); //TODO add authentication info here, aka who accessed this
-            throw new InvalidParameterException(
-                    "Unknown cause, but double check formating of request, specifically for the person id parameter");
-        }
-        return personService.UpdateReviewer(parsedPersonId,pnr,email);
+        PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
+        LOGGER.info("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) by (`{}`)",personId,pnr,email, userAuthentication.getUsername());
+        return personService.UpdateReviewer(userAuthentication.getPersonId(),pnr,email);
     }
 
     /**
@@ -126,7 +113,6 @@ public class PersonController {
      */
     @PostMapping("/updateApplicant")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {
-
         LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested",resetToken,username); //TODO add authentication info here, aka who accessed this
         return personService.ApplicantUseResetLink(resetToken,username,password);
     }
@@ -134,19 +120,22 @@ public class PersonController {
     /**
      * This function returns a list of people whose name match the specified name
      * 
+     * @param authentication This contains the pre-authorized authentication for the user
      * @param name the name to find user's whose name match with
      * @return a list of people with names matching with the name parameter
      */
     @GetMapping("/find")
-    public List<? extends PersonDTO> findPersonByName(@RequestParam String name) {
-        LOGGER.info("People with the name (`{}`) requested", name); // TODO add authentication info here, aka who
-                                                                    // accessed this
+    @PreAuthorize("hasAnyRole('reviewer','applicant')") //This only allows a signed in user to access this endpoint
+    //TODO Should non-logged in be allowed access, if so remove above + authentication
+    public List<? extends PersonDTO> findPersonByName(Authentication authentication,@RequestParam String name) {
+        LOGGER.info("People with the name (`{}`) requested by ", name, ((PersonDetails)authentication.getPrincipal()).getUsername());
         return personService.FindPeopleByName(name);
     }
 
     /**
      * Finds a person by their PNR, email, or username.
      * 
+     * @param authentication This contains the pre-authorized authentication for the user
      * @param pnr      The personal identity number to search for (optional).
      * @param email    The email to search for (optional).
      * @param username The username to search for (optional).
@@ -159,8 +148,9 @@ public class PersonController {
             @RequestParam(required = false) String pnr,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String username) {
-
-        LOGGER.info(authentication.getPrincipal().getClass().getName());
+        
+        //Here we cast the authentication principal to PersonDetails, which it should be, to get the username for logging purposes
+        LOGGER.info("Find person requested by " + ((PersonDetails)authentication.getPrincipal()).getUsername());
 
         Optional<? extends PersonDTO> person = Optional.empty();
 
