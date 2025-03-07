@@ -81,7 +81,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 //.anyRequest().permitAll()  // Allows all endpoints without authentication (for testing)
                 .requestMatchers("/person/register", "/person/updateApplicant", "/auth/generateToken**" ).permitAll()
-                .requestMatchers("/review/**").hasAuthority("recruiter")
+                .requestMatchers("/application/**","/person/requestApplicantReset").hasAuthority("applicant")
+                .requestMatchers("/review/**", "/person/updateReviwer","/person/updateApplicant", "/person/find", "/person/findPerson").hasAuthority("recruiter")
                 .anyRequest().authenticated() 
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

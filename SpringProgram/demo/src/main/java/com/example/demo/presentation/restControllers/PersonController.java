@@ -81,7 +81,7 @@ public class PersonController {
      * @return A string describing the success status
      * TODO only allow a logged in reviwer to do this to their own account
      */
-    @PostMapping("/updateReviwer")
+    @PostMapping("/updateReviwer")      //fix spelling?
     @PreAuthorize("hasAuthority('recruiter')")
     public String UpdateReviewer(@RequestParam String personId, @RequestParam String pnr, @RequestParam String email) {
 
@@ -110,6 +110,7 @@ public class PersonController {
      *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/requestApplicantReset")
+    @PreAuthorize("hasAuthority('applicant')")
     public String RequestApplicantReset(@RequestParam String email) {
         LOGGER.info("Update of username and password for applicant with email (`{}`) requested",email); //TODO add authentication info here, aka who accessed this
         return personService.ApplicantResetLinkGeneration(email);
@@ -125,6 +126,7 @@ public class PersonController {
      *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/updateApplicant")
+    @PreAuthorize("hasAuthority('recruiter')")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {
 
         LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested",resetToken,username); //TODO add authentication info here, aka who accessed this
@@ -138,6 +140,7 @@ public class PersonController {
      * @return a list of people with names matching with the name parameter
      */
     @GetMapping("/find")
+    @PreAuthorize("hasAuthority('recruiter')")
     public List<? extends PersonDTO> findPersonByName(@RequestParam String name) {
         LOGGER.info("People with the name (`{}`) requested", name); // TODO add authentication info here, aka who
                                                                     // accessed this

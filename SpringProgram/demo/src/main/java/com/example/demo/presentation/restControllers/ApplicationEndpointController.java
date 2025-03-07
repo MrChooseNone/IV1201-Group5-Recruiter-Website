@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.dto.AvailabilityDTO;
@@ -23,6 +24,7 @@ import com.example.demo.service.ApplicationService;
 
 @RestController
 @RequestMapping("/application")
+@PreAuthorize("hasAuthority('applicant')")
 @CrossOrigin(origins = "${ALLOWED_ORIGINS:http://localhost:3000}") // This uses the config in config/WebConfig.java to allow cross-origin access
 /**
  * This endpoint controller is responsible for handeling the requests concerning submitting an application.
