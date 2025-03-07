@@ -112,8 +112,9 @@ export default function ApplicationForm() {
         justifyContent: "center",
         alignItems: "center",
         p: 4,
-          borderRadius: 2,
-        }}
+        borderRadius: 2,
+        marginTop: 2,
+      }}
         noValidate
         autoComplete="off"
       >

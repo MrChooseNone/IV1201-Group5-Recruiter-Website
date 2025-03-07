@@ -101,8 +101,8 @@ export default function LoginComp() {
         else return "username";
     };
 
+    //navigate to /JobApplication or /review based on the role of the logged in
     const loginNavigate = () =>{
-
         if(sessionStorage.getItem("role") === "applicant"){
             navigate("/JobApplication");
         } else {
@@ -124,6 +124,7 @@ export default function LoginComp() {
         alignItems: "center",
         p: 4,
         borderRadius: 2,
+        marginTop: 2,
         }}
         noValidate
         autoComplete="off"
@@ -145,10 +146,7 @@ export default function LoginComp() {
         {/* Buttons Section */}
         <Stack direction={{ xs: "column", md: "row" }} spacing={2} mt={3}>
           <Button variant="contained" color="primary" onClick={handleLogin}>
-            Login
-          </Button>
-          <Button disabled={!isSubmited} variant="contained" color="secondary" component={Link} to="/JobApplication">
-            Next →
+            Login →
           </Button>
           
         </Stack>
