@@ -96,6 +96,7 @@ public class PersonController {
      *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/requestApplicantReset")
+    @PreAuthorize("hasAuthority('applicant')")
     public String RequestApplicantReset(@RequestParam String email) {
         LOGGER.info("Update of username and password for applicant with email (`{}`) requested",email); //TODO add authentication info here, aka who accessed this
         return personService.ApplicantResetLinkGeneration(email);
@@ -110,6 +111,7 @@ public class PersonController {
      *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/updateApplicant")
+    @PreAuthorize("hasAuthority('recruiter')")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {
         LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested",resetToken,username); //TODO add authentication info here, aka who accessed this
         return personService.ApplicantUseResetLink(resetToken,username,password);
@@ -123,7 +125,7 @@ public class PersonController {
      * @return a list of people with names matching with the name parameter
      */
     @GetMapping("/find")
-    @PreAuthorize("hasAnyRole('reviewer','applicant')") //This only allows a signed in user to access this endpoint
+    @PreAuthorize("hasAuthority('recruiter')")
     //TODO Should non-logged in be allowed access, if so remove above + authentication
     public List<? extends PersonDTO> findPersonByName(Authentication authentication,@RequestParam String name) {
         LOGGER.info("People with the name (`{}`) requested by ", name, ((PersonDetails)authentication.getPrincipal()).getUsername());
