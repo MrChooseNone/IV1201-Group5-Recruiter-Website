@@ -15,18 +15,36 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
+
 @Component
+/**
+ * Service responsible for handling JWT operations such as generating, validating, 
+ * and extracting claims from JWT tokens. It supports user authentication and password reset functionality.
+ * This service uses a secret key to sign and validate JWTs and provides methods to extract user-related 
+ * information and additional claims (like reset tokens).
+ */
 public class JwtService {
 
-    Random rand = new Random();//Used to generate random number for reset token
+    Random rand = new Random(); // Used to generate random number for reset token
 
     public static final String SECRET = "123456789eaaaaaaaaaaaaaaaaaaaaaasdawdawdawdawdawdadawdawdawdadawdawd"; //to be replaced
     
+    /**
+     * Generates a JWT token for the specified user.
+     * @param userName The username for the user to be included in the token's claims.
+     * @return The generated JWT token.
+     */
     public String generateToken(String userName){
         Map<String,Object> claims = new HashMap<>();
         return createToken(claims,userName);
     }
     
+    /**
+     * Creates a JWT token with specified claims and username.
+     * @param claims A map of claims to include in the token.
+     * @param userName The username for the user.
+     * @return The generated JWT token.
+     */
     private String createToken(Map<String,Object> claims, String userName){
         return Jwts.builder()
                 .setClaims(claims)
@@ -37,11 +55,20 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Retrieves the signing key used to sign the JWT token.
+     * @return The signing key.
+     */
     private Key getSignKey(){
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * Extracts all claims from the JWT token.
+     * @param token The JWT token.
+     * @return The claims extracted from the token.
+     */
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
@@ -50,28 +77,50 @@ public class JwtService {
                 .getBody();
     }
 
+    /**
+     * Extracts a specific claim from the JWT token.
+     * @param <T> The type of the claim to be extracted.
+     * @param token The JWT token.
+     * @param claimsResolver A function to extract the claim.
+     * @return The extracted claim.
+     */
     public <T> T extractClaim(String token, Function<Claims,T> claimsResolver){
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+    /**
+     * Extracts the username from the JWT token.
+     * @param token The JWT token.
+     * @return The username extracted from the token.
+     */
     public String extractUserName(String token){
         return extractClaim(token,Claims::getSubject);
     }
 
+    /**
+     * Extracts the expiration date from the JWT token.
+     * @param token The JWT token.
+     * @return The expiration date of the token.
+     */
     public Date extractExpiration(String token){
         return extractClaim(token, Claims::getExpiration);
     }
 
+    /**
+     * Checks if the JWT token is expired.
+     * @param token The JWT token.
+     * @return True if the token is expired, false otherwise.
+     */
     private Boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
 
     /**
-     * 
-     * @param token
-     * @param userDetails
-     * @return
+     * Validates the JWT token by comparing the username and expiration date.
+     * @param token The JWT token.
+     * @param userDetails The user details to compare against the token.
+     * @return True if the token is valid, false otherwise.
      */
     public Boolean validateToken(String token, UserDetails userDetails){
         final String username = extractUserName(token);
@@ -80,7 +129,7 @@ public class JwtService {
 
 
     /**
-     * This method generates a unique token for the purpose of creating a unique reset link
+     * Generates a unique token for the purpose of creating a unique reset link
      * @param email The email for the person this reset token is for
      * @return The genereated JWT token
      */

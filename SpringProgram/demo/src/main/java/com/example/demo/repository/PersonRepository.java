@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The PersonRepository interface is responsible for providing CRUD operations for the Person entity.
+ * Any explicitly defined functions can only be called inside a transaction, however JPARepository inherited functions can be called outside of one
+ * This should however not be done, since doing so could risk a rollback being impossible
  */
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)

@@ -39,6 +39,11 @@ import com.example.demo.repository.PersonRepository;
 
 @Service
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW) 
+/**
+ * Service for managing applications, competence profiles, and availability periods.
+ * It handles CRUD operations and validation using various repositories.
+ * It uses explicit transaction annotation to ensure a rollback occurs whenever an unchecked exception is thrown.
+ */
 public class ApplicationService {
     @Autowired
     private final ApplicationRepository applicationRepository;
@@ -60,6 +65,7 @@ public class ApplicationService {
 
     /**
      * Constructs a new instance of the ApplicationService (this is Spring boot managed).
+     * 
      * @param applicationRepository the repository for accessing application database data
      * @param competenceProfileRepository the repository for accessing competence profile database data
      * @param availabilityRepository the repository for accessing availability database data
@@ -76,13 +82,15 @@ public class ApplicationService {
 
     /**
      * This function attempts to create a new competence profile for a specified competence, for a specific user and with the specified number of years of experience
+     * 
      * @param competenceId The id for the competence this profile represents
      * @param personId The id for the person this profile is for
      * @param yearsOfExperience The number of years of experience the person states they have
      * @throws SpecificCompetenceNotFoundException this exception is thrown if the competence profile id provided does not match any in the database
      * @throws PersonNotFoundException this exception is thrown if no person exists with the specified the personId 
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
-     * @return If no exception is thrown, the newly created competence profile is created and 
+     * @throws AlreadyExistsException if the competence profile already exists for this person
+     * @return If no exception is thrown, the newly created competence profile is created and returned
      */
     public CompetenceProfileDTO CreateCompetenceProfile(Integer competenceId, Integer personId, Double yearsOfExperience)
     {
@@ -130,6 +138,7 @@ public class ApplicationService {
 
     /**
      * This function returns a list of competence profiles for a specific person
+     * 
      * @param personId The person id of the person to find competence profiles for
      * @throws PersonNotFoundException this exception is thrown if no person exists with the specified the person Id  
      * @throws CustomDatabaseException this exception is thrown is an error occurs when accessing the database
@@ -157,12 +166,14 @@ public class ApplicationService {
 
     /**
      * This function attempts to create a new availability 
+     * 
      * @param personId The person id of the person the availability period is for
      * @param fromDate This is the start date for this availability period
      * @param toDate This is the end of the availability period
      * @throws PersonNotFoundException this exception is thrown if no person exists with the specified the person Id  
      * @throws FromDateAfterToDateException this exception is thrown if the from date is after the to date
      * @throws PeriodAlreadyCoveredException this exception is thrown if the new periods date range is fully covered by an existing availability period
+     * @throws AlreadyExistsException if an identical availability period already exists
      * @throws CustomDatabaseException this exception is thrown is an error occurs when accessing the database
      * @return If no exception is thrown, this returns the newly created availability
      */
@@ -211,6 +222,7 @@ public class ApplicationService {
 
     /**
      * This function returns a list of competence profiles for a specific person
+     * 
      * @param personId The person id of the person to find competence profiles for
      * @throws PersonNotFoundException this exception is thrown if no person exists with the specified the person Id  
      * @throws CustomDatabaseException this exception is thrown if an error occurs with the database
@@ -241,6 +253,7 @@ public class ApplicationService {
 
     /**
      * This function creates a new application for a specified person with specific availability periods and competence profiles
+     * 
      * @param personId
      * @param availabilityIds
      * @param competenceProfileIds

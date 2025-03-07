@@ -30,8 +30,14 @@ import com.example.demo.repository.ApplicantResetRepository;
 import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.RoleRepository;
 
+
 @Service
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+/**
+ * This service class is for handling person-related operations such as registering,
+ * updating, and resetting information, as well as generating and validating JWT tokens.
+ * It uses explicit transaction annotation to ensure a rollback occurs whenever an unchecked exception is thrown.
+ */
 public class PersonService implements UserDetailsService {
     private final PersonRepository personRepository;
     private final RoleRepository roleRepository;
@@ -45,8 +51,8 @@ public class PersonService implements UserDetailsService {
      * Constructs a new instance of the PersonService (Spring boot managed).
      * 
      * @param personRepository the repository for accessing person database data
-     * @param roleRepository   the repository for accessing role database
-     *                         information
+     * @param roleRepository   the repository for accessing role database information
+     * @param applicantResetRepository the repository for handling applicant reset requests
      * @param jwtService       this service provides jwt token related functionality
      * @param passwordEncoder  this is responsible for encoding passwords
      */
@@ -64,7 +70,6 @@ public class PersonService implements UserDetailsService {
      * 
      * @param name The name to find a match for
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
-     *                                 for some reason
      * @return A list of matching people
      */
     public List<? extends PersonDTO> FindPeopleByName(String name) {
@@ -85,10 +90,8 @@ public class PersonService implements UserDetailsService {
      * @param email    The email of the person to add
      * @param password The password of the person to add
      * @param username The username of the person to add
-     * @throws IllegalArgumentException this exception is thrown if the parameters
-     *                                  already exist
+     * @throws IllegalArgumentException this exception is thrown if the parameters already exist
      * @throws CustomDatabaseException  this is thrown if any of the jpa methods
-     *                                  fail for some reason
      */
     public void RegisterPerson(String name, String surname, String pnr, String email, String password,
             String username) {
@@ -130,8 +133,7 @@ public class PersonService implements UserDetailsService {
      * 
      * @param email The email to search for
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
-     *                                 for some reason
-     * @return The found Person entity, if present
+     * @return The Person entity found, or empty if not found
      */
     public Optional<? extends PersonDTO> FindPersonByEmail(String email) {
         try {
@@ -148,8 +150,7 @@ public class PersonService implements UserDetailsService {
      * 
      * @param username The username to search for
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
-     *                                 for some reason
-     * @return The found Person entity, if present
+     * @return The Person entity found, or empty if not found
      */
     public Optional<? extends PersonDTO> FindPersonByUsername(String username) {
         try {
@@ -166,8 +167,7 @@ public class PersonService implements UserDetailsService {
      * 
      * @param pnr The personal identity number to search for.
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
-     *                                 for some reason
-     * @return The found Person entity, if present
+     * @return TThe Person entity found, or empty if not found
      */
     public Optional<? extends PersonDTO> FindPersonByPnr(String pnr) {
         try {
@@ -184,11 +184,9 @@ public class PersonService implements UserDetailsService {
      * @param personId The person id for the reviwer to update
      * @param pnr      The new pnr
      * @param email    The new email
-     * @throws PersonNotFoundException if the personId does not match a existing
-     *                                 person
+     * @throws PersonNotFoundException if the personId does not match a existing person
      * @throws InvalidPersonException  if the person is not a reviewer
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
-     *                                 for some reason
      * @return If successfull, a string describing this
      */
     public String UpdateRecruiter(Integer personId, String pnr, String email) {
@@ -233,12 +231,11 @@ public class PersonService implements UserDetailsService {
      * This method is used to request an update of username and password for a
      * applicant, which is done by generating a unique link to the users email
      * 
-     * @param pnr The pnr for the applicant to generate a reset link for
-     * @throws InvalidPersonException  if the pnr does not match a existing person
+     * @param email The email for the applicant to generate a reset link for
+     * @throws InvalidPersonException  if the email does not match a existing person
      *                                 or that person is not an applicant
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
-     *                                 for some reason
-     * @return If no exception is thrown, a string describing the success
+     * @return a message indicating the reset link was sent
      */
     public String ApplicantResetLinkGeneration(String email) {
         try {
@@ -288,15 +285,13 @@ public class PersonService implements UserDetailsService {
     }
 
     /**
-     * This method is used to request an update of username and password for a
-     * applicant, which is done by generating a unique link to the users email
-     * 
-     * @param pnr The pnr for the applicant to generate a reset link for
-     * @throws InvalidPersonException  if the pnr does not match a existing person
-     *                                 or that person is not an applicant
-     * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
-     *                                 for some reason
-     * @return If no exception is thrown, a string describing the success
+     * Uses a reset token to update an applicant's username and password.
+     *
+     * @param resetToken the reset token received by the applicant
+     * @param username   the new username
+     * @param password   the new password
+     * @throws InvalidJWTException if the reset token is invalid or expired
+     * @throws CustomDatabaseException if a database error occurs during the update
      */
     public String ApplicantUseResetLink(String resetToken, String username, String password) {
         try {
@@ -360,7 +355,9 @@ public class PersonService implements UserDetailsService {
 
     @Override
     /**
-     * This method accepts a username, and attepts to find a matching user in the database, and if such exists it return a UserDetails for that user
+     * This method accepts a username, and attepts to find a matching user in the database,
+     * and if such exists it return a UserDetails for that user
+     * 
      * @param username the username to find a user using
      * @throws CustomDatabaseException if a database error occurs
      * @throws UsernameNotFoundException if the username was not found

@@ -12,7 +12,7 @@ import com.example.demo.domain.entity.CompetenceTranslation;
 /**
  * The CompetenceTranslationRepository interface is responsible for providing CRUD operations for the CompetenceTranslation entity.
  * Any explicitly defined functions can only be called inside a transaction, however JPARepository inherited functions can be called outside of one
- * This should however not be done, since doing so could risk a roleback being impossible
+ * This should however not be done, since doing so could risk a rollback being impossible
  */
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)

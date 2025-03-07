@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Propagation;
 /**
  * The AvailabilityRepository interface is responsible for providing CRUD operations for the Availability entity.
  * Any explicitly defined functions can only be called inside a transaction, however JPARepository inherited functions can be called outside of one
- * This should however not be done, since doing so could risk a roleback not being performed correctly
+ * This should however not be done, since doing so could risk a rollback not being performed correctly
  */
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
 //Note that the above means that any explicitly defined methods for this interface requier being called inside a transaction
-//Non-explicitly defined ones, aka inherited ones from JPARepository do not requier this, however note that they should still be called inside of a transaction to avoid roleback issues
+//Non-explicitly defined ones, aka inherited ones from JPARepository do not requier this, however note that they should still be called inside of a transaction to avoid rollback issues
 //Link to documentation: https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html#jpa.query-methods.query-creation 
 public interface AvailabilityRepository extends JpaRepository<Availability, Integer> {
     /**
