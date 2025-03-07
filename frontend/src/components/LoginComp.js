@@ -1,8 +1,8 @@
-import React, {useState,useContext} from 'react';
+import React, {useState,useContext, useEffect} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { Typography, Stack, Container } from '@mui/material';
 
 import { AuthContext } from '../App';
@@ -17,6 +17,8 @@ export default function LoginComp() {
   const[search,setSearch] = useState("");
   const[result,setResult] = useState(null);
   const[isSubmited, setIsSubmited] = useState(false);
+
+  const navigate = useNavigate();
 
   const {auth,setAuth} = useContext(AuthContext);
 
@@ -83,6 +85,7 @@ export default function LoginComp() {
             sessionStorage.setItem("id", dataParsed.id);
             setIsSubmited(true);
             alert("Login Successful");
+            loginNavigate();
 
         })
         .catch((error) => {
@@ -90,14 +93,24 @@ export default function LoginComp() {
             alert("Username or password is incorrect")
         });
       
-  };
+   };
 
-  const parseSearch = () => {
-    if(/^\d+-?\d+$/.test(search)) return "pnr";
-    if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(search)) return "email";
-    else return "username";
-}
+    const parseSearch = () => {
+        if(/^\d+-?\d+$/.test(search)) return "pnr";
+        if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(search)) return "email";
+        else return "username";
+    };
 
+    const loginNavigate = () =>{
+
+        if(sessionStorage.getItem("role") === "applicant"){
+            navigate("/JobApplication");
+        } else {
+            navigate("/review");
+        }
+    };
+
+    
 
   
   return (

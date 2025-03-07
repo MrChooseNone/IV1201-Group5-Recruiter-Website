@@ -24,6 +24,7 @@ export default function Appbar() {
   function logOut()
   {
     setAuth({});
+    sessionStorage.clear();
     alert("Signed Out");
     //TODO remove the stored token, from where it is stored
   }
