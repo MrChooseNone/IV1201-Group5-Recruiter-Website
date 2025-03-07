@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @RequestMapping("/auth")
+/**
+ * This endpoint ontroller is responsible for handling authentication-related requests.
+ * Provides an endpoint for user authentication and JWT token generation.
+ */
 public class AuthenticationController {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class.getName());
@@ -27,11 +31,26 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * Constructs an instance of AuthenticationController.
+     *
+     * @param jwtService            The service responsible for generating JWT tokens.
+     * @param authenticationManager The Spring Security authentication manager.
+     */
     public AuthenticationController(JwtService jwtService, AuthenticationManager authenticationManager){
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
 
+    /**
+     * Authenticates the user and generates a JWT token if authentication is successful.
+     *
+     * @param username The username of the user trying to authenticate.
+     * @param password The password of the user.
+     * @return A JWT token as a string if authentication is successful.
+     * @throws AuthenticationException If authentication fails due to invalid credentials.
+     * @throws UsernameNotFoundException If the authentication process fails and the user is not found.
+     */
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestParam String username, @RequestParam String password){
 

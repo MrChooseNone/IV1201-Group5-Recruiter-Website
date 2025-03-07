@@ -24,7 +24,9 @@ import org.springframework.transaction.annotation.Propagation;
 @Service
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 /**
- * The TranslationService class provides services for endpoints, specifically regarding handling translation (and internationalization)
+ * The ReviewService class provides services for handling application reviews.
+ * It offers functionality for retrieving, updating application statuses, 
+ * and checking application information.
  * It uses explicit transaction annotation to ensure a rollback occurs whenever an unchecked exception is thrown.
  */
 public class ReviewService {
@@ -44,6 +46,7 @@ public class ReviewService {
 
     /**
      * Returns a list of all applications
+     * 
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
      * @return a list of applications
      */
@@ -60,8 +63,11 @@ public class ReviewService {
     }
 
     /**
-     * Returns a application by id
-     * @return a application by id
+     * Retrieves an application by its ID.
+     *
+     * @param id the ID of the application to retrieve
+     * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
+     * @return the application with the specified ID
      */
     public ApplicationDTO GetApplicationsById(Integer id)
     {

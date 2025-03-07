@@ -24,6 +24,9 @@ public class ApplicationSubmissionRequestBody {
 
     /**
      * This is a complete constructor
+     * @param personId the person's ID
+     * @param availabilityIds list of availability IDs
+     * @param competenceProfileIds list of competence profile IDs
      */
     public ApplicationSubmissionRequestBody(Integer personId,List<Integer> availabilityIds, List<Integer> competenceProfileIds)
     {
