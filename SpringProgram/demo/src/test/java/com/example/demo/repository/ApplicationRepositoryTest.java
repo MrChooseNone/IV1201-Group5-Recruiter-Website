@@ -1,8 +1,10 @@
 package com.example.demo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +89,7 @@ public class ApplicationRepositoryTest {
         availabilityRepository.save(availability);
         availabilityList.add(availability);
 
-        
+    
         competence = new Competence();
         competence.setName("competence");
         competenceRepository.save(competence);
@@ -146,6 +148,31 @@ public class ApplicationRepositoryTest {
         assertNotNull(findResult);
         assertEquals(1, findResult.size());
         assertEquals(application, findResult.get(0));
+
+    }
+
+    @Test
+    /**
+     * This tests the existsByAvailabilityPeriodsForApplicationAndApplicant method
+     */
+    void existsByAvailabilityPeriodsForApplicationAndApplicantTest()
+    {        
+        Person tempPerson=new Person();
+        tempPerson.setName("test");
+        tempPerson.setSurname("testsson");
+        tempPerson.setEmail("test@test.test");
+        tempPerson.setPassword("testPassword");
+        tempPerson.setPnr("12345678-1234");
+        tempPerson.setRole(testRole);
+        tempPerson.setUsername("username");
+        personRepository.save(tempPerson);
+
+        assertTrue(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilityList,testPerson));
+        assertFalse(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(new ArrayList<Availability>(),testPerson));
+
+
+
+        assertFalse(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilityList,tempPerson));
 
     }
 

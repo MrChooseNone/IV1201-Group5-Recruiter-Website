@@ -180,18 +180,45 @@ public class ReviewServiceTest {
      */
     void GetApplicationsByIdTest()
     {
+        // We define the test objects
+        Application application = new Application();
+        application.setApplicationStatus(ApplicationStatus.unchecked);
+        Person applicant = new Person();
+        applicant.setName("testsson");
+        application.setApplicant(applicant);
 
         // We define the implementation for the mock repository
         when(applicationRepository.findById(anyInt())).thenAnswer(invocation -> {
-            Integer status=(Integer)invocation.getArguments()[0];
-            if (status==0) {
-                return new Application();
+            Integer id=(Integer)invocation.getArguments()[0];
+            Optional<Application> tContainer;
+            for (Application a : savedApplications) {
+                if (a.getApplicationId()==id) {
+                    tContainer=Optional.of(a);
+                    return tContainer;
+                }
             }
-            return null;
+            tContainer=Optional.empty();
+            return tContainer;
         });
 
-        reviewService.GetApplicationsById(0);
+        // We define the implementation for the mock repository
+        when(applicationRepository.save(any(Application.class))).thenAnswer(invocation -> {
+            savedApplications.add((Application) invocation.getArguments()[0]);
+            return invocation.getArguments()[0];
+        });
+
+
+        var e = assertThrowsExactly(ApplicationNotFoundException.class, () -> reviewService.GetApplicationsById(0));
+        assertEquals("Could not find any matching application due to : No such application",e.getMessage());
+        // We then manually create an application
         Mockito.verify(this.applicationRepository, Mockito.times(1)).findById(anyInt());
+
+
+        application.setApplicationId(0);
+        applicationRepository.save(application);
+
+        reviewService.GetApplicationsById(application.getApplicationId());
+        Mockito.verify(this.applicationRepository, Mockito.times(2)).findById(anyInt());
 
         doThrow(new TransientDataAccessException("Oops! Something went wrong.") {}).when(applicationRepository).findById(anyInt());
         var e5 = assertThrowsExactly(CustomDatabaseException.class, () -> reviewService.GetApplicationsById(0));

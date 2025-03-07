@@ -87,7 +87,7 @@ public class CompetenceTranslationRepositoryTest {
     /**
      * This method tests the findByLanguage_id function
      */
-    void findByNameTest() {
+    void findByLanguage_idTest() {
         List<CompetenceTranslation> result = competenceTranslationRepository.findByLanguage_id(language.getLanguageId());
         assertNotNull(result);
         assertEquals(1, result.size());

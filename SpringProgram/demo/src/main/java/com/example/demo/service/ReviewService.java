@@ -73,8 +73,9 @@ public class ReviewService {
     public ApplicationDTO GetApplicationsById(Integer id)
     {
         try {
-
-            return applicationRepository.findById(id).get();
+            Optional<Application> result = applicationRepository.findById(id);
+            Application resultValue = result.get();
+            return resultValue;
         }
         catch(DataAccessException e)
         {
