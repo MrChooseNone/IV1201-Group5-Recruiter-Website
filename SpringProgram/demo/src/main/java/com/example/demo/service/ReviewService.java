@@ -50,8 +50,7 @@ public class ReviewService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
      * @return a list of applications
      */
-    public List<? extends ApplicationDTO> GetApplications()
-    {
+    public List<? extends ApplicationDTO> GetApplications() throws CustomDatabaseException {
         try {
             return applicationRepository.findAll();
         }
@@ -69,8 +68,7 @@ public class ReviewService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
      * @return the application with the specified ID
      */
-    public ApplicationDTO GetApplicationsById(Integer id)
-    {
+    public ApplicationDTO GetApplicationsById(Integer id) throws CustomDatabaseException {
         try {
             return applicationRepository.findByApplicationId(id);
         }
@@ -88,7 +86,7 @@ public class ReviewService {
      * @return a list of applications matching the status
      */
     public List<? extends ApplicationDTO> GetApplicationsByStatus(ApplicationStatus status)
-    {
+      throws CustomDatabaseException {
         try {
             return applicationRepository.findAllByApplicationStatus(status);
         }
@@ -110,7 +108,8 @@ public class ReviewService {
      * @return The updated application
      */
     public ApplicationDTO SetApplicationStatus(Integer applicationID,ApplicationStatus newStatus,Integer currentVersionNumber)
-    {
+     throws ApplicationNotFoundException, ApplicationNotUpdatedException, CustomDatabaseException{
+        
         try {
             Optional<Application> applicationToUpdateContainer=applicationRepository.findById(applicationID);
             //This check is for if an application with this id existed or not, if not we throw a specific exception here

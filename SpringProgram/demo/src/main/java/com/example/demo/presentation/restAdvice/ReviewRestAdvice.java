@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.presentation.restException.ApplicationNotUpdatedException;
 import com.example.demo.presentation.restException.EntryNotFoundExceptions.ApplicationNotFoundException;
-import com.example.demo.presentation.restException.EntryNotFoundExceptions.InvalidPersonException;
 
 @RestControllerAdvice
 /**
