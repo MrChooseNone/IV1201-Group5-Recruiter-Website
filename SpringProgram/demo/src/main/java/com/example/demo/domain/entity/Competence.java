@@ -31,7 +31,7 @@ public class Competence implements CompetenceDTO{
 
     /**
      * Implements the CompetenceDTO function getCompetenceId, and returns the competence's id
-     * @return the role's role id
+     * @return the competence's id
      */
     @Override
     public Integer getCompetenceId() {
@@ -40,7 +40,7 @@ public class Competence implements CompetenceDTO{
 
     /**
      * Implements the CompetenceDTO function getName, and returns the competence's name
-     * @return the role's role id
+     * @return the competence's name
      */
     @Override
     public String getName() {

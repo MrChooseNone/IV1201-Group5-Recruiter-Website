@@ -70,7 +70,9 @@ public class ReviewerEndpointController {
      * @return This function will return the list of existing applications with the matching status as a json object to the user
      */
     @GetMapping("/getApplicationsByStatus/{status}")
-    public List<? extends ApplicationDTO> GetApplicationsByStatus(Authentication authentication,@PathVariable String status) {
+    public List<? extends ApplicationDTO> GetApplicationsByStatus(Authentication authentication,@PathVariable String status)
+      throws InvalidParameterException {
+
         PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
         LOGGER.info("All applications with status (`{}`) requested by (`{}`)",status,userAuthentication.getUsername());
 
@@ -99,10 +101,13 @@ public class ReviewerEndpointController {
      * 
      * @param authentication This contains the pre-authorized authentication for the user
      * @param id the application id to find application
+     * @throws InvalidParameterException this exceptions is thrown is a parameter is incorrectly specified
      * @return This function will return the application of the application id
      */
     @GetMapping("/getApplicationsById/{id}")
-    public ApplicationDTO GetApplicationsById(Authentication authentication,@PathVariable String id) {
+    public ApplicationDTO GetApplicationsById(Authentication authentication,@PathVariable String id)
+      throws InvalidParameterException {
+
         PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
         LOGGER.info("Application with ID (`{}`) requested by (`{}`)",id,userAuthentication);
 
@@ -133,7 +138,8 @@ public class ReviewerEndpointController {
      * @return The updated application as a json object
      */
     @PostMapping("/updateApplicationStatus")
-    public ApplicationDTO UpdateApplicationsByStatus(Authentication authentication,@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber) {
+    public ApplicationDTO UpdateApplicationsByStatus(Authentication authentication,@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber)
+      throws InvalidParameterException {
         PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
 
         LOGGER.info("Status change for application with id (`{}`) version number (`{}`) to (`{}`) requested by (`{}`)",applicationId,versionNumber,status,userAuthentication.getUsername()); //TODO add authentication info here, aka who accessed this
