@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useContext} from 'react';
 import { useParams } from "react-router-dom";
 import Box from '@mui/material/Box';
 
 import Button from '@mui/material/Button';
 
 import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
-import { ThemeContext } from '@emotion/react';
+
+import { AuthContext } from '../App';
 
 export default function ApplicationDetailsComp() {
     const { id } = useParams();
@@ -16,13 +17,17 @@ export default function ApplicationDetailsComp() {
 
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
+
+  const {auth,setAuth} = useContext(AuthContext);
+
  
     // Hämta kompetenser automatiskt vid sidladdning
     useEffect(() => {
         fetch(`${API_URL}/review/getApplicationsById/${id}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${auth.token}`, 
             }
         })
         .then((response) => { 
@@ -41,6 +46,7 @@ export default function ApplicationDetailsComp() {
         })
         .catch((error) => {
             console.error("faild to get application by id: " + error);
+            alert(error);
         })
     }, [id]);
 
@@ -56,6 +62,7 @@ export default function ApplicationDetailsComp() {
             headers: {
                 // Send as form data, to comply with us using @Requestparam in controller
                 "Content-Type": "application/x-www-form-urlencoded", 
+                "Authorization": `Bearer ${auth.token}`
             },
             body: new URLSearchParams({
                 applicationId: id,
@@ -67,17 +74,28 @@ export default function ApplicationDetailsComp() {
         .then((response) => { 
             if (response.ok) {
                 return response.text(); // Parse JSON if response is OK
-            } else {
-                return response.text().then((errorText) => { 
-                    throw new Error(`Failed to fetch: ${errorText}`); 
-                });
+            } 
+            else {
+                if(response.status==404)
+                    {
+                        return response.text().then((errorText) => { 
+                            throw new Error(`${errorText}`); 
+                        });
+                    }
+                else
+                {
+                    return response.text().then((errorText) => { 
+                        throw new Error(`Failed to fetch: ${errorText}`); 
+                    });
+                }
             }
         }) // Parse response as text
         .then((data) => {
             console.log(data); // Write data
         })
         .catch((error) => {
-            console.error("Error adding applicant:", error);
+            console.error("Error chainging applicant status:", error);
+            alert(error);
         });
     }
 

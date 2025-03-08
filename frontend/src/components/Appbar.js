@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import {Link} from 'react-router-dom';
+import {Link,useNavigate} from 'react-router-dom';
 
 import { AuthContext } from '../App';
 import { useContext } from "react";
@@ -20,11 +20,15 @@ export default function Appbar() {
   //Here we import the auth information from the context
   const { auth, setAuth } = useContext(AuthContext);
   
+      const navigate = useNavigate();
+  
+
   //This function signs out the user, by using the context function setAuth to an empty object
   function logOut()
   {
     setAuth({});
     alert("Signed Out");
+    navigate("/");
     //TODO remove the stored token, from where it is stored
   }
 

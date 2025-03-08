@@ -18,6 +18,8 @@ import com.example.demo.presentation.restException.EntryNotFoundExceptions.Speci
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.security.core.AuthenticationException;
+
 
 /**
  * This class is responsible for defining the error handeling general errors, such as invalid parameter exceptions
@@ -28,7 +30,7 @@ public class GeneralRestAdvice {
   /**
    * This function is responsible for handeling the InvalidParameterException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 400 error message with the InvalidParameterException error message as the text
+   * @return this sends a http 400 status code with the InvalidParameterException error message as the text
    */
   @ExceptionHandler(InvalidParameterException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -39,7 +41,7 @@ public class GeneralRestAdvice {
     /**
    * This function is responsible for handeling the SpecificCompetenceNotFound error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 404 error message with the SpecificCompetenceNotFound error message as the text
+   * @return this sends a http 404 status code with the SpecificCompetenceNotFound error message as the text
    */
   @ExceptionHandler(SpecificCompetenceNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -50,7 +52,7 @@ public class GeneralRestAdvice {
     /**
    * This function is responsible for handeling the PersonNotFoundException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 404 error message with the PersonNotFoundException error message as the text
+   * @return this sends a http 404 status code with the PersonNotFoundException error message as the text
    */
   @ExceptionHandler(PersonNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -61,7 +63,7 @@ public class GeneralRestAdvice {
   /**
    * This function is responsible for handeling the AlreadyExistsException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 409 error message with the AlreadyExistsException error message as the text
+   * @return this sends a http 409 status code with the AlreadyExistsException error message as the text
    */
   //409 is used since the request was correct, but it could not be fulfilled
   @ExceptionHandler(AlreadyExistsException.class)
@@ -73,7 +75,7 @@ public class GeneralRestAdvice {
         /**
    * This function is responsible for handeling the InvalidPersonException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 404 error message with the InvalidPersonException error message as the text
+   * @return this sends a http 404 status code with the InvalidPersonException error message as the text
    */
   @ExceptionHandler(InvalidPersonException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
@@ -84,7 +86,7 @@ public class GeneralRestAdvice {
   /**
    * This function is responsible for handeling the CustomDatabaseException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 500 error message with the CustomDatabaseException error message as the text
+   * @return this sends a http 500 status code with the CustomDatabaseException error message as the text
    */
   @ExceptionHandler(CustomDatabaseException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -95,7 +97,7 @@ public class GeneralRestAdvice {
   /**
    * This function is responsible for handeling the ConstraintViolationException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 400 error message with a custom error message based on the ConstraintViolationException's 
+   * @return this sends a http 400 status code with a custom error message based on the ConstraintViolationException's 
    */
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -113,7 +115,7 @@ public class GeneralRestAdvice {
   /**
    * This function is responsible for handeling the InvalidJWTException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http 400 error message with the InvalidJWTException error message as the text
+   * @return this sends a http 400 status code with the InvalidJWTException error message as the text
    */
   @ExceptionHandler(InvalidJWTException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -124,11 +126,22 @@ public class GeneralRestAdvice {
   /**
    * This function is responsible for handeling the UsernameNotFoundException error
    * @param ex the error which was thrown to active this handler
-   * @return this sends a http NOT_FOUND error message with the UsernameNotFoundException error message as the text
+   * @return this sends a http 404 status code with the UsernameNotFoundException error message as the text
    */
   @ExceptionHandler(UsernameNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   String UsernameNotFoundExceptionHandler(UsernameNotFoundException ex) {
+    return ex.getMessage();
+  }
+
+    /**
+   * This function is responsible for handeling the AuthenticationException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 401 status code with the AuthenticationException error message as the text
+   */
+  @ExceptionHandler(AuthenticationException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  String UsernameNotFoundExceptionHandler(AuthenticationException ex) {
     return ex.getMessage();
   }
 }

@@ -15,7 +15,7 @@ export default function BlockNonReviewers() {
 
     useEffect(() => {
         if (auth.role !== "recruiter") {
-            navigate("/");
+            navigate("/login");
         }
         else {
             console.log("Welcome Recruiter");

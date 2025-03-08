@@ -15,7 +15,7 @@ export default function BlockNonSignedIn() {
 
     useEffect(() => {
         if (!auth.token) {
-            navigate("/");
+            navigate("/login");
         }
     }, []);
 
