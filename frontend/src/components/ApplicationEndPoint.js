@@ -36,7 +36,8 @@ export default function ApplicationEndPoint() {
     //-------------Get Id based on Username-----------
     const [searchedPerson, setSearchedPerson] = useState();
     const [result, setResult] = useState();
-    //--------------------Competences-------------
+    //--------------------bool if submiting-------------
+    const [isSubmiting, setIsSubmiting] = useState(false);
 
     //We load the authentication information from the context
     const { auth, setAuth } = useContext(AuthContext);
@@ -297,7 +298,7 @@ export default function ApplicationEndPoint() {
             alert("Your session has expired. Please log in again.");
             navigate("/login"); // Redirect to login page
         }
-        
+
         if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
             alert("Please fill in competences and availability")
@@ -366,8 +367,17 @@ export default function ApplicationEndPoint() {
             alert("faild to select availability");
         }
     };
+    //-----------is submiting handle---------------------
+    //this is to verify that the user is happy with the application
+    const handleConfirmation = () => {
+        setIsSubmiting(true);
+    }
+    const handleQuitConfirmation = () => {
+        setIsSubmiting(false);
+    }
     
-    return (
+    if(!isSubmiting) {
+        return (
             <Container sx={{ 
                 display: "flex",
                 flexDirection: "column",
@@ -508,13 +518,82 @@ export default function ApplicationEndPoint() {
 
             <Paper elevation={3} sx={{width: "90%", justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 
-                <Button variant="contained" color="primary" onClick={submitApplication}>
+                <Button variant="contained" color="primary" onClick={handleConfirmation}>
                 Submit Application
                 </Button>
                 
             </Paper>
             </Container>
         
-    );
+    );}
+    else {
+        return (
+            <Box sx={{ bgcolor: '#AFF9C9', minHeight: '100vh', p: 4, m: 2, borderRadius: 4, }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'black', marginBottom: 2 }}>
+                    This is your application!
+                </Typography>
+                <Typography variant="h6" sx={{ color: 'black', marginBottom: 3 }}>
+                    Did not forget anything?
+                </Typography>
+        
+                {competences.length > 0 ? (
+                    <List sx={{ marginBottom: 3 }}>
+                        {competenceProfiles.map((cp, index) => (
+                            competenceProfileIds.includes(cp.competenceProfileId) ? (
+                                <ListItem key={index} sx={{ bgcolor: '#67E0A3', borderRadius: 2, marginBottom: 1, boxShadow: 2 }}>
+                                    <ListItemText
+                                        primary={`Competence: ${translations[cp.competenceDTO.competenceId - 1] ? translations[cp.competenceDTO.competenceId - 1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
+                                        sx={{ color: 'text.primary' }}
+                                    />
+                                </ListItem>
+                            ) : null
+                        ))}
+                    </List>
+                ) : (
+                    <Typography variant="h8" sx={{ color: 'text.secondary' }}>No registered competences</Typography>
+                )}
+        
+                {availability.length > 0 ? (
+                    <List sx={{ marginBottom: 3 }}>
+                        {availability.map((a, index) => (
+                            availabilityIds.includes(a.availabilityId) ? (
+                                <ListItem key={index} sx={{ bgcolor: '#67E0A3', borderRadius: 2, marginBottom: 1, boxShadow: 2 }}>
+                                    <ListItemText
+                                        primary={`From: ${a.fromDate}, To: ${a.toDate}`}
+                                        sx={{ color: 'text.primary' }}
+                                    />
+                                </ListItem>
+                            ) : null
+                        ))}
+                    </List>
+                ) : (
+                    <Typography variant="h8" sx={{ color: 'text.secondary' }}>No registered availability periods</Typography>
+                )}
+        
+                <Paper elevation={3} sx={{
+                    width: "90%",
+                    padding: "20px",
+                    marginBottom: "20px",
+                    bgcolor: "#006649", 
+                    color: 'white',
+                    borderRadius: 2,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    boxShadow: 3
+                }}>
+                    <Button variant="contained" color="secondary" onClick={handleQuitConfirmation} >
+                        Back
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={submitApplication} >
+                        Submit Application
+                    </Button>
+                </Paper>
+            </Box>
+        );
+        
+        
+    }
+
+
 };
 
