@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -149,6 +150,16 @@ public class GeneralRestAdvice {
     return ex.getMessage();
   }
 
+    /**
+   * This function is responsible for handeling the AuthenticationException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 401 status code with the MissingServletRequestParameterException error message as the text
+   */
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  String MissingServletRequestParameterExceptionHandler(MissingServletRequestParameterException ex) {
+    return ex.getMessage();
+  }
 
     /**
    * This function is responsible for handeling every unhandeled error, to ensure the server does not crash and always atleast returns something to the client
