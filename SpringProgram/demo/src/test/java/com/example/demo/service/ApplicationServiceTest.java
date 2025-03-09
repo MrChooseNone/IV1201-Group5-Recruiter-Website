@@ -571,30 +571,6 @@ public class ApplicationServiceTest {
             return aContainer;
         });
 
-        //TODO fix this
-        when(applicationRepository.isListFullyReusedForAPerson(anyList(),anyInt(),anyInt())).thenAnswer(invocation -> {
-
-            List<Integer> listArg = (List<Integer>) invocation.getArguments()[0];
-            Integer personIdArg = (Integer) invocation.getArguments()[2];
-
-            Boolean status=true;
-            for (Application a : savedApplications) {
-                if (a.getApplicant().getId()==personIdArg) {
-
-                    List<Availability> availabilitiesList=a.getAvailabilityPeriodsForApplication();
-                    if (availabilitiesList.size()>=listArg.size()) {
-                        for (int index = 0; index < listArg.size(); index++) {
-                            if (!listArg.contains(availabilitiesList.get(index).getAvailabilityId())) {
-                                status=false;
-                                index=listArg.size();
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        });
-
         when(applicationRepository.save(any(Application.class))).thenAnswer(invocation -> {
             savedApplications.add((Application) invocation.getArguments()[0]);
             return invocation.getArguments()[0];
@@ -657,9 +633,6 @@ public class ApplicationServiceTest {
 
         //We verify that the mock save method was called by the SubmitApplication method
         Mockito.verify(this.applicationRepository, Mockito.times(1)).save(any(Application.class));
-
-        e2 = assertThrowsExactly(AvailabilityInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
-        assertEquals("Availability invalid due to : You already have an application with the exact same availability period(s)", e2.getMessage());
 
         //And finally we verify that it saved the correct application
         assertEquals(result.getApplicationId(), savedApplications.get(0).getApplicationId());

@@ -300,14 +300,6 @@ public class ApplicationService {
                 availabilities.add(availabilityContainer.get());
             }
 
-            //TODO get some help here, or remove it, since the sql does not work correctly
-            /** 
-            Boolean alreadyUsedList=applicationRepository.isListFullyReusedForAPerson(availabilityIds,availabilityIds.size(),person.getId());
-            if (alreadyUsedList==true) {
-                LOGGER.error("Failed to create application for a person (`{}`) since they already have an application with the exact same availability periods");
-                throw new AvailabilityInvalidException("You already have an application with the exact same availability period(s)");
-            }*/
-
             List<CompetenceProfile> competenceProfiles=new ArrayList<CompetenceProfile>();
 
             if (competenceProfileIds.size()==0) {

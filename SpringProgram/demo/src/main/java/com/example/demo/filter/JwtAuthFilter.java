@@ -100,7 +100,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
         // https://stackoverflow.com/questions/73052974/why-is-the-expiredjwtexception-not-being-caught-and-handled 
         catch (ExpiredJwtException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("JWT token expired, please refresh it");
+            response.getWriter().write("{\"error\":\"JWT token expired, please refresh it\"}");
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             return;
         }
