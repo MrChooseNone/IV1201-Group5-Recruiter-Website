@@ -68,10 +68,10 @@ export default function Appbar() {
     }
   }
 
-    //This function renders the edit profile button if logged in or the register button if not logged in
+    //This function renders the edit profile button if logged in as an applicant, or the register button if not logged in
     function renderEditProfileOrRegister()
     {
-      if(auth.token)
+      if(auth.role === "applicant")
       {
         return <Button color='inherit' startIcon="" component={Link} to="/JobApplication"
         sx={{
@@ -86,6 +86,10 @@ export default function Appbar() {
       }
       else
       {
+        if(!auth.token)
+        {
+
+        
         return <Button color='inherit' startIcon="" component={Link} to="/addApplicant"
         sx={{
           p: 2,
@@ -96,6 +100,7 @@ export default function Appbar() {
           
         }}
         >Register</Button>
+      }
       }
     }
 

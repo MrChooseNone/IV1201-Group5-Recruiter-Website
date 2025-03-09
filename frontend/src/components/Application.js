@@ -23,7 +23,7 @@ export default function ApplicationForm() {
   // Handle the submition of data to database
   // Validation functions
   const validatePersonNumber = (pnr) => {
-    return /^\d+-?\d+$/.test(pnr);
+    return /\d{8}-\d{4}/.test(pnr); 
   };
 
   const validateEmail = (email) => {
@@ -79,7 +79,21 @@ export default function ApplicationForm() {
             },
             body: JSON.stringify(applicant),
         })
-        .then((response) => response.text()) // Parse response as text
+        .then((response) => {
+          
+          if(response.ok)
+          {
+             response.text()
+          }
+          else
+          {
+            return response.text().then((errorText) => { 
+              throw new Error(`${errorText}`); 
+            });
+          }
+         
+        
+        }) // Parse response as text
         .then((data) => {
             console.log("data: " + data); // Write data
             setIsSubmited(true);
@@ -95,7 +109,7 @@ export default function ApplicationForm() {
         })
         .catch((error) => {
             console.error("Error adding applicant:", error);
-            alert("Something went wrong, try again later")
+            alert(error)
         });
       } else{
         alert("Please fill in all the information!");

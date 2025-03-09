@@ -118,7 +118,6 @@ public class ReviewService {
      */
     public ApplicationDTO SetApplicationStatus(Integer applicationID,ApplicationStatus newStatus,Integer currentVersionNumber)
      throws ApplicationNotFoundException, ApplicationNotUpdatedException, CustomDatabaseException{
-        
         try {
             Optional<Application> applicationToUpdateContainer=applicationRepository.findById(applicationID);
             //This check is for if an application with this id existed or not, if not we throw a specific exception here
@@ -130,7 +129,7 @@ public class ReviewService {
 
             //This check is for if the version number of the reviewed version is the same as the current value, if not we throw a specific exception here
             if (applicationToUpdate.getVersionNumber()!=currentVersionNumber) {
-                LOGGER.error("Failed to update application (`{}`) due to version number being incorret, specified (`{}`) but correct is (`{}`)",applicationID,applicationToUpdate.getVersionNumber(),currentVersionNumber);
+                LOGGER.error("Failed to update application (`{}`) due to version number being incorret, specified (`{}`) but correct is (`{}`)",applicationID,currentVersionNumber,applicationToUpdate.getVersionNumber());
                 throw new ApplicationNotFoundException("Unable to update application since someone else updated it since you last retrived it");
             }
 

@@ -56,7 +56,13 @@ export default function ApplicationDetailsComp() {
 
     const UpdateStatus = () => {
         
-        
+        //We check here if the new status is the same as the current status
+        if(application.applicationStatus==status)
+        {
+            alert("Application status is already "+status)
+            return;
+        }
+
         fetch(`${API_URL}/review/updateApplicationStatus`, {
             method: "POST",
             headers: {
@@ -73,7 +79,11 @@ export default function ApplicationDetailsComp() {
         })
         .then((response) => { 
             if (response.ok) {
-                return response.text(); // Parse JSON if response is OK
+                //If it was ok we send an alert and update the application based on the response
+                alert("Application updated to " + status)
+                return response.json().then((text) => { 
+                    setApplication(text);
+                });
             } 
             else {
                 if(response.status==404)
@@ -131,7 +141,7 @@ export default function ApplicationDetailsComp() {
         <Typography variant='h6'>{"E-mail: " + application.applicant.email}</Typography>
         <Typography variant='h6'>{"Person number: " + application.applicant.pnr}</Typography>
         <Typography variant='h6'>{"Status: " +application.applicationStatus}</Typography>
-        <Typography variant='h6'>{"Submition date: " +application.applicationData}</Typography>
+        <Typography variant='h6'>{"Submission date: " +application.applicationDate}</Typography>
         <Typography variant='h6'>{"Version: " +application.versionNumber}</Typography>
         <Divider flexItem  sx={{bgcolor: "#67E0A3", height: 2, width: "75%", alignSelf: "center"}}></Divider>
          
