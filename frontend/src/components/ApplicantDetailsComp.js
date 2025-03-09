@@ -94,7 +94,7 @@ export default function ApplicationDetailsComp() {
             console.log(data); // Write data
         })
         .catch((error) => {
-            console.error("Error chainging applicant status:", error);
+            console.error("Error updating applicant status:", error);
             alert(error);
         });
     }

@@ -91,6 +91,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
         ORDER BY COUNT(application_availability_periods.availability_id) desc;
     """,
     nativeQuery = true
-)
+    )
     List<Integer> countOfReusedAvailability(@Param("availabiltyIds") Object[] availabilityIds);
 }

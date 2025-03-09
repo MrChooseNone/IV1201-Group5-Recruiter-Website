@@ -61,7 +61,7 @@ public class ApplicantResetRepositoryTest {
         personRepository.save(testPerson);
 
         reset = new ApplicantReset();
-        reset.setPerson(personRepository.findByUsername("username").get());
+        reset.setPerson(testPerson);
         reset.setRandomLong(Long.valueOf(0));
         reset.setResetDate("Date");
         applicantResetRepository.save(reset);
