@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.PersonDTO;
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.PersonService;
@@ -18,6 +18,7 @@ import com.example.demo.service.PersonService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 @RequestMapping("/person")
@@ -73,12 +74,14 @@ public class PersonController {
     }
 
     /**
-     * This method allows an existing Recruiter to update their pnr and email
+     * This method allows an existing reviwer to specify their pnr and email
      * 
-     * @param authentication This contains the pre-authorized authentication for the user
+     * @param pnr The reviwerer to update, TODO replace this with auth based id retrival if possible
      * @param pnr      The new pnr
      * @param email    The new email
+     * @throws InvalidParameterException If personId is not a valid integer
      * @return A string describing the success status
+     * TODO only allow a logged in reviwer to do this to their own account
      */
     @PostMapping("/updateRecruiter")
     @PreAuthorize("hasAuthority('recruiter')")
@@ -98,14 +101,15 @@ public class PersonController {
     @PostMapping("/requestApplicantReset")
     @PreAuthorize("hasAuthority('applicant')")
     public String RequestApplicantReset(@RequestParam String email) {
-        LOGGER.info("Update of username and password for applicant with email (`{}`) requested",email); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Update of username and password for applicant with email (`{}`) requested" + email + "by user", currentUser);
         return personService.ApplicantResetLinkGeneration(email);
     }
 
+
     /**
      * This method allows an existing reviwer to specify their pnr and email
-     * 
-     * @param personId The reviwerer to update, // TODO replace this with auth based id retrival if possible
+     * @param personId The reviwerer to update, TODO replace this with auth based id retrival if possible
      * @param username The new username
      * @param password The new password
      * @return A string describing the success status
@@ -114,29 +118,29 @@ public class PersonController {
     @PostMapping("/updateApplicant")
     @PreAuthorize("hasAuthority('applicant')")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {
-        LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested",resetToken,username); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested" + resetToken,username + "request made by user", currentUser);
         return personService.ApplicantUseResetLink(resetToken,username,password);
     }
 
     /**
      * This function returns a list of people whose name match the specified name
      * 
-     * @param authentication This contains the pre-authorized authentication for the user
      * @param name the name to find user's whose name match with
      * @return a list of people with names matching with the name parameter
      */
     @GetMapping("/find")
     @PreAuthorize("hasAuthority('recruiter')")
-    //TODO Should non-logged in be allowed access, if so remove above + authentication
-    public List<? extends PersonDTO> findPersonByName(Authentication authentication,@RequestParam String name) {
-        LOGGER.info("People with the name (`{}`) requested by ", name, ((PersonDetails)authentication.getPrincipal()).getUsername());
+    public List<? extends PersonDTO> findPersonByName(@RequestParam String name) {
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("People with the name (`{}`) requested" + name + "request made by user:", currentUser); 
+                                                                    // accessed this
         return personService.FindPeopleByName(name);
     }
 
     /**
      * Finds a person by their PNR, email, or username.
      * 
-     * @param authentication This contains the pre-authorized authentication for the user
      * @param pnr      The personal identity number to search for (optional).
      * @param email    The email to search for (optional).
      * @param username The username to search for (optional).
@@ -149,9 +153,8 @@ public class PersonController {
             @RequestParam(required = false) String pnr,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String username) {
-        
-        //Here we cast the authentication principal to PersonDetails, which it should be, to get the username for logging purposes
-        LOGGER.info("Find person requested by " + ((PersonDetails)authentication.getPrincipal()).getUsername());
+
+        LOGGER.info(authentication.getPrincipal().getClass().getName());
 
         Optional<? extends PersonDTO> person = Optional.empty();
 
