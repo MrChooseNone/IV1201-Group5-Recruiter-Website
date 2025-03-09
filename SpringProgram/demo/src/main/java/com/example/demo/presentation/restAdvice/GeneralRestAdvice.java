@@ -2,6 +2,7 @@ package com.example.demo.presentation.restAdvice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -26,11 +27,11 @@ import org.springframework.security.core.AuthenticationException;
  * This class is responsible for defining the error handeling general errors, such as invalid parameter exceptions
  */
 @RestControllerAdvice
+@Order//This ensures this is loaded after the other rest advices, link https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/annotation/Order.html 
 public class GeneralRestAdvice {
 
   //Here we create the logger
   private static final Logger LOGGER = LoggerFactory.getLogger(GeneralRestAdvice.class.getName()); 
-
 
   /**
    * This function is responsible for handeling the InvalidParameterException error

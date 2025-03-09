@@ -1,5 +1,6 @@
 package com.example.demo.presentation.restAdvice;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,6 +13,7 @@ import com.example.demo.presentation.restException.EntryNotFoundExceptions.Appli
 /**
  * This class is responsible for defining the error handeling for the ReviewEndpointController flow, defining which http response code should be used for the different potential errors
  */
+@Order(1)//This ensures this is loaded after the other rest advices
 public class ReviewRestAdvice {
     /**
    * This function is responsible for handeling the ApplicationNotFoundException error
