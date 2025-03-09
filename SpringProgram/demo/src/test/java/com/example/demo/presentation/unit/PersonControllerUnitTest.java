@@ -124,7 +124,7 @@ public class PersonControllerUnitTest {
         });
 
         // Then we test the function, first with service returning an empty list
-        List<? extends PersonDTO> result = personController.findPersonByName(authentication,"test");
+        List<? extends PersonDTO> result = personController.findPersonByName("test");
         assertEquals(0, result.size());
 
         // We verify that the mock service was used as expected
@@ -132,7 +132,7 @@ public class PersonControllerUnitTest {
 
         // We then test that if the service has a match it will return it
         savedPerson.add(person);
-        result = personController.findPersonByName(authentication,"test");
+        result = personController.findPersonByName("test");
         assertEquals(1, result.size());
         assertEquals(person, result.get(0));
 
@@ -141,7 +141,7 @@ public class PersonControllerUnitTest {
 
         // And finally we confirm that it passes the string parameter correctly (aka
         // still 0 for another name)
-        result = personController.findPersonByName(authentication,"name");
+        result = personController.findPersonByName("name");
         assertEquals(0, result.size());
 
         // We verify that the mock service was used as expected
