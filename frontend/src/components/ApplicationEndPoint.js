@@ -354,7 +354,7 @@ export default function ApplicationEndPoint() {
             
             <Paper elevation={3} sx={{ width: "90%",justifyItems:"center",  padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Competence Profiles</Typography>
-                <TextField label="Person ID just for testing now" value={personId} onChange={(e) => setPersonId(e.target.value)} fullWidth />
+                
                 <Button variant="contained" color="primary" onClick={getCompetenceProfiles} sx={{ marginTop: "10px", justifySelf: "center" }} fullWidth>
                     Get Competence Profiles
                 </Button>
@@ -462,8 +462,7 @@ export default function ApplicationEndPoint() {
                 <Button variant="contained" color="primary" onClick={submitApplication}>
                 Submit Application
                 </Button>
-                <Typography>{competenceProfileIds /*just for debug and testing (remove) */}</Typography> 
-                <Typography>{availabilityIds /*just for debug and testing (remove) */}</Typography>
+                
             </Paper>
             </Container>
         
