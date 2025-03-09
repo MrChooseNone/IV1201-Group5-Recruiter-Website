@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,7 +55,8 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getStandardCompetences")
     public List<? extends CompetenceDTO> GetStandardCompetences() {
-        LOGGER.info("Standard competences requested"); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Standard competences requested" + "by user",currentUser); 
         List<? extends CompetenceDTO> existingCompetences = translationService.GetCompetences();
         return existingCompetences;
     }
@@ -69,7 +71,8 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getSpecificCompetence/{id}")
     public CompetenceDTO GetSpecificCompetence(@PathVariable String id) {
-        LOGGER.info("Specific competences with id (`{}`) requested",id); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Specific competences with id (`{}`) requested" + id + "by user", currentUser); 
         Integer parsedId=null;
         try {
             parsedId=Integer.parseInt(id);
@@ -92,7 +95,8 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getCompetenceTranslation")
     public List<? extends CompetenceTranslationDTO> GetCompetenceTranslation(@RequestParam String language) {
-        LOGGER.info("Competence translation for language (`{}`) requested",language); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Competence translation for language (`{}`) requested" + language + "by user", currentUser); 
         return translationService.GetCompetenceTranslation(language.toLowerCase());
     }
 
@@ -104,7 +108,8 @@ public class TranslationEndpointController {
      */
     @GetMapping("/getLanguages")
     public List<? extends LanguageDTO> GetLanguages() {
-        LOGGER.info("Languages supported requested"); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Languages supported requested" + "by user", currentUser); 
         return translationService.GetLanguages();
     }
 

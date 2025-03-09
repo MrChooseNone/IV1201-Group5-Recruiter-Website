@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,7 +56,8 @@ public class ApplicationEndpointController {
     @GetMapping("/getAllCompetenceProfiles")
     public List<? extends CompetenceProfileDTO> GetCompetenceProfilesForAPerson(@RequestParam String personId)
     {
-        LOGGER.info("List of competence profiles for person (`{}`) requested",personId); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("List of competence profiles for person (`{}`) requested" + personId + "by user", currentUser);
 
         Integer parsedPersonId=null;
         try {
@@ -85,7 +87,8 @@ public class ApplicationEndpointController {
     @PostMapping("/createCompetenceProfile")
     public CompetenceProfileDTO CreateCompetenceProfile(@RequestParam String personId,@RequestParam String competenceId,@RequestParam String yearsOfExperience)
     {
-        LOGGER.info("Creation of competence profile for user with id (`{}`) for competence with id (`{}`) with (`{}`) years of experience requested",personId,competenceId,yearsOfExperience); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Creation of competence profile for user with id (`{}`) for competence with id (`{}`) with (`{}`) years of experience requested" + personId,competenceId,yearsOfExperience + "by user", currentUser); 
 
         Integer parsedPersonId=null;
         try {
@@ -136,7 +139,8 @@ public class ApplicationEndpointController {
     @GetMapping("/getAllAvailability")
     public List<? extends AvailabilityDTO> GetAllAvailability(@RequestParam String personId)
     {
-        LOGGER.info("List of availability periods for person (`{}`) requested",personId); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("List of availability periods for person (`{}`) requested" + personId + "by user", currentUser);
 
         Integer parsedPersonId=null;
         try {
@@ -164,7 +168,8 @@ public class ApplicationEndpointController {
     @PostMapping("/createAvailability")
     public AvailabilityDTO CreateAvailability(@RequestParam String personId,@RequestParam String fromDate,@RequestParam String toDate)
     {
-        LOGGER.info("Creation of availability period for person (`{}`) from (`{}`) to (`{}`) requested",personId,fromDate,toDate); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Creation of availability period for person (`{}`) from (`{}`) to (`{}`) requested" + personId,fromDate,toDate + "by user", currentUser); 
 
 
         Integer parsedPersonId=null;
@@ -222,7 +227,8 @@ public class ApplicationEndpointController {
     @PostMapping("/submitApplication")
     public ApplicationDTO SubmitApplication(@RequestBody ApplicationSubmissionRequestBody requestBody)
     {
-        LOGGER.info("Creation of application for person (`{}`) requested",requestBody.getPersonId()); //TODO add authentication info here, aka who accessed this
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Creation of application for person (`{}`) requested" + requestBody.getPersonId() + "by user", currentUser); 
         return applicationService.SubmitApplication(requestBody.getPersonId(),requestBody.getAvailabilityIds(),requestBody.getCompetenceProfileIds());
     }
 }

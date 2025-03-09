@@ -21,6 +21,7 @@ import com.example.demo.service.ReviewService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 @RequestMapping("/review")
@@ -72,7 +73,8 @@ public class ReviewerEndpointController {
     @GetMapping("/getApplicationsByStatus/{status}")
     public List<? extends ApplicationDTO> GetApplicationsByStatus(Authentication authentication,@PathVariable String status) {
         PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
-        LOGGER.info("All applications with status (`{}`) requested by (`{}`)",status,userAuthentication.getUsername());
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("All applications with status (`{}`) requested by (`{}`)" + status,userAuthentication.getUsername() + "by user", currentUser);
 
         ApplicationStatus parsedApplicationStatus=null;
         try {
@@ -104,7 +106,8 @@ public class ReviewerEndpointController {
     @GetMapping("/getApplicationsById/{id}")
     public ApplicationDTO GetApplicationsById(Authentication authentication,@PathVariable String id) {
         PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
-        LOGGER.info("Application with ID (`{}`) requested by (`{}`)",id,userAuthentication);
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("Application with ID (`{}`) requested by (`{}`)" + id,userAuthentication + "by user", currentUser);
 
         Integer parsedApplicationId=null;
         try {
@@ -136,6 +139,7 @@ public class ReviewerEndpointController {
     public ApplicationDTO UpdateApplicationsByStatus(Authentication authentication,@RequestParam String applicationId,@RequestParam String status,@RequestParam String versionNumber) {
         PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
 
+        //String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("Status change for application with id (`{}`) version number (`{}`) to (`{}`) requested by (`{}`)",applicationId,versionNumber,status,userAuthentication.getUsername()); //TODO add authentication info here, aka who accessed this
 
         ApplicationStatus parsedApplicationStatus=null;
