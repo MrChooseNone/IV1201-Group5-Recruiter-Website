@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.PersonDTO;
@@ -64,6 +66,9 @@ public class PersonControllerUnitTest {
         person.setId(0);
         details=new PersonDetails(person);
         authentication=new UsernamePasswordAuthenticationToken(details,null,details.getAuthorities());
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class); //https://stackoverflow.com/questions/360520/unit-testing-with-spring-security 
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);//This mocks the security context, with the above authentication
+        SecurityContextHolder.setContext(securityContext); //This should ensure above is used whenever security context is accessed
         MockitoAnnotations.openMocks(PersonControllerUnitTest.class);
     }
 

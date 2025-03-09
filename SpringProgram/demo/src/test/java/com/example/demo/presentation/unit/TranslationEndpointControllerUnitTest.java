@@ -16,15 +16,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.CompetenceDTO;
 import com.example.demo.domain.dto.CompetenceTranslationDTO;
 import com.example.demo.domain.dto.LanguageDTO;
 import com.example.demo.domain.entity.Competence;
 import com.example.demo.domain.entity.CompetenceTranslation;
 import com.example.demo.domain.entity.Language;
+import com.example.demo.domain.entity.Person;
+import com.example.demo.domain.entity.Role;
 import com.example.demo.presentation.restControllers.TranslationEndpointController;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.TranslationService;
@@ -42,9 +50,25 @@ public class TranslationEndpointControllerUnitTest {
     @InjectMocks
     private TranslationEndpointController translationEndpointController;
 
+    private static Authentication authentication;
+
+
     // This ensures mocks are created correctly
     @BeforeAll
     public static void beforeAll() {
+
+        Role role = new Role();
+        role.setName("testRole");
+        Person person = new Person();
+        person.setId(0);
+        person.setRole(role);
+        PersonDetails details=new PersonDetails(person);
+        authentication=new UsernamePasswordAuthenticationToken(details,null,details.getAuthorities());
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class); //https://stackoverflow.com/questions/360520/unit-testing-with-spring-security 
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);//This mocks the security context, with the above authentication
+        SecurityContextHolder.setContext(securityContext); //This should ensure above is used whenever security context is accessed
+
+
         MockitoAnnotations.openMocks(TranslationEndpointControllerUnitTest.class);
     }
 

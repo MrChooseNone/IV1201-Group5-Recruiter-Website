@@ -56,12 +56,11 @@ public class AuthenticationController {
      * @param username The username of the user trying to authenticate.
      * @param password The password of the user.
      * @throws AuthenticationException If authentication fails due to invalid credentials.
-     * @throws UsernameNotFoundException If the authentication process fails and the user is not found.
      * @return A JWT token as a string if authentication is successful.
      */
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestParam String username, @RequestParam String password)
-      throws AuthenticationException, UsernameNotFoundException{
+      throws AuthenticationException{
 
         LOGGER.info("authenticateAndGetToken requested for user (`{}`)",username);
         Authentication authentication=null;
@@ -71,18 +70,11 @@ public class AuthenticationController {
             LOGGER.error("authenticateAndGetToken failed due to user (`{}`) not being correctly authenticated: (`{}`)",username, e.getMessage());
             throw e;
         }
-        PersonDTO user = null;
-        try {
-            user = personService.FindPersonByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        } catch (UsernameNotFoundException e) {
-            LOGGER.error("authenticateAndGetToken failed due to user (`{}`) not being found: (`{}`)",username, e.getMessage());
-            throw e;
-        }
 
         if(authentication.isAuthenticated()){
             LOGGER.info("authenticateAndGetToken success for user (`{}`), returning token",username);
             //This returns a json in the format {"token":[tokenHere],"role":[roleHere, ex "recruiter"]}
-            return "{\"token\":\""+jwtService.generateToken(username)+"\" , \"role\":\""+authentication.getAuthorities().iterator().next().toString()+"\" , \"id\":\""+user.getId()+"\"}";
+            return "{\"token\":\""+jwtService.generateToken(username)+"\" , \"role\":\""+authentication.getAuthorities().iterator().next().toString();
         }
         else{
             throw new UsernameNotFoundException("INVALID USER REQUEST");

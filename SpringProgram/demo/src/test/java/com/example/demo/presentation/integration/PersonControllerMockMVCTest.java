@@ -66,7 +66,19 @@ public class PersonControllerMockMVCTest {
 
         this.mockMvc.perform(get("/person/findPerson?pnr=20070114-1252").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":null}"));
+    }
 
+    /**
+     * This tests that a request which will return a response with not found
+     * http status code with the error message "Person not found." if pnr given is not a real value
+     * 
+     * @throws Exception
+     */
+    @Test
+    void findPersonPnrBadValueEndpointTest() throws Exception {
+
+        this.mockMvc.perform(get("/person/findPerson?pnr=notAPNR").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print()).andExpect(status().isNotFound())
+                .andExpect(content().string("Person not found."));
     }
 
     /**
