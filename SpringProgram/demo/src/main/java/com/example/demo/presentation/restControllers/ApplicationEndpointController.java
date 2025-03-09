@@ -57,7 +57,7 @@ public class ApplicationEndpointController {
     public List<? extends CompetenceProfileDTO> GetCompetenceProfilesForAPerson(@RequestParam String personId)
     {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("List of competence profiles for person (`{}`) requested" + personId + "by user", currentUser);
+        LOGGER.info("List of competence profiles for person (`{}`) requested by user ('{}')", currentUser);
 
         Integer parsedPersonId=null;
         try {
@@ -88,7 +88,7 @@ public class ApplicationEndpointController {
     public CompetenceProfileDTO CreateCompetenceProfile(@RequestParam String personId,@RequestParam String competenceId,@RequestParam String yearsOfExperience)
     {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Creation of competence profile for user with id (`{}`) for competence with id (`{}`) with (`{}`) years of experience requested" + personId,competenceId,yearsOfExperience + "by user", currentUser); 
+        LOGGER.info("Creation of competence profile for user with id (`{}`) for competence with id (`{}`) with (`{}`) years of experience requested by user ('{}')",personId,competenceId,yearsOfExperience,currentUser); 
 
         Integer parsedPersonId=null;
         try {
@@ -140,7 +140,7 @@ public class ApplicationEndpointController {
     public List<? extends AvailabilityDTO> GetAllAvailability(@RequestParam String personId)
     {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("List of availability periods for person (`{}`) requested" + personId + "by user", currentUser);
+        LOGGER.info("List of availability periods for person (`{}`) requested by uuser ('{}')"  ,personId, currentUser);
 
         Integer parsedPersonId=null;
         try {
@@ -169,7 +169,7 @@ public class ApplicationEndpointController {
     public AvailabilityDTO CreateAvailability(@RequestParam String personId,@RequestParam String fromDate,@RequestParam String toDate)
     {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Creation of availability period for person (`{}`) from (`{}`) to (`{}`) requested" + personId,fromDate,toDate + "by user", currentUser); 
+        LOGGER.info("Creation of availability period for person (`{}`) from (`{}`) to (`{}`) requested by user ('{}')",personId,fromDate,toDate, currentUser); 
 
 
         Integer parsedPersonId=null;
@@ -228,7 +228,7 @@ public class ApplicationEndpointController {
     public ApplicationDTO SubmitApplication(@RequestBody ApplicationSubmissionRequestBody requestBody)
     {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Creation of application for person (`{}`) requested" + requestBody.getPersonId() + "by user", currentUser); 
+        LOGGER.info("Creation of application for person (`{}`) requested by user ('{}')" ,requestBody.getPersonId(), currentUser); 
         return applicationService.SubmitApplication(requestBody.getPersonId(),requestBody.getAvailabilityIds(),requestBody.getCompetenceProfileIds());
     }
 }

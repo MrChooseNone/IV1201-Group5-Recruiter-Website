@@ -56,7 +56,7 @@ public class TranslationEndpointController {
     @GetMapping("/getStandardCompetences")
     public List<? extends CompetenceDTO> GetStandardCompetences() {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Standard competences requested" + "by user",currentUser); 
+        LOGGER.info("Standard competences requested by user (`{}`)",currentUser); 
         List<? extends CompetenceDTO> existingCompetences = translationService.GetCompetences();
         return existingCompetences;
     }
@@ -72,7 +72,7 @@ public class TranslationEndpointController {
     @GetMapping("/getSpecificCompetence/{id}")
     public CompetenceDTO GetSpecificCompetence(@PathVariable String id) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Specific competences with id (`{}`) requested" + id + "by user", currentUser); 
+        LOGGER.info("Specific competences with id (`{}`) requested by user (`{}`)" ,id, currentUser); 
         Integer parsedId=null;
         try {
             parsedId=Integer.parseInt(id);
@@ -96,7 +96,7 @@ public class TranslationEndpointController {
     @GetMapping("/getCompetenceTranslation")
     public List<? extends CompetenceTranslationDTO> GetCompetenceTranslation(@RequestParam String language) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Competence translation for language (`{}`) requested" + language + "by user", currentUser); 
+        LOGGER.info("Competence translation for language (`{}`) requested by user (`{}`)",language, currentUser); 
         return translationService.GetCompetenceTranslation(language.toLowerCase());
     }
 
@@ -109,7 +109,7 @@ public class TranslationEndpointController {
     @GetMapping("/getLanguages")
     public List<? extends LanguageDTO> GetLanguages() {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Languages supported requested" + "by user", currentUser); 
+        LOGGER.info("Languages supported requested by user (`{}`)", currentUser); 
         return translationService.GetLanguages();
     }
 
