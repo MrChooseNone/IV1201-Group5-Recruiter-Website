@@ -3,6 +3,8 @@ import React, {useState,useContext} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { isTokenExpired } from "./utils/TokenChecker";
+import { useNavigate } from "react-router-dom";
 
 
 import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
@@ -13,6 +15,8 @@ export default function SearchApplication() {
     const[search,setSearch] = useState("");
     const[result,setResult] = useState([]);
 
+    const navigate = useNavigate();
+
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -20,6 +24,12 @@ export default function SearchApplication() {
     
 
     const handleSearch = (e) => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+          setAuth({});
+            sessionStorage.clear();
+          alert("Your session has expired. Please log in again.");
+          navigate("/login"); // Redirect to login page
+        }
         e.preventDefault(); // Prevents page refresh
         const param = new URLSearchParams({name: search});
         const url = new URL(`${API_URL}/person/find`);

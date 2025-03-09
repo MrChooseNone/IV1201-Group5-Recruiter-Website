@@ -15,6 +15,8 @@ import {
   InputLabel,
   CircularProgress
 } from "@mui/material";
+import { isTokenExpired } from "./utils/TokenChecker";
+import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from '../App';
 
@@ -38,6 +40,7 @@ export default function ApplicationEndPoint() {
 
     //We load the authentication information from the context
     const { auth, setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
     
 
     // Get API URL from .env file
@@ -45,6 +48,13 @@ export default function ApplicationEndPoint() {
     
     // Fetch competence profiles
     const getCompetenceProfiles = async () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+            
+        }
         const url = `${API_URL}/application/getAllCompetenceProfiles?personId=${personId}`;
 
         fetch(url, {
@@ -75,6 +85,12 @@ export default function ApplicationEndPoint() {
 
     //function to fetch competences
     const fetchCompetences = () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const url = `${API_URL}/translation/getStandardCompetences`;
 
         console.log("Fetching competences from:", url);
@@ -126,6 +142,12 @@ export default function ApplicationEndPoint() {
 
     // Create a new competence profile
     const createCompetenceProfile = async () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const response = await fetch(`${API_URL}/application/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
         headers: {
@@ -146,6 +168,12 @@ export default function ApplicationEndPoint() {
 
     // Fetch availability periods
     const getAvailability = async () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`,
             {
                 method: "GET",
@@ -176,6 +204,12 @@ export default function ApplicationEndPoint() {
 
     // Create a new availability period
     const createAvailability = async () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const response = await fetch(`${API_URL}/application/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
         headers: {
@@ -257,11 +291,19 @@ export default function ApplicationEndPoint() {
 
     //-------------submit application---------------------
     const submitApplication = async () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
+        
         if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
             alert("Please fill in competences and availability")
             return;
         }
+
     
         const requestBody = {
             personId: personId,

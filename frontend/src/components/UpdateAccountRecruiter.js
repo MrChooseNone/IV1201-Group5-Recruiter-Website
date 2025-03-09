@@ -1,8 +1,10 @@
     import React, { useState, useContext } from "react";
     import { TextField, Button, Container, Typography, Box } from "@mui/material";
     import { AuthContext } from '../App';
+    import { isTokenExpired } from "./utils/TokenChecker";
+    import { useNavigate } from "react-router-dom";
 
-    const RecruiterForm = () => {
+const RecruiterForm = () => {
         // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -10,9 +12,17 @@
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
 
+    const navigate = useNavigate();
+
     const { auth, setAuth } = useContext(AuthContext);
 
     const ResetEmail = (e) => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         e.preventDefault(); // Prevents page refresh
 
         const params = new URLSearchParams();
