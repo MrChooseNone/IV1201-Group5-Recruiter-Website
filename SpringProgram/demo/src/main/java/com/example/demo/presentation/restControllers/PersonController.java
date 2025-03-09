@@ -98,7 +98,6 @@ public class PersonController {
      *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/requestApplicantReset")
-    @PreAuthorize("hasAuthority('applicant')")
     public String RequestApplicantReset(@RequestParam String email) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("Update of username and password for applicant with email (`{}`) requested" + email + "by user", currentUser);
@@ -115,7 +114,6 @@ public class PersonController {
      *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/updateApplicant")
-    @PreAuthorize("hasAuthority('applicant')")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested" + resetToken,username + "request made by user", currentUser);

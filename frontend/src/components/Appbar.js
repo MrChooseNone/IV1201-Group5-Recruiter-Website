@@ -36,6 +36,7 @@ export default function Appbar() {
   //This function renders the login button, if not logged in renders a button to go to the login screen, if logged in renders a button which sign out the user using the setAuth context function
   function renderLoginButton()
   {
+    
     if(auth.token)
     {
       return <Button color="inherit" onClick={() => {
@@ -139,11 +140,23 @@ export default function Appbar() {
                 
                 
               }}>Home</Button>
+
+              
               
               {renderEditProfileOrRegister()}
 
               {renderReviewerButton()}
-
+              <Button color="inherit" component={Link} to="/update"
+              sx={{
+                p: 2,
+                px: 4,
+                
+                display: "flex", 
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                
+              }}
+              >Reset Password</Button>
               {renderLoginButton()}
               
         </Toolbar>
