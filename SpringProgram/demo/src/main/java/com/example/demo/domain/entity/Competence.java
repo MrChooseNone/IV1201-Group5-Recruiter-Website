@@ -10,7 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.UniqueConstraint;
 
 /**
  * Represents a competence entity in the system.
@@ -31,7 +30,7 @@ public class Competence implements CompetenceDTO{
 
     /**
      * Implements the CompetenceDTO function getCompetenceId, and returns the competence's id
-     * @return the role's role id
+     * @return the competence's id
      */
     @Override
     public Integer getCompetenceId() {
@@ -40,7 +39,7 @@ public class Competence implements CompetenceDTO{
 
     /**
      * Implements the CompetenceDTO function getName, and returns the competence's name
-     * @return the role's role id
+     * @return the competence's name
      */
     @Override
     public String getName() {

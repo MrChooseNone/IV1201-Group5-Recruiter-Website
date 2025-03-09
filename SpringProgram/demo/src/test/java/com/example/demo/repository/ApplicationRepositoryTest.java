@@ -1,8 +1,11 @@
 package com.example.demo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +57,10 @@ public class ApplicationRepositoryTest {
     @Autowired 
     private AvailabilityRepository availabilityRepository;
     private List<Availability> availabilityList;
+    private Availability availability;
+    private Availability availability2;
+    private Availability availability3;
+
 
     @Autowired 
     private ApplicationRepository applicationRepository;
@@ -83,11 +90,19 @@ public class ApplicationRepositoryTest {
         personRepository.save(testPerson);
 
         availabilityList= new ArrayList<Availability>();
-        Availability availability = new Availability(testPerson, new java.sql.Date(systemTime+44444), new java.sql.Date(systemTime+44444));
+        availability = new Availability(testPerson, new java.sql.Date(systemTime+44444), new java.sql.Date(systemTime+44444));
+        availability2 = new Availability(testPerson, new java.sql.Date(systemTime+3123124), new java.sql.Date(systemTime+5123123));
+        availability3 = new Availability(testPerson, new java.sql.Date(systemTime+3123124), new java.sql.Date(systemTime+5123123));
         availabilityRepository.save(availability);
-        availabilityList.add(availability);
+        availabilityRepository.save(availability2);
+        availabilityRepository.save(availability3);
 
-        
+        availabilityList.add(availability);
+        availabilityList.add(availability2);
+        List<Availability> availabilityList2= new ArrayList<Availability>();
+        availabilityList2.add(availability);
+        availabilityList2.add(availability3);
+    
         competence = new Competence();
         competence.setName("competence");
         competenceRepository.save(competence);
@@ -99,7 +114,7 @@ public class ApplicationRepositoryTest {
         competenceProfiles.add(profile);
 
         application= new Application(testPerson, availabilityList,competenceProfiles );
-        application2= new Application(testPerson, availabilityList,competenceProfiles );
+        application2= new Application(testPerson, availabilityList2,competenceProfiles );
         applicationRepository.save(application);
         applicationRepository.save(application2);
 

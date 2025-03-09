@@ -24,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.TransientDataAccessException;
 
 import com.example.demo.domain.dto.ApplicationDTO;
@@ -572,21 +571,6 @@ public class ApplicationServiceTest {
             return aContainer;
         });
 
-        when(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(anyList(),any(Person.class))).thenAnswer(invocation -> {
-
-            List<Availability> availabilityListArg = (List<Availability>) invocation.getArguments()[0];
-            Person PersonArg = (Person) invocation.getArguments()[1];
-
-            for (Application a : savedApplications) {
-                if (a.getApplicant().equals(PersonArg)) {
-                    if (a.getAvailabilityPeriodsForApplication().equals(availabilityListArg)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        });
-
         when(applicationRepository.save(any(Application.class))).thenAnswer(invocation -> {
             savedApplications.add((Application) invocation.getArguments()[0]);
             return invocation.getArguments()[0];
@@ -649,9 +633,6 @@ public class ApplicationServiceTest {
 
         //We verify that the mock save method was called by the SubmitApplication method
         Mockito.verify(this.applicationRepository, Mockito.times(1)).save(any(Application.class));
-
-        e2 = assertThrowsExactly(AvailabilityInvalidException.class,() -> applicationService.SubmitApplication(person.getId(),availabilityIds,competenceProfileIds));
-        assertEquals("Availability invalid due to : You already have an application with the exact same availability period(s)", e2.getMessage());
 
         //And finally we verify that it saved the correct application
         assertEquals(result.getApplicationId(), savedApplications.get(0).getApplicationId());

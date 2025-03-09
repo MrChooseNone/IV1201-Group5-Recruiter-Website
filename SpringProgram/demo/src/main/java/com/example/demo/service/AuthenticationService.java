@@ -2,11 +2,7 @@ package com.example.demo.service;
 
 import org.springframework.stereotype.Service;
 import com.example.demo.repository.PersonRepository;
-import com.example.demo.domain.entity.Person;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.List;
-import java.lang.RuntimeException;
 
 
 @Service

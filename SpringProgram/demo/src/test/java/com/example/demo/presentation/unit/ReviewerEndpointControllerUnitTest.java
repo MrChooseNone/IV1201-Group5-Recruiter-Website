@@ -17,10 +17,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
 import com.example.demo.domain.ApplicationStatus;
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.ApplicationDTO;
 import com.example.demo.domain.entity.Application;
+import com.example.demo.domain.entity.Person;
+import com.example.demo.domain.entity.Role;
 import com.example.demo.presentation.restControllers.ReviewerEndpointController;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.ReviewService;
@@ -36,9 +41,21 @@ public class ReviewerEndpointControllerUnitTest {
     @InjectMocks
     private ReviewerEndpointController reviewerEndpointController;
 
+    //This creates a fake authentication object, to allow methods to work correctly despite authentication not really having been performed
+    private static Person person;
+    private static PersonDetails details;
+    private static Authentication authentication;
+
     // This ensures mocks are created correctly
     @BeforeAll
     public static void beforeAll() {
+        Role role = new Role();
+        role.setName("testRole");
+        person = new Person();
+        person.setId(0);
+        person.setRole(role);
+        details=new PersonDetails(person);
+        authentication=new UsernamePasswordAuthenticationToken(details,null,details.getAuthorities());
         MockitoAnnotations.openMocks(ReviewerEndpointControllerUnitTest.class);
     }
 
@@ -60,7 +77,7 @@ public class ReviewerEndpointControllerUnitTest {
         });
 
         //We then test that the method does return the list it recives from the service
-        List<? extends ApplicationDTO> result=reviewerEndpointController.GetApplications();
+        List<? extends ApplicationDTO> result=reviewerEndpointController.GetApplications(authentication);
         assertEquals(applications, result);
         Mockito.verify(this.reviewService, Mockito.times(1)).GetApplications();
 
@@ -92,24 +109,24 @@ public class ReviewerEndpointControllerUnitTest {
             return returnList;
         });
 
-        var e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.GetApplicationsByStatus("notAStatus"));
+        var e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.GetApplicationsByStatus(authentication,"notAStatus"));
         assertEquals("Invalid parameter : Provided value (notAStatus) is not valid value for application status, please specify as \"unchecked\",\"accepted\" or \"denied\"", e.getMessage());
         Mockito.verify(this.reviewService, Mockito.times(0)).GetApplicationsByStatus(any(ApplicationStatus.class));
 
 
-        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.GetApplicationsByStatus(null));
+        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.GetApplicationsByStatus(authentication,null));
         assertEquals("Invalid parameter : Provided status value is null, please specify as \"unchecked\",\"accepted\" or \"denied\"", e.getMessage());
         Mockito.verify(this.reviewService, Mockito.times(0)).GetApplicationsByStatus(any(ApplicationStatus.class));
 
 
         //We then test that the method does return the list it recives from the service and that this list is correct for the application status
-        List<? extends ApplicationDTO> result=reviewerEndpointController.GetApplicationsByStatus("unchecked");
+        List<? extends ApplicationDTO> result=reviewerEndpointController.GetApplicationsByStatus(authentication,"unchecked");
         assertEquals(true, result.contains(application1));
         Mockito.verify(this.reviewService, Mockito.times(1)).GetApplicationsByStatus(any(ApplicationStatus.class));
 
 
         //Here we confirm that a valid but unrepresented status results in an empty list
-        result=reviewerEndpointController.GetApplicationsByStatus("accepted");
+        result=reviewerEndpointController.GetApplicationsByStatus(authentication,"accepted");
         assertEquals(0, result.size());
         Mockito.verify(this.reviewService, Mockito.times(2)).GetApplicationsByStatus(any(ApplicationStatus.class));
     }
@@ -121,9 +138,9 @@ public class ReviewerEndpointControllerUnitTest {
     void GetApplicationsByIdTest()
     {
 
-        var e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.GetApplicationsById("NotAnInt"));
+        var e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.GetApplicationsById(authentication,"NotAnInt"));
         assertEquals("Invalid parameter : Provided value (NotAnInt) could not be parsed as a valid integer", e.getMessage());
-        reviewerEndpointController.GetApplicationsById("1");
+        reviewerEndpointController.GetApplicationsById(authentication,"1");
     }
 
     @Test
@@ -147,24 +164,24 @@ public class ReviewerEndpointControllerUnitTest {
         });
 
         //We then test that the different invalid parameter exception cases are thrown correctly
-        var e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus("0","notAStatus","0"));
+        var e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus(authentication,"0","notAStatus","0"));
         assertEquals("Invalid parameter : Provided value (notAStatus) is not valid value for application status, please specify as \"unchecked\",\"accepted\" or \"denied\"", e.getMessage());
         Mockito.verify(this.reviewService, Mockito.times(0)).SetApplicationStatus(anyInt(),any(ApplicationStatus.class),anyInt());
 
-        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus("0",null,"0"));
+        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus(authentication,"0",null,"0"));
         assertEquals("Invalid parameter : Provided status value is null, please specify as \"unchecked\",\"accepted\" or \"denied\"", e.getMessage());
         Mockito.verify(this.reviewService, Mockito.times(0)).SetApplicationStatus(anyInt(),any(ApplicationStatus.class),anyInt());
         
-        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus("notANumber","accepted","0"));
+        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus(authentication,"notANumber","accepted","0"));
         assertEquals("Invalid parameter : Provided value (notANumber) could not be parsed as a valid integer", e.getMessage());
         Mockito.verify(this.reviewService, Mockito.times(0)).SetApplicationStatus(anyInt(),any(ApplicationStatus.class),anyInt());
 
-        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus("0","accepted","notAVersionNumber"));
+        e = assertThrowsExactly(InvalidParameterException.class, () -> reviewerEndpointController.UpdateApplicationsByStatus(authentication,"0","accepted","notAVersionNumber"));
         assertEquals("Invalid parameter : Provided value (notAVersionNumber) could not be parsed as a valid integer", e.getMessage());
         Mockito.verify(this.reviewService, Mockito.times(0)).SetApplicationStatus(anyInt(),any(ApplicationStatus.class),anyInt());
 
         //And finally we verify that a correct input results in a correct update of the status
-        ApplicationDTO result=reviewerEndpointController.UpdateApplicationsByStatus("0","accepted","0");
+        ApplicationDTO result=reviewerEndpointController.UpdateApplicationsByStatus(authentication,"0","accepted","0");
         Mockito.verify(this.reviewService, Mockito.times(1)).SetApplicationStatus(anyInt(),any(ApplicationStatus.class),anyInt());
         assertEquals(application1.getApplicationId(), result.getApplicationId());
         assertEquals(ApplicationStatus.accepted, result.getApplicationStatus());

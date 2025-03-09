@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -56,12 +55,13 @@ public class AuthenticationController {
      *
      * @param username The username of the user trying to authenticate.
      * @param password The password of the user.
-     * @return A JWT token as a string if authentication is successful.
      * @throws AuthenticationException If authentication fails due to invalid credentials.
      * @throws UsernameNotFoundException If the authentication process fails and the user is not found.
+     * @return A JWT token as a string if authentication is successful.
      */
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestParam String username, @RequestParam String password){
+    public String authenticateAndGetToken(@RequestParam String username, @RequestParam String password)
+      throws AuthenticationException, UsernameNotFoundException{
 
         LOGGER.info("authenticateAndGetToken requested for user (`{}`)",username);
         Authentication authentication=null;

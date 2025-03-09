@@ -37,6 +37,12 @@ export default function LoginComp() {
   const handleLogin = (e) => {
       e.preventDefault(); // Prevents page refresh
 
+      if(username.length==0) //This checks that a username was submitted, if not it notifies the user and returns before sending the request
+      {
+        alert("Username must not be blank");
+        return;
+      }
+
       // Validate field, add this back in after testing!
       /*
       if (!validatePassword(password)) {
@@ -65,9 +71,19 @@ export default function LoginComp() {
                 return response.text(); // Parse JSON if response is OK
                 
             } else {
+
+              if(response.status==401) //This checks if the credentials are incorrect, and if so gives a correct error message
+              {
+                return response.text().then((errorText) => { 
+                  throw new Error(`${errorText}`); 
+              });
+              }
+              else{
+              
                 return response.text().then((errorText) => { 
                     throw new Error(`Failed to fetch: ${errorText}`); 
                 });
+              }
             }
           }) 
         .then((data) => {
@@ -90,7 +106,7 @@ export default function LoginComp() {
         })
         .catch((error) => {
             console.error("Error adding applicant:", error);
-            alert("Username or password is incorrect")
+            alert(error);
         });
       
    };

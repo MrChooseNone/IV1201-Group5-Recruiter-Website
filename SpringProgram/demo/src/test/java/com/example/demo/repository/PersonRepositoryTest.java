@@ -1,10 +1,13 @@
 package com.example.demo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +81,6 @@ public class PersonRepositoryTest {
     @Test
     /**
      * This method tests the findByName function
-     * TODO update this with any new methods for the person repository
      */
     void findByNameTest()
     {
@@ -90,6 +92,78 @@ public class PersonRepositoryTest {
         result = personRepository.findByName("notARealName");
         assertNotNull(result);
         assertEquals(0, result.size());
+    }
+
+    @Test
+    /**
+     * This method tests the findByEmail function
+     */
+    void findByEmailTest()
+    {
+        Optional<Person> result = personRepository.findByEmail("test@test.test");
+        assertTrue(result.isPresent());
+        assertEquals(testPerson, result.get());
+
+        result = personRepository.findByEmail("notARealValue");
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    /**
+     * This method tests the findByUsername function
+     */
+    void findByUsernameTest()
+    {
+        Optional<Person> result = personRepository.findByUsername("username");
+        assertTrue(result.isPresent());
+        assertEquals(testPerson, result.get());
+
+        result = personRepository.findByUsername("notARealValue");
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    /**
+     * This method tests the findByPnr function
+     */
+    void findByPnrTest()
+    {
+        Optional<Person> result = personRepository.findByPnr("12345678-1234");
+        assertTrue(result.isPresent());
+        assertEquals(testPerson, result.get());
+
+        result = personRepository.findByPnr("notARealValue");
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    /**
+     * This tests the existsByEmail function
+     */
+    void existsByEmailTest()
+    {
+        assertTrue(personRepository.existsByEmail("test@test.test"));
+        assertFalse(personRepository.existsByEmail("notARealValue"));
+    }
+
+    @Test
+    /**
+     * This tests the existsByUsername function
+     */
+    void existsByUsernameTest()
+    {
+        assertTrue(personRepository.existsByUsername("username"));
+        assertFalse(personRepository.existsByUsername("notARealValue"));
+    }
+
+    @Test
+    /**
+     * This tests the existsByPnr function
+     */
+    void existsByPnrTest()
+    {
+        assertTrue(personRepository.existsByPnr("12345678-1234"));
+        assertFalse(personRepository.existsByPnr("notARealValue"));
     }
 
     @Test

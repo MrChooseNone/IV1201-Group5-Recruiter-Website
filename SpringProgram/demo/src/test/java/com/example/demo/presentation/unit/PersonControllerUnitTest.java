@@ -1,17 +1,12 @@
 package com.example.demo.presentation.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,20 +17,24 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.entity.Person;
+import com.example.demo.domain.entity.Role;
 import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restControllers.PersonController;
-import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.PersonService;
 
-import jakarta.persistence.PersistenceException;
-
 @ExtendWith(MockitoExtension.class)
+/**
+ * This tests the person controller 
+ * Specifically, this performs unit tests while treating it as if it was a "normal" java class
+ */
 public class PersonControllerUnitTest {
     // This is used to define the service we want to mock
     @Mock
@@ -46,12 +45,25 @@ public class PersonControllerUnitTest {
     @InjectMocks
     private PersonController personController;
 
+    //This creates a fake authentication object, to allow methods to work correctly despite authentication not really having been performed
+    private static Person person;
+    private static PersonDetails details;
+    private static Authentication authentication;
+
     // This is used to mock the service actually returning something relevant
     static List<Person> savedPerson = new ArrayList<Person>();
 
     // This ensures mocks are created correctly
     @BeforeAll
     public static void beforeAll() {
+
+        Role role = new Role();
+        role.setName("testRole");
+        person = new Person();
+        person.setRole(role);
+        person.setId(0);
+        details=new PersonDetails(person);
+        authentication=new UsernamePasswordAuthenticationToken(details,null,details.getAuthorities());
         MockitoAnnotations.openMocks(PersonControllerUnitTest.class);
     }
 
@@ -92,7 +104,6 @@ public class PersonControllerUnitTest {
     @Test
     /**
      * This is a test for the findPersonByName method
-     * TODO update this when the controller is updated
      */
     void findPersonByNameTest() {
         // First we define the test object
@@ -152,12 +163,8 @@ public class PersonControllerUnitTest {
             return "Updated pnr and email for a reviwer "+id+" to pnr "+pnr+" and email " + email;
         });
 
-        //We test it throws the correct exception
-        var e = assertThrowsExactly(InvalidParameterException.class, () -> personController.UpdateRecruiter("notAnInteger", "notAPersonId", "notaDouble"));
-        assertEquals("Invalid parameter : Provided value (notAnInteger) could not be parsed as a valid integer",e.getMessage());
-        
         //And that it return the correct value if correct parameters
-        String result = personController.UpdateRecruiter("0", "notAPersonId", "notaDouble");
+        String result = personController.UpdateRecruiter(authentication, "notAPersonId", "notaDouble");
         assertEquals("Updated pnr and email for a reviwer 0 to pnr notAPersonId and email notaDouble", result);
     }
 

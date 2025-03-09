@@ -1,6 +1,5 @@
 package com.example.demo.service;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -30,8 +29,8 @@ public class JwtService {
     public static final String SECRET = "123456789eaaaaaaaaaaaaaaaaaaaaaasdawdawdawdawdawdadawdawdawdadawdawd"; //to be replaced
     
     /**
-     * Generates a JWT token for the specified user.
-     * @param userName The username for the user to be included in the token's claims.
+     * Generates a JWT token for the specified user. 
+     * @param userName The username for the user to be included in the token's claims as the subject.
      * @return The generated JWT token.
      */
     public String generateToken(String userName){
@@ -90,11 +89,11 @@ public class JwtService {
     }
 
     /**
-     * Extracts the username from the JWT token.
+     * Extracts the subject from the JWT token. This can be, for example, a username or email
      * @param token The JWT token.
-     * @return The username extracted from the token.
+     * @return The subject extracted from the token.
      */
-    public String extractUserName(String token){
+    public String extractSubject(String token){
         return extractClaim(token,Claims::getSubject);
     }
 
@@ -123,14 +122,14 @@ public class JwtService {
      * @return True if the token is valid, false otherwise.
      */
     public Boolean validateToken(String token, UserDetails userDetails){
-        final String username = extractUserName(token);
+        final String username = extractSubject(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
 
     /**
      * Generates a unique token for the purpose of creating a unique reset link
-     * @param email The email for the person this reset token is for
+     * @param email The email for the person this reset token is for, which is used as the subject of the token
      * @return The genereated JWT token
      */
     public String generateResetToken(String email){

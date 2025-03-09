@@ -96,7 +96,6 @@ public class PersonServiceTest {
      * This is a test for the RegisterPerson function
      * It is based on the @Mock example from the article "Difference between Mockito.mock(), @Mock and @MockBean annotation in Spring Boot" published on Java67 by javin paul 
      * Link: https://www.java67.com/2023/04/difference-between-mockitomock-mock-and.html 
-     * TODO update this when addPerson is updated with more parameters
      */
     public void RegisterPersonTest()
     {
@@ -655,7 +654,7 @@ public class PersonServiceTest {
             return false;
         });
 
-        when(jwtService.extractUserName(anyString())).thenAnswer(invocation -> {
+        when(jwtService.extractSubject(anyString())).thenAnswer(invocation -> {
             String arg=(String)invocation.getArguments()[0];
             if (arg.equals(fakeToken)) {
                 return email;

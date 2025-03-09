@@ -93,7 +93,8 @@ public class ApplicationService {
      * @return If no exception is thrown, the newly created competence profile is created and returned
      */
     public CompetenceProfileDTO CreateCompetenceProfile(Integer competenceId, Integer personId, Double yearsOfExperience)
-    {
+      throws SpecificCompetenceNotFoundException, PersonNotFoundException, CustomDatabaseException, AlreadyExistsException {
+        
         CompetenceProfile newCompetenceProfile;
         Competence competence;
         Person person;
@@ -145,7 +146,8 @@ public class ApplicationService {
      * @return The list of competence profiles
      */
     public List<? extends CompetenceProfileDTO> GetCompetenceProfilesForAPerson(Integer personId)
-    {
+      throws PersonNotFoundException, CustomDatabaseException {
+        
         List<? extends CompetenceProfileDTO> list;
         try {
             Optional<Person> personContainer = personRepository.findById(personId);
@@ -178,7 +180,8 @@ public class ApplicationService {
      * @return If no exception is thrown, this returns the newly created availability
      */
     public AvailabilityDTO CreateAvailability(Integer personId, Date fromDate, Date toDate)
-    {
+      throws PersonNotFoundException, FromDateAfterToDateException, PeriodAlreadyCoveredException, AlreadyExistsException, CustomDatabaseException {
+        
         Availability newAvailability;
         try {
 
@@ -229,7 +232,8 @@ public class ApplicationService {
      * @return The list of competence profiles
      */
     public List<? extends AvailabilityDTO> GetAvailabilityForAPerson(Integer personId)
-    {
+      throws PersonNotFoundException, CustomDatabaseException {
+        
         List<? extends AvailabilityDTO> list;
         try {
             Optional<Person> personContainer = personRepository.findById(personId);
@@ -264,7 +268,8 @@ public class ApplicationService {
      * @return If it does not throw any exceptions, it will return the newly created competence profile
      */
     public ApplicationDTO SubmitApplication(Integer personId,List<Integer> availabilityIds,List<Integer> competenceProfileIds)
-    {
+      throws PersonNotFoundException, AvailabilityInvalidException, CompetenceProfileInvalidException, CustomDatabaseException {
+        
         Application newApplication;
 
         try {
@@ -288,16 +293,11 @@ public class ApplicationService {
                     LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied availabilites do not exist, specifically requested with id (`{}`) which does not exist",personId,i);
                     throw new AvailabilityInvalidException("No availability with id "+i+" in the database");
                 }
-                if (availabilityContainer.get().getPerson().getId()!=person.getId()) {
+                if (availabilityContainer.get().getPerson()!=person) {
                     LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied availabilites profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
                     throw new AvailabilityInvalidException("The availability period with id "+i+" belongs to another user");
                 }
                 availabilities.add(availabilityContainer.get());
-            }
-
-            if (applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilities, person)) {
-                LOGGER.error("Failed to create application for a person (`{}`) since they already have an application with the exact same availability periods");
-                throw new AvailabilityInvalidException("You already have an application with the exact same availability period(s)");
             }
 
             List<CompetenceProfile> competenceProfiles=new ArrayList<CompetenceProfile>();
@@ -313,7 +313,7 @@ public class ApplicationService {
                     LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied competence profiles do not exist, specifically requested with id (`{}`)",personId,i);
                     throw new CompetenceProfileInvalidException("No competence profile with id "+i+" in the database");
                 }
-                if (competenceProfilesContainer.get().getPerson().getId()!=person.getId()) {
+                if (competenceProfilesContainer.get().getPerson()!=person) {
                     LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied competence profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
                     throw new CompetenceProfileInvalidException("The competence profile with id "+i+" belongs to another user");
                 }
