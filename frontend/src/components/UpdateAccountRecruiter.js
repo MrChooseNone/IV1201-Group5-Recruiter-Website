@@ -55,7 +55,7 @@
 
     return (
         <Container maxWidth="sm">
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" color="white" gutterBottom>
             Recruiter Panel
         </Typography>
         <Box component="form" onSubmit={ResetEmail} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -63,7 +63,7 @@
             <TextField label="New Email" variant="outlined" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
             <Button type="submit" variant="contained" color="primary">Update</Button>
         </Box>
-        {message && <Typography variant="body1" color="secondary">{message}</Typography>}
+        {message && <Typography variant="h6" color="white">{message}</Typography>}
         </Container>
     );
     };
