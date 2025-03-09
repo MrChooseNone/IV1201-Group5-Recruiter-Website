@@ -24,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.TransientDataAccessException;
 
 import com.example.demo.domain.dto.ApplicationDTO;
@@ -572,15 +571,24 @@ public class ApplicationServiceTest {
             return aContainer;
         });
 
-        when(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(anyList(),any(Person.class))).thenAnswer(invocation -> {
+        //TODO fix this
+        when(applicationRepository.isListFullyReusedForAPerson(anyList(),anyInt(),anyInt())).thenAnswer(invocation -> {
 
-            List<Availability> availabilityListArg = (List<Availability>) invocation.getArguments()[0];
-            Person PersonArg = (Person) invocation.getArguments()[1];
+            List<Integer> listArg = (List<Integer>) invocation.getArguments()[0];
+            Integer personIdArg = (Integer) invocation.getArguments()[2];
 
+            Boolean status=true;
             for (Application a : savedApplications) {
-                if (a.getApplicant().equals(PersonArg)) {
-                    if (a.getAvailabilityPeriodsForApplication().equals(availabilityListArg)) {
-                        return true;
+                if (a.getApplicant().getId()==personIdArg) {
+
+                    List<Availability> availabilitiesList=a.getAvailabilityPeriodsForApplication();
+                    if (availabilitiesList.size()>=listArg.size()) {
+                        for (int index = 0; index < listArg.size(); index++) {
+                            if (!listArg.contains(availabilitiesList.get(index).getAvailabilityId())) {
+                                status=false;
+                                index=listArg.size();
+                            }
+                        }
                     }
                 }
             }

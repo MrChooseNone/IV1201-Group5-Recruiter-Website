@@ -288,14 +288,16 @@ public class ApplicationService {
                     LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied availabilites do not exist, specifically requested with id (`{}`) which does not exist",personId,i);
                     throw new AvailabilityInvalidException("No availability with id "+i+" in the database");
                 }
-                if (availabilityContainer.get().getPerson().getId()!=person.getId()) {
+                if (availabilityContainer.get().getPerson()!=person) {
                     LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied availabilites profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
                     throw new AvailabilityInvalidException("The availability period with id "+i+" belongs to another user");
                 }
                 availabilities.add(availabilityContainer.get());
             }
 
-            if (applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilities, person)) {
+            //TODO get some help here, or remove it, since the sql does not work correctly
+            Boolean alreadyUsedList=applicationRepository.isListFullyReusedForAPerson(availabilityIds,availabilityIds.size(),person.getId());
+            if (alreadyUsedList==true) {
                 LOGGER.error("Failed to create application for a person (`{}`) since they already have an application with the exact same availability periods");
                 throw new AvailabilityInvalidException("You already have an application with the exact same availability period(s)");
             }
@@ -313,7 +315,7 @@ public class ApplicationService {
                     LOGGER.error("Failed to create application for a person (`{}`) since (at least) one of the provied competence profiles do not exist, specifically requested with id (`{}`)",personId,i);
                     throw new CompetenceProfileInvalidException("No competence profile with id "+i+" in the database");
                 }
-                if (competenceProfilesContainer.get().getPerson().getId()!=person.getId()) {
+                if (competenceProfilesContainer.get().getPerson()!=person) {
                     LOGGER.error("Failed to create application for a person (`{}`) since (atleast) one of the provied competence profiles belongs to another users, specifically requested with id (`{}`)",personId,i);
                     throw new CompetenceProfileInvalidException("The competence profile with id "+i+" belongs to another user");
                 }

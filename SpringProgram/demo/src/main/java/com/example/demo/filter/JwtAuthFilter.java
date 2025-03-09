@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -95,12 +94,13 @@ public class JwtAuthFilter extends OncePerRequestFilter{
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             return;
         }
+        /* 
         catch(Exception e)
         {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Unknown error occured while inspecting jwt token");
+            response.getWriter().write("Unknown error occured while inspecting jwt token :" + e.getMessage());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             return;
-        }
+        }*/
     } 
 } 

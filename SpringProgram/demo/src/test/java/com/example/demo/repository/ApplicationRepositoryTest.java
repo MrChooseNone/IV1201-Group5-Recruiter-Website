@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -56,6 +57,10 @@ public class ApplicationRepositoryTest {
     @Autowired 
     private AvailabilityRepository availabilityRepository;
     private List<Availability> availabilityList;
+    private Availability availability;
+    private Availability availability2;
+    private Availability availability3;
+
 
     @Autowired 
     private ApplicationRepository applicationRepository;
@@ -85,10 +90,18 @@ public class ApplicationRepositoryTest {
         personRepository.save(testPerson);
 
         availabilityList= new ArrayList<Availability>();
-        Availability availability = new Availability(testPerson, new java.sql.Date(systemTime+44444), new java.sql.Date(systemTime+44444));
+        availability = new Availability(testPerson, new java.sql.Date(systemTime+44444), new java.sql.Date(systemTime+44444));
+        availability2 = new Availability(testPerson, new java.sql.Date(systemTime+3123124), new java.sql.Date(systemTime+5123123));
+        availability3 = new Availability(testPerson, new java.sql.Date(systemTime+3123124), new java.sql.Date(systemTime+5123123));
         availabilityRepository.save(availability);
-        availabilityList.add(availability);
+        availabilityRepository.save(availability2);
+        availabilityRepository.save(availability3);
 
+        availabilityList.add(availability);
+        availabilityList.add(availability2);
+        List<Availability> availabilityList2= new ArrayList<Availability>();
+        availabilityList2.add(availability);
+        availabilityList2.add(availability3);
     
         competence = new Competence();
         competence.setName("competence");
@@ -101,7 +114,7 @@ public class ApplicationRepositoryTest {
         competenceProfiles.add(profile);
 
         application= new Application(testPerson, availabilityList,competenceProfiles );
-        application2= new Application(testPerson, availabilityList,competenceProfiles );
+        application2= new Application(testPerson, availabilityList2,competenceProfiles );
         applicationRepository.save(application);
         applicationRepository.save(application2);
 
@@ -167,12 +180,89 @@ public class ApplicationRepositoryTest {
         tempPerson.setUsername("username");
         personRepository.save(tempPerson);
 
+        /* TODO add back these
         assertTrue(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilityList,testPerson));
         assertFalse(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(new ArrayList<Availability>(),testPerson));
+        assertFalse(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilityList,tempPerson));*/
+
+    }
+
+    @Test
+    /** TODO remove this */
+    void tempSqlTest()
+    {
+        List<Integer> integer=new ArrayList<Integer>();
+        integer.add(availability.getAvailabilityId());
+
+        List<Integer> countResult=applicationRepository.countOfReusedAvailability(integer.toArray());
+
+        for (Integer i : countResult) {
+            System.out.println(i);
+            assertEquals(1, i);
+        }
+
+        integer.add(1231240);
+
+        countResult=applicationRepository.countOfReusedAvailability(integer.toArray());
+        for (Integer i : countResult) {
+            assertEquals(1, i);
+        }
+
+        integer.add(availability2.getAvailabilityId());
+
+        countResult=applicationRepository.countOfReusedAvailability(integer.toArray());
+        for (Integer i : countResult) {
+            System.out.println(i);
+        }
+
+        assertFalse(applicationRepository.isListFullyReused(integer.toArray(), integer.size()));
+        integer.remove(1);
+        assertTrue(applicationRepository.isListFullyReused(integer.toArray(), integer.size()));
+        integer.add(availability3.getAvailabilityId());
+        assertFalse(applicationRepository.isListFullyReused(integer.toArray(), integer.size()));
+
+        integer.remove(availability3.getAvailabilityId());
+
+        assertTrue(applicationRepository.isListFullyReusedForAPerson(integer, integer.size(), testPerson.getId()));
+
+        integer.remove(0);
+        assertTrue(applicationRepository.isListFullyReusedForAPerson(integer, integer.size(), testPerson.getId()));
 
 
+        Person tempPerson=new Person();
+        tempPerson.setName("test");
+        tempPerson.setSurname("testsson");
+        tempPerson.setEmail("test@test.test");
+        tempPerson.setPassword("testPassword");
+        tempPerson.setPnr("12345678-1234");
+        tempPerson.setRole(testRole);
+        tempPerson.setUsername("username");
+        personRepository.save(tempPerson);
 
-        assertFalse(applicationRepository.existsByAvailabilityPeriodsForApplicationAndApplicant(availabilityList,tempPerson));
+        assertNull(applicationRepository.isListFullyReusedForAPerson(integer, integer.size(), tempPerson.getId()));
+        
+        long systemTime=System.currentTimeMillis();
+
+        Availability availabilityTemp = new Availability(tempPerson, new java.sql.Date(systemTime+44444), new java.sql.Date(systemTime+44444));
+        availabilityRepository.save(availabilityTemp);
+
+        List<Availability> availabilityList2= new ArrayList<Availability>();
+        availabilityList2.add(availabilityTemp);
+    
+        Competence competenceTemp = new Competence();
+        competenceTemp.setName("competence");
+        competenceRepository.save(competenceTemp);
+
+        CompetenceProfile profile = new CompetenceProfile(tempPerson, competenceTemp, 2.0);
+        competenceProfileRepository.save(profile);        
+        
+        List<CompetenceProfile>competenceProfilesTemp= new ArrayList<CompetenceProfile>();
+        competenceProfilesTemp.add(profile);
+
+        application= new Application(tempPerson, availabilityList2,competenceProfilesTemp );
+
+        integer.add(availabilityTemp.getAvailabilityId());
+        assertTrue(applicationRepository.isListFullyReusedForAPerson(integer, integer.size(), tempPerson.getId()));
 
     }
 

@@ -1,17 +1,12 @@
 package com.example.demo.presentation.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,10 +28,7 @@ import com.example.demo.domain.entity.Person;
 import com.example.demo.domain.entity.Role;
 import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restControllers.PersonController;
-import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.PersonService;
-
-import jakarta.persistence.PersistenceException;
 
 @ExtendWith(MockitoExtension.class)
 /**
@@ -113,7 +104,6 @@ public class PersonControllerUnitTest {
     @Test
     /**
      * This is a test for the findPersonByName method
-     * TODO update this when the controller is updated
      */
     void findPersonByNameTest() {
         // First we define the test object

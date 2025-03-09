@@ -69,6 +69,7 @@ export default function ApplicationEndPoint() {
         })
         .catch((error) => {
             console.error("Error fetching competences:", error);
+            alert(error);
         });
     };
 
@@ -95,7 +96,6 @@ export default function ApplicationEndPoint() {
         
         const url = new URL(`${API_URL}/person/findPerson`);
         
-
         // Add the params to the URL
         url.search = param.toString();
     
@@ -104,7 +104,6 @@ export default function ApplicationEndPoint() {
         fetch(url, {
           method: "GET",
           headers: {
-            
             "Content-Type": "application/json", 
             "Authorization": `Bearer ${auth.token}`, 
           },
@@ -125,6 +124,7 @@ export default function ApplicationEndPoint() {
         })
         .catch((error) => {
             console.error("Error Searching for:", error);
+            alert(error);
         });
     
     };
@@ -158,6 +158,7 @@ export default function ApplicationEndPoint() {
         })
         .catch((error) => {
             console.error("Error fetching competences:", error);
+            alert(error);
         });
     };
     //Auto fetch competences to choose from
@@ -183,13 +184,14 @@ export default function ApplicationEndPoint() {
         },
         });
         if (response.ok) {
-        const data = await response.json();
-        console.log("Creating profile with:", { competenceId, personId, yearsOfExperience });
-        getCompetenceProfiles();
+            const data = await response.json();
+            console.log("Creating profile with:", { competenceId, personId, yearsOfExperience });
+            getCompetenceProfiles();
 
-        alert("Competence profile created successfully!");
-        } else {
-        alert("Failed to create competence profile");
+            alert("Competence profile created successfully!");
+        } 
+        else {
+            alert("Failed to create competence profile due to " + await response.text());
         }
     };
 
@@ -204,9 +206,10 @@ export default function ApplicationEndPoint() {
             }
         );
         if (response.ok) {
-        setAvailability(await response.json());
-        } else {
-        console.log("Failed to fetch availability periods");
+            setAvailability(await response.json());
+        } 
+        else {
+            alert("Failed to fetch availability periods due to : "  + await response.text());
         }
     };
 
@@ -237,7 +240,7 @@ export default function ApplicationEndPoint() {
 
         alert("Availability period created successfully!");
         } else {
-        alert("Failed to create availability");
+        alert("Failed to create availability due to :"  + await response.text());
         }
     };
 
@@ -255,6 +258,7 @@ export default function ApplicationEndPoint() {
         setLanguage("english")
         } catch (error) {
         console.error(error);
+        alert(error);
         }
     };
     
@@ -290,6 +294,7 @@ export default function ApplicationEndPoint() {
         } catch (error) {
             console.error(error);
             setTranslations([]);
+            alert(error);
         }
     };
 
@@ -325,13 +330,14 @@ export default function ApplicationEndPoint() {
                 body: JSON.stringify(requestBody),
             });
     
-            if (!response.ok) throw new Error("Failed to submit application");
+            if (!response.ok) throw new Error("Failed to submit application due to :" + await response.text());
     
             const data = await response.json();
             console.log("Application submitted successfully:", data);
             alert("Application submitted successfully!");
         } catch (error) {
             console.error("Error submitting application:", error);
+            alert(error);
         }
     };
     //------------select competneces and availability-----------

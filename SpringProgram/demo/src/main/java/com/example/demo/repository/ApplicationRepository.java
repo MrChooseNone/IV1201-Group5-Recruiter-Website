@@ -3,12 +3,13 @@ package com.example.demo.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.ApplicationStatus;
 import com.example.demo.domain.entity.Application;
-import com.example.demo.domain.entity.Availability;
 import com.example.demo.domain.entity.Person;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -37,5 +38,59 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
      * @param person The person to find a match for
      * @return A boolean for if the application exists
      */
-    Boolean existsByAvailabilityPeriodsForApplicationAndApplicant(List<Availability> availabilityPeriodsForApplication, Person applicant);
+    //Link to website used as basis for writing the query : https://vladmihalcea.com/spring-data-exists-query/ 
+    //Stack overflow page used to learn about list parameters https://stackoverflow.com/questions/65298257/how-to-use-list-parameter-in-jpa-query-with-spring-data-rest
+
+    Boolean existsByAvailabilityPeriodsForApplicationAndApplicant(@Param("availabiltyIds") List<Integer> availabilityIds, Person applicant);
+    @Query(value = """
+        SELECT * FROM 
+        (
+            SELECT 
+            CASE
+                WHEN count >= :length THEN 'true'
+            ELSE 'false'
+            END AS result
+            FROM (
+                SELECT COUNT(application_availability_periods.availability_id) AS count
+                FROM application
+                INNER JOIN application_availability_periods ON application.application_id = application_availability_periods.application_id
+                WHERE availability_id IN :availabiltyIds AND application.person_id = :person_id
+                GROUP BY application.application_id
+                ORDER BY COUNT(application_availability_periods.availability_id) desc
+            )
+        )        
+        ORDER BY result DESC
+        LIMIT 1;
+    """,
+    nativeQuery = true)
+    Boolean isListFullyReusedForAPerson(@Param("availabiltyIds") List<Integer> availabilityIds, @Param("length") Integer lengthOfArray, @Param("person_id") Integer personId);
+
+    @Query(value = """
+        SELECT 
+        CASE
+            WHEN count = :length THEN 'true'
+        ELSE 'false'
+        END AS result
+        FROM (
+            SELECT COUNT(application_availability_periods.availability_id) AS count
+            FROM application
+            INNER JOIN application_availability_periods ON application.application_id = application_availability_periods.application_id
+            GROUP BY application.application_id
+            ORDER BY COUNT(application_availability_periods.availability_id) desc
+        );
+    """,
+    nativeQuery = true)
+    boolean isListFullyReused(@Param("availabiltyIds") Object[] availabilityIds, @Param("length") Integer lengthOfArray);
+
+    @Query(value = """
+        SELECT COUNT(application_availability_periods.availability_id)
+        FROM application
+        INNER JOIN application_availability_periods ON application.application_id = application_availability_periods.application_id
+        WHERE availability_id IN :availabiltyIds
+        GROUP BY application.application_id
+        ORDER BY COUNT(application_availability_periods.availability_id) desc;
+    """,
+    nativeQuery = true
+)
+    List<Integer> countOfReusedAvailability(@Param("availabiltyIds") Object[] availabilityIds);
 }

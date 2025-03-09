@@ -27,6 +27,10 @@ import org.springframework.security.core.AuthenticationException;
 @RestControllerAdvice
 public class GeneralRestAdvice {
 
+  //Here we create the logger
+  private static final Logger LOGGER = LoggerFactory.getLogger(GeneralRestAdvice.class.getName()); 
+
+
   /**
    * This function is responsible for handeling the InvalidParameterException error
    * @param ex the error which was thrown to active this handler
@@ -144,4 +148,19 @@ public class GeneralRestAdvice {
   String UsernameNotFoundExceptionHandler(AuthenticationException ex) {
     return ex.getMessage();
   }
+
+
+    /**
+   * This function is responsible for handeling every unhandeled error, to ensure the server does not crash and always atleast returns something to the client
+   * Note this should generally never be called in normal operations, and exists mostly to ensure the client gets the correct response
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http INTERNAL_SERVER_ERROR status code with the Exception error message as the text
+   */
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  String ExceptionHandler(Exception ex) {
+    LOGGER.error("An unknown error occured, find exactly why and solve the problem ! : ", ex);
+    return "Unhandled error occured, specifically : "+ex.getMessage();
+  }
+
 }

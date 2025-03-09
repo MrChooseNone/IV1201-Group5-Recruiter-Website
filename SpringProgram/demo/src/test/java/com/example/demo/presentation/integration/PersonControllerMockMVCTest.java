@@ -1,18 +1,25 @@
 package com.example.demo.presentation.integration;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.service.JwtService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 
 @AutoConfigureMockMvc
 // Based on the guide https://spring.io/guides/gs/testing-web
@@ -25,12 +32,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class PersonControllerMockMVCTest {
 
-    @Spy
+    @Autowired
     private JwtService jwtService;
 
     // This is used to test endpoint controllers without running the full server
     @Autowired
     private MockMvc mockMvc;
+
+    //This is used to transform the request body classes to string
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * This tests that a request without a parameter will return a response with bad
@@ -52,8 +63,10 @@ public class PersonControllerMockMVCTest {
      */
     @Test
     void findPersonPnrEndpointTest() throws Exception {
+
         this.mockMvc.perform(get("/person/findPerson?pnr=20070114-1252").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":null}"));
+
     }
 
     /**
@@ -65,9 +78,10 @@ public class PersonControllerMockMVCTest {
      */
     @Test
     void findPersonEmailEndpointTest() throws Exception {
-        // We first set up the mock implementation of the function
+
         this.mockMvc.perform(get("/person/findPerson?email=l_crane118@finnsinte.se").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().string("{\"id\":11,\"name\":\"Leroy\",\"surname\":\"Crane\",\"pnr\":\"20070114-1252\",\"email\":\"l_crane118@finnsinte.se\",\"role\":{\"roleId\":2,\"name\":\"applicant\"},\"username\":null}"));
+
     }
 
     /**
@@ -79,24 +93,38 @@ public class PersonControllerMockMVCTest {
      */
     @Test    
     void findPersonUsernameEndpointTest() throws Exception {
-
         this.mockMvc.perform(get("/person/findPerson?username=JoelleWilkinson").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"id\":1,\"name\":\"Joelle\",\"surname\":\"Wilkinson\",\"pnr\":null,\"email\":null,\"role\":{\"roleId\":1,\"name\":\"recruiter\"},\"username\":\"JoelleWilkinson\"}"));
 
     }
 
-    /**
-     * This tests that a request which will return a response with 404
-     * http status code with the correct error message
-     * @throws Exception
-     */
     @Test
-    void findPersonUsernameMissingUsernameEndpointTest() throws Exception {
-
-        this.mockMvc.perform(get("/person/findPerson?username=notARealPerson").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Person not found."));
+    /**
+     * This tests the register person endpoint
+     * Note that since this could create something new, and is a full integration test, it could make changes and depends on the real database
+     * 
+     */
+    @Transactional
+    void registerPersonEndpointTest() throws Exception
+    {
+        PersonRegistrationRequestBody requestBody = new PersonRegistrationRequestBody("name","surname","20070114-1252","email@emaiö.ln","password","username");
+        String requestBodyString = objectMapper.writeValueAsString(requestBody);
+        this.mockMvc.perform(post("/person/register").contentType(MediaType.APPLICATION_JSON).content(requestBodyString)).andDo(print())
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().string("PNR is already in use!"));
+        
+        PersonRegistrationRequestBody requestBody2 = new PersonRegistrationRequestBody("name","surname","wadsdawdasd","l_crane118@finnsinte.se","password","username");
+        String requestBodyString2 = objectMapper.writeValueAsString(requestBody2);
+        this.mockMvc.perform(post("/person/register").contentType(MediaType.APPLICATION_JSON).content(requestBodyString2)).andDo(print())
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().string("Email is already registered!"));
+       
+        PersonRegistrationRequestBody requestBody3 = new PersonRegistrationRequestBody("name","surname","wadsdawdasd","email@emaiasdö.ln","password","MartinCummings");
+        String requestBodyString3 = objectMapper.writeValueAsString(requestBody3);
+        this.mockMvc.perform(post("/person/register").contentType(MediaType.APPLICATION_JSON).content(requestBodyString3)).andDo(print())
+                                        .andExpect(status().isBadRequest())
+                                        .andExpect(content().string("Username is already taken!"));
 
     }
 

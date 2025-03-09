@@ -20,8 +20,7 @@ import com.example.demo.presentation.restException.EntryNotFoundExceptions.Compe
 public class ApplicationRestAdvice {
 
     //We create the logger
-  //TODO research if logging here can be avoided somehow
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralRestAdvice.class.getName()); 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationRestAdvice.class.getName()); 
 
 
   /**

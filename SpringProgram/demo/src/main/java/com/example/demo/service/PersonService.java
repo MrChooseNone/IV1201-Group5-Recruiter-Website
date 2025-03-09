@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,7 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.dto.PersonDTO;
-import com.example.demo.domain.dto.dtoExample;
 import com.example.demo.domain.entity.ApplicantReset;
 import com.example.demo.domain.entity.Person;
 import com.example.demo.presentation.restException.CustomDatabaseException;
