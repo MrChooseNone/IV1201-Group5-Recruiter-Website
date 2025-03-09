@@ -29,7 +29,7 @@ const ApplicantForm = () => {
             headers: {
                 
                 "Content-Type": "application/json", 
-                "Authorization": "Bearer "+auth.token 
+                
             },
             
         })
@@ -71,7 +71,7 @@ const ApplicantForm = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", 
-                "Authorization": "Bearer "+auth.token 
+                
             },
             
         })
