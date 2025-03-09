@@ -39,6 +39,14 @@ public class JwtAuthFilter extends OncePerRequestFilter{
     //This excludes specific urls from the filtering, to allow access without a JWT token
     //Link: https://www.baeldung.com/spring-exclude-filter 
     @Override
+    /**
+     * Specifies which requests should not be filtered.
+     * The endpoint "/auth/generateToken" is excluded from authentication checks.
+     *
+     * @param request the incoming HTTP request.
+     * @throws ServletException if an error occurs.
+     * @return true if the request should not be filtered, false otherwise.
+     */
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request)
       throws ServletException {
         String path = request.getRequestURI();
@@ -47,6 +55,8 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 
     /**
      * Filters the incoming HTTP request to authenticate the user based on a JWT token.
+     * If the token is valid, the user is set in the security context.
+     * It also handles expired tokens and other authentication-related errors.
      * 
      * @param request the HTTP request to process
      * @param response the HTTP response to send

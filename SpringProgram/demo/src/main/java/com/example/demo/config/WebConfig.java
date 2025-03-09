@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * This is a config file for the website, includes for example config for cross-origin access
  * This is spring managed
  */
-
 public class WebConfig implements WebMvcConfigurer {
 
     @Value("${ALLOWED_ORIGINS:http://localhost:3000}") // Reads allowed origins from environment variables, defaulting to localhost:3000
@@ -20,8 +19,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     /**
      * Configures CORS to allow cross-origin access from the specified origins.
-     * The allowed origins are fetched from an environment variable (ALLOWED_ORIGINS).
+     * The allowed origins are fetched from the ALLOWED_ORIGINS environment variable.
      * Multiple origins can be specified as a comma-separated list.
+     *
+     * @param registry the CORS registry used to configure CORS settings.
      */
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         String[] origins = allowedOrigins.split(","); // Convert comma-separated values to an array

@@ -70,7 +70,7 @@ public class PersonService implements UserDetailsService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
      * @return A list of matching people
      */
-    public List<? extends PersonDTO> FindPeopleByName(String name) {
+    public List<? extends PersonDTO> FindPeopleByName(String name) throws CustomDatabaseException {
         try {
             return personRepository.findByName(name);
         } catch (DataAccessException e) {
@@ -91,8 +91,8 @@ public class PersonService implements UserDetailsService {
      * @throws IllegalArgumentException this exception is thrown if the parameters already exist
      * @throws CustomDatabaseException  this is thrown if any of the jpa methods
      */
-    public void RegisterPerson(String name, String surname, String pnr, String email, String password,
-            String username) {
+    public void RegisterPerson(String name, String surname, String pnr, String email, String password, String username)
+      throws IllegalArgumentException, CustomDatabaseException {
 
         try {
             if (personRepository.existsByPnr(pnr)) {
@@ -133,7 +133,7 @@ public class PersonService implements UserDetailsService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
      * @return The Person entity found, or empty if not found
      */
-    public Optional<? extends PersonDTO> FindPersonByEmail(String email) {
+    public Optional<? extends PersonDTO> FindPersonByEmail(String email) throws CustomDatabaseException {
         try {
             return personRepository.findByEmail(email);
         } catch (DataAccessException e) {
@@ -150,7 +150,7 @@ public class PersonService implements UserDetailsService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
      * @return The Person entity found, or empty if not found
      */
-    public Optional<? extends PersonDTO> FindPersonByUsername(String username) {
+    public Optional<? extends PersonDTO> FindPersonByUsername(String username) throws CustomDatabaseException {
         try {
             return personRepository.findByUsername(username);
         } catch (DataAccessException e) {
@@ -167,7 +167,7 @@ public class PersonService implements UserDetailsService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
      * @return TThe Person entity found, or empty if not found
      */
-    public Optional<? extends PersonDTO> FindPersonByPnr(String pnr) {
+    public Optional<? extends PersonDTO> FindPersonByPnr(String pnr) throws CustomDatabaseException {
         try {
             return personRepository.findByPnr(pnr);
         } catch (DataAccessException e) {
@@ -187,7 +187,9 @@ public class PersonService implements UserDetailsService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
      * @return If successfull, a string describing this
      */
-    public String UpdateRecruiter(Integer personId, String pnr, String email) {
+    public String UpdateRecruiter(Integer personId, String pnr, String email)
+      throws PersonNotFoundException, InvalidPersonException, CustomDatabaseException {
+        
         try {
             Optional<Person> personContainer = personRepository.findById(personId);
 
@@ -235,7 +237,7 @@ public class PersonService implements UserDetailsService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
      * @return a message indicating the reset link was sent
      */
-    public String ApplicantResetLinkGeneration(String email) {
+    public String ApplicantResetLinkGeneration(String email) throws InvalidPersonException, CustomDatabaseException {
         try {
             Optional<Person> personContainer = personRepository.findByEmail(email);
 
@@ -290,8 +292,11 @@ public class PersonService implements UserDetailsService {
      * @param password   the new password
      * @throws InvalidJWTException if the reset token is invalid or expired
      * @throws CustomDatabaseException if a database error occurs during the update
+     * @return A message confirming the update and showing the new username.
      */
-    public String ApplicantUseResetLink(String resetToken, String username, String password) {
+    public String ApplicantUseResetLink(String resetToken, String username, String password)
+      throws InvalidJWTException, CustomDatabaseException {
+        
         try {
 
             if (!jwtService.validateResetToken(resetToken)) {

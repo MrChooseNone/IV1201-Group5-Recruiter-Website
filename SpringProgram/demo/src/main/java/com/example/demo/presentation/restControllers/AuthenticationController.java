@@ -55,12 +55,13 @@ public class AuthenticationController {
      *
      * @param username The username of the user trying to authenticate.
      * @param password The password of the user.
-     * @return A JWT token as a string if authentication is successful.
      * @throws AuthenticationException If authentication fails due to invalid credentials.
      * @throws UsernameNotFoundException If the authentication process fails and the user is not found.
+     * @return A JWT token as a string if authentication is successful.
      */
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestParam String username, @RequestParam String password){
+    public String authenticateAndGetToken(@RequestParam String username, @RequestParam String password)
+      throws AuthenticationException, UsernameNotFoundException{
 
         LOGGER.info("authenticateAndGetToken requested for user (`{}`)",username);
         Authentication authentication=null;

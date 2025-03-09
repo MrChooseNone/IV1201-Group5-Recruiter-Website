@@ -93,7 +93,8 @@ public class ApplicationService {
      * @return If no exception is thrown, the newly created competence profile is created and returned
      */
     public CompetenceProfileDTO CreateCompetenceProfile(Integer competenceId, Integer personId, Double yearsOfExperience)
-    {
+      throws SpecificCompetenceNotFoundException, PersonNotFoundException, CustomDatabaseException, AlreadyExistsException {
+        
         CompetenceProfile newCompetenceProfile;
         Competence competence;
         Person person;
@@ -145,7 +146,8 @@ public class ApplicationService {
      * @return The list of competence profiles
      */
     public List<? extends CompetenceProfileDTO> GetCompetenceProfilesForAPerson(Integer personId)
-    {
+      throws PersonNotFoundException, CustomDatabaseException {
+        
         List<? extends CompetenceProfileDTO> list;
         try {
             Optional<Person> personContainer = personRepository.findById(personId);
@@ -178,7 +180,8 @@ public class ApplicationService {
      * @return If no exception is thrown, this returns the newly created availability
      */
     public AvailabilityDTO CreateAvailability(Integer personId, Date fromDate, Date toDate)
-    {
+      throws PersonNotFoundException, FromDateAfterToDateException, PeriodAlreadyCoveredException, AlreadyExistsException, CustomDatabaseException {
+        
         Availability newAvailability;
         try {
 
@@ -229,7 +232,8 @@ public class ApplicationService {
      * @return The list of competence profiles
      */
     public List<? extends AvailabilityDTO> GetAvailabilityForAPerson(Integer personId)
-    {
+      throws PersonNotFoundException, CustomDatabaseException {
+        
         List<? extends AvailabilityDTO> list;
         try {
             Optional<Person> personContainer = personRepository.findById(personId);
@@ -264,7 +268,8 @@ public class ApplicationService {
      * @return If it does not throw any exceptions, it will return the newly created competence profile
      */
     public ApplicationDTO SubmitApplication(Integer personId,List<Integer> availabilityIds,List<Integer> competenceProfileIds)
-    {
+      throws PersonNotFoundException, AvailabilityInvalidException, CompetenceProfileInvalidException, CustomDatabaseException {
+        
         Application newApplication;
 
         try {

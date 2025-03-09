@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.domain.dto.PersonDTO;
 import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
-import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.PersonService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -177,6 +176,4 @@ public class PersonController {
             return ResponseEntity.status(404).body("Person not found.");
         }
     }
-
-    
 }

@@ -32,7 +32,7 @@ import com.example.demo.service.ApplicationService;
  * This includes, for example, creating a new competence profile for a specific user along with submitting an application
  */
 public class ApplicationEndpointController {
-        @Autowired
+    @Autowired
     private final ApplicationService applicationService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReviewerEndpointController.class.getName()); 
@@ -54,7 +54,7 @@ public class ApplicationEndpointController {
      */
     @GetMapping("/getAllCompetenceProfiles")
     public List<? extends CompetenceProfileDTO> GetCompetenceProfilesForAPerson(@RequestParam String personId)
-    {
+      throws InvalidParameterException {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("List of competence profiles for person (`{}`) requested" + personId + "by user", currentUser);
 
@@ -85,7 +85,7 @@ public class ApplicationEndpointController {
     //TODO maybe remove personId and replace it with accessing this information from the authentication?
     @PostMapping("/createCompetenceProfile")
     public CompetenceProfileDTO CreateCompetenceProfile(@RequestParam String personId,@RequestParam String competenceId,@RequestParam String yearsOfExperience)
-    {
+      throws InvalidParameterException {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("Creation of competence profile for user with id (`{}`) for competence with id (`{}`) with (`{}`) years of experience requested" + personId,competenceId,yearsOfExperience + "by user", currentUser); 
 
@@ -137,7 +137,7 @@ public class ApplicationEndpointController {
      */
     @GetMapping("/getAllAvailability")
     public List<? extends AvailabilityDTO> GetAllAvailability(@RequestParam String personId)
-    {
+      throws InvalidParameterException {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("List of availability periods for person (`{}`) requested" + personId + "by user", currentUser);
 
@@ -166,7 +166,7 @@ public class ApplicationEndpointController {
      */
     @PostMapping("/createAvailability")
     public AvailabilityDTO CreateAvailability(@RequestParam String personId,@RequestParam String fromDate,@RequestParam String toDate)
-    {
+      throws InvalidParameterException {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("Creation of availability period for person (`{}`) from (`{}`) to (`{}`) requested" + personId,fromDate,toDate + "by user", currentUser); 
 

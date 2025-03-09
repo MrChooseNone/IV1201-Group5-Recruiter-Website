@@ -66,11 +66,11 @@ public class TranslationEndpointController {
      * 
      * @param id This is the id for the competence this requests
      * @throws InvalidParameterException if the provided id can not be parsed as an integer 
-     * @return This function will return the list of existing competences as a json
+     * @return This function will return the list of existing competences as a JSON
      *         object to the user
      */
     @GetMapping("/getSpecificCompetence/{id}")
-    public CompetenceDTO GetSpecificCompetence(@PathVariable String id) {
+    public CompetenceDTO GetSpecificCompetence(@PathVariable String id) throws InvalidParameterException {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         LOGGER.info("Specific competences with id (`{}`) requested" + id + "by user", currentUser); 
         Integer parsedId=null;
@@ -101,10 +101,9 @@ public class TranslationEndpointController {
     }
 
     /**
-     * This function returns a list of languages
+     * Retrieves a list of supported languages.
      * 
-     * @param language This is the language the translations are for
-     * @return This function will return the list of translations as a json object to the user
+     * @return A JSON list of available languages.
      */
     @GetMapping("/getLanguages")
     public List<? extends LanguageDTO> GetLanguages() {
@@ -112,5 +111,4 @@ public class TranslationEndpointController {
         LOGGER.info("Languages supported requested" + "by user", currentUser); 
         return translationService.GetLanguages();
     }
-
 }

@@ -54,8 +54,7 @@ public class TranslationService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
      * @return the list containing the existing competences
      */
-    public List<? extends CompetenceDTO> GetCompetences()
-    {
+    public List<? extends CompetenceDTO> GetCompetences() throws CustomDatabaseException {
         try {
             return competenceRepository.findAll();
         }
@@ -73,8 +72,7 @@ public class TranslationService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
      * @return If it does not throw the above exception, it will return a DTO representing the specified competence
      */
-    public CompetenceDTO GetSpecificCompetence(Integer id)
-    {
+    public CompetenceDTO GetSpecificCompetence(Integer id) throws SpecificCompetenceNotFoundException, CustomDatabaseException{
         try {
             //We search for a competence with this specific id
             Optional<Competence> competenceContainer=competenceRepository.findById(id);
@@ -104,7 +102,7 @@ public class TranslationService {
      */
 
     public List<? extends CompetenceTranslationDTO> GetCompetenceTranslation(String languageName)
-    {
+      throws LanguageNotFoundException, TranslationsNotFoundException, CustomDatabaseException {
             Language langague;
             //We try to retrive the specific language, and if it can not be found we throw a specific error
             try {
@@ -150,8 +148,7 @@ public class TranslationService {
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail for some reason
      * @return The list of supported languages
      */
-    public List<? extends LanguageDTO> GetLanguages()
-    {
+    public List<? extends LanguageDTO> GetLanguages() throws CustomDatabaseException {
         try {
             return languageRepository.findAll();
         }

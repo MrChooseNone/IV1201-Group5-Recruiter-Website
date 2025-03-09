@@ -24,6 +24,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+/**
+ * Security configuration class for handling authentication and authorization settings.
+ * It configures password encoding, authentication providers, and HTTP security settings.
+ */
 public class SecurityConfig {
     
     /* 
@@ -39,11 +43,21 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the user details service using the PersonService.
+     * @param personService the service responsible for loading user details.
+     * @return a UserDetailsService instance.
+     */
     @Bean
     public UserDetailsService userDetailsService(PersonService personService){
         return personService;
     }
 
+    /**
+     * Configures the authentication provider using DAO-based authentication.
+     * @param personService the service responsible for retrieving user details.
+     * @return an instance of AuthenticationProvider.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider(PersonService personService){
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -52,15 +66,24 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
+    /**
+     * Configures the authentication manager.
+     * @param config the AuthenticationConfiguration instance.
+     * @throws Exception if an error occurs while retrieving the authentication manager.
+     * @return an instance of AuthenticationManager.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();
     }
 
     /**
-     * Configures security settings to allow public access to all endpoints for testing.
-     * @param http The HttpSecurity configuration.
-     * @return SecurityFilterChain instance.
+     * Configures security settings, including authentication rules and session management.
+     * @param http the HttpSecurity instance.
+     * @param authenticationProvider the authentication provider to use.
+     * @param authFilter the JWT authentication filter.
+     * @throws Exception if an error occurs during configuration.
+     * @return a SecurityFilterChain instance.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider, JwtAuthFilter authFilter) throws Exception {
