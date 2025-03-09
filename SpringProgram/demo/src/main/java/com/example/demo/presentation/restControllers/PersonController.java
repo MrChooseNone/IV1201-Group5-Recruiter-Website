@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.domain.dto.PersonDTO;
+import com.example.demo.domain.PersonDetails;
 import com.example.demo.domain.requestBodies.PersonRegistrationRequestBody;
 import com.example.demo.presentation.restException.InvalidParameterException;
 import com.example.demo.service.PersonService;
