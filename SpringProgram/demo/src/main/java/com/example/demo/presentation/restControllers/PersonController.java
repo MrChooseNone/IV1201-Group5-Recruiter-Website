@@ -112,7 +112,7 @@ public class PersonController {
      *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/updateApplicant")
-    @PreAuthorize("hasAuthority('recruiter')")
+    @PreAuthorize("hasAuthority('applicant')")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {
         LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested",resetToken,username); //TODO add authentication info here, aka who accessed this
         return personService.ApplicantUseResetLink(resetToken,username,password);

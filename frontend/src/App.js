@@ -11,6 +11,7 @@ import AddApplicant from './pages/AddApplicant';
 import ReviewerDashboard from './pages/ReviewerDashboard';
 import ApplicantDetails from './pages/ApplicantDetails';
 import LoginPage from './pages/LoginPage';
+import UpdateAccountPage from './pages/UpdateAccountPage';
 
 import { createContext, useState, useMemo } from 'react';
 
@@ -36,7 +37,7 @@ function App() {
           <Route path='/home' element={<Home />} />          
           <Route path='/addApplicant' element={<AddApplicant />} />
           <Route path='/login' element={<LoginPage />} />
-
+          <Route path='/update' element={<UpdateAccountPage />} />
           {/*Must be logged in */}
           <Route path='/JobApplication' element={<JobApplication />} />
 
