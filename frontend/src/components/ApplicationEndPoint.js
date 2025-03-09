@@ -73,62 +73,6 @@ export default function ApplicationEndPoint() {
         });
     };
 
-    //fetch id based on username or email or pnr
-    //function to determin what param was entered
-    const parseSearch = () => {
-        if(/^\d+-?\d+$/.test(searchedPerson)) return "pnr";
-        if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(searchedPerson)) return "email";
-        else return "username";
-    }
-    //fetch the id
-    const fetchId = (e) => {
-        e.preventDefault(); // Prevents page refresh
-
-        const type = parseSearch();
-        let param;
-        if(type == "email"){
-            param = new URLSearchParams({email: searchedPerson});
-        }else if (type == "pnr"){
-            param = new URLSearchParams({pnr: searchedPerson});
-        } else{
-            param = new URLSearchParams({username: searchedPerson});
-        }
-        
-        const url = new URL(`${API_URL}/person/findPerson`);
-        
-        // Add the params to the URL
-        url.search = param.toString();
-    
-        console.log("Sending request with params:", url); // remove (just debug)
-        
-        fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json", 
-            "Authorization": `Bearer ${auth.token}`, 
-          },
-        })
-        .then((response) => { 
-          if (response.ok) {
-              return response.json(); // Parse JSON if response is OK
-          } else {
-              return response.text().then((errorText) => { 
-                  throw new Error(`Failed to fetch: ${errorText}`); 
-              });
-          }
-        }) 
-        .then((data) => {
-            console.log(data); // Write data
-            setResult(data);
-            setPersonId(data.id);
-        })
-        .catch((error) => {
-            console.error("Error Searching for:", error);
-            alert(error);
-        });
-    
-    };
-
     //function to fetch competences
     const fetchCompetences = () => {
         const url = `${API_URL}/translation/getStandardCompetences`;
@@ -173,6 +117,11 @@ export default function ApplicationEndPoint() {
             setCompetenceId(competences[0].competenceId); // Set initial competenceId
         }
     }, [competences]); // Trigger only when competences are updated
+
+    //auto fetch person id from session storage
+    useEffect(() => {
+        setPersonId(sessionStorage.getItem("id"));
+    },[]);
 
 
     // Create a new competence profile
@@ -377,18 +326,28 @@ export default function ApplicationEndPoint() {
     };
     
     return (
-            <Container maxWidth="md" sx={{ 
-                marginTop: "10px",
+            <Container sx={{ 
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignContent: "center",
+                justifyItems:"center",
+                alignItems:"center",
+                marginTop: 2,
                 p: 4,
                 borderRadius: 4,
                 bgcolor: "#AFF9C9",
             }}>
+            <Typography variant="h5" sx={{
+
+            }}>Apply and join our team!</Typography>
+            <Typography variant="h6">Create and set profiles to use for your application</Typography>
 
             {/* Language Selector */}
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
-                <Typography variant="h6">Select Language</Typography>
-                <FormControl fullWidth margin="dense">
-                    <Select value={language} onChange={(e) => setLanguage(e.target.value)} displayEmpty>
+            <Paper elevation={3} sx={{width: "90%", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+                <Typography variant="h6" sx={{justifySelf: "center"}}>Select Language</Typography>
+                <FormControl fullWidth>
+                    <Select value={language} onChange={(e) => setLanguage(e.target.value)} displayEmpty fullWidth>
                         <MenuItem value="" disabled>Select Language</MenuItem>
                         {languages.map((lang) => (
                             <MenuItem key={lang.languageId} value={lang.languageName}>{lang.languageName}</MenuItem>
@@ -397,44 +356,28 @@ export default function ApplicationEndPoint() {
                 </FormControl>
             </Paper>
 
-            {/* new enter username instead of id */}
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
-                <Typography variant="h6">Competence Profiles</Typography>
-                <TextField label="username, email, pnr" value={searchedPerson} onChange={(e) => setSearchedPerson(e.target.value)} fullWidth />
-                <Button variant="contained" color="primary" onClick={fetchId} style={{ marginTop: "10px" }}>
-                    Get id
-                </Button>
-                <Typography>{personId} </Typography>
-                <List>
-                    {
-                    
-                    /*competenceProfiles.map((cp, index) => {
-                        return (
-                            <ListItem key={index}>
-                                <ListItemText
-                                    primary={`Competence: ${translations[cp.competenceDTO.competenceId -1] ? translations[cp.competenceDTO.competenceId -1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
-                                />
-                            </ListItem>
-                        );
-                    })*/}
-                </List>
-            </Paper>
             
             
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+            
+            <Paper elevation={3} sx={{ width: "90%",justifyItems:"center",  padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Competence Profiles</Typography>
-                <TextField label="Person ID" value={personId} onChange={(e) => setPersonId(e.target.value)} fullWidth />
-                <Button variant="contained" color="primary" onClick={getCompetenceProfiles} style={{ marginTop: "10px" }}>
+                
+                <Button variant="contained" color="primary" onClick={getCompetenceProfiles} sx={{ marginTop: "10px", justifySelf: "center" }} fullWidth>
                     Get Competence Profiles
                 </Button>
                 <List>
                     {competenceProfiles.map((cp, index) => {
                         return (
                             <ListItem key={index}>
-                                <ListItemText
+                                <ListItemText sx={{marginRight: 10}}
                                     primary={`Competence: ${translations[cp.competenceDTO.competenceId -1] ? translations[cp.competenceDTO.competenceId -1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
                                 />
                                 <Button variant="contained" value={cp.competenceProfileId} onClick={() => handleSelectCompetence(cp.competenceProfileId)} sx={{
+                                    m: 1,
+                                    position: "absolute",
+                                    right: 0,
+                                    width: 70,
+                                    height: 30,
                                     transform: competenceProfileIds.includes(cp.competenceProfileId) ? "translateY: 2px" : "none",
                                     bgcolor: competenceProfileIds.includes(cp.competenceProfileId) ? "primary.main" : "grey",
                                 }}>Select</Button>
@@ -444,7 +387,7 @@ export default function ApplicationEndPoint() {
                 </List>
             </Paper>
 
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+            <Paper elevation={3} sx={{width: "90%",justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Create Competence Profile</Typography>
                 <FormControl fullWidth margin="dense">
                     {personId !== "" && competences ? (
@@ -465,14 +408,14 @@ export default function ApplicationEndPoint() {
                     )}
                 </FormControl>
                 <TextField label="Years of Experience" value={yearsOfExperience} onChange={(e) => setYearsOfExperience(e.target.value)} fullWidth />
-                <Button variant="contained" color="secondary" onClick={createCompetenceProfile} style={{ marginTop: "10px" }}>
+                <Button variant="contained" color="secondary" onClick={createCompetenceProfile} sx={{ marginTop: "10px" }} fullWidth>
                 Create Profile
                 </Button>
             </Paper>
 
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+            <Paper elevation={3} sx={{width: "90%",justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Availability</Typography>
-                <Button variant="contained" color="primary" onClick={getAvailability}>
+                <Button variant="contained" color="primary" onClick={getAvailability} sx={{ marginTop: "10px", justifySelf: "center" }} fullWidth>
                 Get Availability Periods
                 </Button>
                 
@@ -482,8 +425,13 @@ export default function ApplicationEndPoint() {
                         <List>
                         {availability.map((a, index) => (
                             <ListItem key={index}>
-                            <ListItemText primary={`From: ${a.fromDate}, To: ${a.toDate}`} />
+                            <ListItemText primary={`From: ${a.fromDate}, To: ${a.toDate}`} sx={{marginRight: 10}}/>
                             <Button variant="contained" value={a.availabilityId} onClick={() => handleSelectAvailability(a.availabilityId)} sx={{
+                                m: 1,
+                                position: "absolute",
+                                right: 0,
+                                width: 70,
+                                height: 30,
                                 transform: availabilityIds.includes(a.availabilityId) ? "translateY: 2px" : "none",
                                 bgcolor: availabilityIds.includes(a.availabilityId) ? "primary.main" : "grey",
                             }}>Select</Button>
@@ -499,7 +447,7 @@ export default function ApplicationEndPoint() {
                 }
             </Paper>
 
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+            <Paper elevation={3} sx={{width: "90%",justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Create Availability</Typography>
                 {personId !== "" ? (
                     <>
@@ -507,7 +455,7 @@ export default function ApplicationEndPoint() {
                         <TextField type="date"  value={fromDate} onChange={(e) => setFromDate(e.target.value)} fullWidth />
                         <Typography variant="h8">To date</Typography>
                         <TextField type="date"  value={toDate} onChange={(e) => setToDate(e.target.value)} fullWidth />
-                        <Button variant="contained" color="secondary" onClick={createAvailability} style={{ marginTop: "10px" }}>
+                        <Button variant="contained" color="secondary" onClick={createAvailability} sx={{ marginTop: "10px" }} fullWidth>
                         Create Availability
                         </Button>
                     </>
@@ -516,13 +464,12 @@ export default function ApplicationEndPoint() {
                 )}
             </Paper>
 
-            <Paper elevation={3} sx={{ padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
+            <Paper elevation={3} sx={{width: "90%", justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 
                 <Button variant="contained" color="primary" onClick={submitApplication}>
                 Submit Application
                 </Button>
-                <Typography>{competenceProfileIds /*just for debug and testing (remove) */}</Typography> 
-                <Typography>{availabilityIds /*just for debug and testing (remove) */}</Typography>
+                
             </Paper>
             </Container>
         

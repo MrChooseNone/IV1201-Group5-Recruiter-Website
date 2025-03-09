@@ -16,10 +16,11 @@ import { createContext, useState, useMemo } from 'react';
 
 function App() {
 
-  const [auth, setAuth] = useState({ role: null, token: null });
+  const [auth, setAuth] = useState({ role: sessionStorage.getItem("role"), token: sessionStorage.getItem("token"), id: sessionStorage.getItem("id") });
 
   //Link https://stackoverflow.com/questions/57849977/reactjs-hooks-how-to-usecontext-in-two-different-js-files
   const authContextValue = useMemo(() => {
+    console.log(auth);
     return {
       auth,
       setAuth

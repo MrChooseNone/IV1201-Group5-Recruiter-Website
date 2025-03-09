@@ -16,7 +16,7 @@ export default function JobApplication(){
         <Appbar/>
         <FollowMouse></FollowMouse>
             <Container maxWidth="sm">
-                <Box sx={{ height: '100%', p: 2 }} >                     
+                <Box sx={{ height: '100%'}} >                     
                     <ApplicationEndPoint/>
                 </Box>
             </Container>

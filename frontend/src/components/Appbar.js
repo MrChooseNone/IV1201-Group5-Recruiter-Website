@@ -27,9 +27,10 @@ export default function Appbar() {
   function logOut()
   {
     setAuth({});
+    sessionStorage.clear();
     alert("Signed Out");
     navigate("/");
-    //TODO remove the stored token, from where it is stored
+    window.location.reload();
   }
 
   //This function renders the login button, if not logged in renders a button to go to the login screen, if logged in renders a button which sign out the user using the setAuth context function

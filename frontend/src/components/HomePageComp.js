@@ -108,58 +108,39 @@ export default function HomePageComp() {
                 }}>
                 <CardContent>
                 <Typography variant="h4">Step 1</Typography>
-                <Typography variant="h6">Sign up!</Typography>
-                <LoginIcon fontSize="large"></LoginIcon>
-                </CardContent>
-            </Card>
+                <Typography variant="h6">Register as an applicant!</Typography>
+                <Button variant="contained" component={Link} to="/addApplicant" sx={{bgcolor: "#18624B", m: 2}}>
+                    <Typography>
+                    Register Now!
+                    </Typography>
+                    
+                </Button>
 
-            {/* Card 3 */}
-            <Card sx={{bgcolor: "#67E0A3", width: 300, height: 200, p: 2, textAlign: "center", boxShadow: 3 }}>
-                <CardContent>
-                <Typography variant="h4">Step 2</Typography>
-                <Typography variant="h6">Register as a applicant!</Typography>
-                
                 </CardContent>
             </Card>
 
             {/* Card 2 */}
             <Card sx={{bgcolor: "#67E0A3", width: 300, height: 200, p: 2, textAlign: "center", boxShadow: 3 }}>
                 <CardContent>
+                <Typography variant="h4">Step 2</Typography>
+                <Typography variant="h6">Login to your account!</Typography>
+                <Button variant="contained" component={Link} to="/login" sx={{bgcolor: "#18624B", m: 2}}>
+                    <Typography>
+                    Login!
+                    </Typography>
+                    <LoginIcon fontSize="large"></LoginIcon>
+                    </Button>
+                </CardContent>
+            </Card>
+
+            {/* Card 3 */}
+            <Card sx={{bgcolor: "#67E0A3", width: 300, height: 200, p: 2, textAlign: "center", boxShadow: 3 }}>
+                <CardContent>
                 <Typography variant="h4">Step 3</Typography>
                 <Typography variant="h6">Apply for the job!</Typography>
-                <Button
-                    sx={{
-                    position: "relative",
-                    backgroundColor: "#AFF9C9", 
-                    color: "#000",
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    borderRadius: "4px",
-                    padding: "8px 30px",
-                    textTransform: "none",
-                    boxShadow: "none",
-                    cursor: "pointer",
-                    overflow: "hidden",
-                    m: 2,
-                    "&:hover": {
-                        backgroundColor: "#7CF0BD", 
-                    },
-                    "&:before": {
-                        content: '""',
-                        position: "absolute",
-                        top: "-10px", 
-                        left: "50%",
-                        transform: "translateY(-10%) translateX(-50%) rotate(10deg)",
-                        width: "120%",
-                        height: "15px", 
-                        backgroundColor: "#FFF1C9", 
-                        borderRadius: "4px",
-                        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                    },
-                    }}
-                    >
-                    <Typography variant="button" component={Link} to="/addApplicant" sx={{ color: "#000" }}>
-                    Register Now!
+                <Button variant="contained" component={Link} to="/JobApplication" sx={{bgcolor: "#18624B", m: 2}}>
+                    <Typography>
+                    Apply for the job!
                     </Typography>
                 </Button>
                 </CardContent>
