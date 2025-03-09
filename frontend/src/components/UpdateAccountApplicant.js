@@ -1,6 +1,6 @@
-import React, { useState , useContext} from "react";
+import React, { useState} from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
-import { AuthContext } from '../App';
+
 
 const ApplicantForm = () => {
     // Get API URL from .env file
@@ -12,7 +12,7 @@ const ApplicantForm = () => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
-    const { auth, setAuth } = useContext(AuthContext);
+    
 
     const RequestReset = (e) => {
         e.preventDefault(); // Prevents page refresh

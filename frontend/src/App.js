@@ -12,6 +12,7 @@ import ReviewerDashboard from './pages/ReviewerDashboard';
 import ApplicantDetails from './pages/ApplicantDetails';
 import LoginPage from './pages/LoginPage';
 import UpdateAccountPage from './pages/UpdateAccountPage';
+import UpdateAccountRecruiterPage from './pages/UpdateAccountRecruiterPage';
 
 import { createContext, useState, useMemo } from 'react';
 
@@ -44,6 +45,7 @@ function App() {
           {/* Must be a reviewer*/}
           <Route path='/review' element={<ReviewerDashboard />} />
           <Route path='/applicant/:id' element={<ApplicantDetails />} />
+          <Route path='/updateReviewer' element={<UpdateAccountRecruiterPage />} />
 
           <Route path='*' element={<NoPage />} /> {/*Catch wrong URL end points to a error page */}
         </Routes>
