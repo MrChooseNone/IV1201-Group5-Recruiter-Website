@@ -99,7 +99,7 @@ public class PersonController {
     @PreAuthorize("hasAuthority('applicant')")
     public String RequestApplicantReset(@RequestParam String email) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Update of username and password for applicant with email (`{}`) requested" + email + "by user", currentUser);
+        LOGGER.info("Update of username and password for applicant with email (`{}`) requested by user (`{}`)",email, currentUser);
         return personService.ApplicantResetLinkGeneration(email);
     }
 
@@ -116,7 +116,7 @@ public class PersonController {
     @PreAuthorize("hasAuthority('applicant')")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested" + resetToken,username + "request made by user", currentUser);
+        LOGGER.info("Update of username and password for applicant with resetToken (`{}`) to username (`{}`) requested by user (`{}`)",resetToken,username, currentUser);
         return personService.ApplicantUseResetLink(resetToken,username,password);
     }
 
@@ -130,8 +130,8 @@ public class PersonController {
     @PreAuthorize("hasAuthority('recruiter')")
     public List<? extends PersonDTO> findPersonByName(@RequestParam String name) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        LOGGER.info("People with the name (`{}`) requested" + name + "request made by user:", currentUser); 
-                                                                    // accessed this
+        LOGGER.info("People with the name (`{}`) requested by (`{}`)",name, currentUser); 
+                                                                
         return personService.FindPeopleByName(name);
     }
 
@@ -146,12 +146,13 @@ public class PersonController {
      */
     @GetMapping("/findPerson")
     @PreAuthorize("hasAuthority('recruiter')")
-    public ResponseEntity<?> findPerson(Authentication authentication,
+    public ResponseEntity<?> findPerson(
             @RequestParam(required = false) String pnr,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String username) {
 
-        LOGGER.info(authentication.getPrincipal().getClass().getName());
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOGGER.info("find person request by user (`{}`)",currentUser);
 
         Optional<? extends PersonDTO> person = Optional.empty();
 

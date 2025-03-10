@@ -12,7 +12,6 @@ import java.util.List;
     }
  */
 public class ApplicationSubmissionRequestBody {
-    private Integer personId;
     private List<Integer> availabilityIds;
     private List<Integer> competenceProfileIds;
 
@@ -24,26 +23,15 @@ public class ApplicationSubmissionRequestBody {
 
     /**
      * This is a complete constructor
-     * @param personId the person's ID
      * @param availabilityIds list of availability IDs
      * @param competenceProfileIds list of competence profile IDs
      */
-    public ApplicationSubmissionRequestBody(Integer personId,List<Integer> availabilityIds, List<Integer> competenceProfileIds)
+    public ApplicationSubmissionRequestBody(List<Integer> availabilityIds, List<Integer> competenceProfileIds)
     {
-        this.personId=personId;
         this.availabilityIds=availabilityIds;
         this.competenceProfileIds=competenceProfileIds;
     }
 
-    /**
-     * This is a getter for person id
-     * @return this instances person id
-     */
-    public Integer getPersonId()
-    {
-        return this.personId;
-    }
-    
     /**
      * This is a getter for the availability id list
      * @return this instances list of availability ids
