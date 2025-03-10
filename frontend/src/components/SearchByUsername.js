@@ -35,12 +35,8 @@ export default function SearchByUsername() {
 
       // Function to handle search submission
     const handleSearch = (e) => {
-          if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-          }
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
           e.preventDefault(); // Prevents page refresh
 
 

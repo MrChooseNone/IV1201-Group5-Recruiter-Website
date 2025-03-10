@@ -31,12 +31,8 @@ export default function ApplicationDetailsComp() {
  
     // Hämta kompetenser automatiskt vid sidladdning
     useEffect(() => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
         fetch(`${API_URL}/review/getApplicationsById/${id}`, {
             method: "GET",
             headers: {
@@ -83,12 +79,8 @@ export default function ApplicationDetailsComp() {
             return;
         }
 
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
         fetch(`${API_URL}/review/updateApplicationStatus`, {
             method: "POST",
             headers: {

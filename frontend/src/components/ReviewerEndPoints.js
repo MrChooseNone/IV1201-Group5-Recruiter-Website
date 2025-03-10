@@ -40,12 +40,9 @@ export default function ReviewerDashboard() {
     
     // Function to fetch all applications
     const fetchApplicants = () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
+
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
         const url = `${API_URL}/review/getApplications`
         console.log(auth.token);
         fetch(url, {
@@ -82,12 +79,9 @@ export default function ReviewerDashboard() {
 
     // Function to fetch applications filtered by status
     const fetchApplicantsByStatus = () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
+        
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
         const url = `${API_URL}/review/getApplicationsByStatus/${status}`
         fetch(url, {
             method: "GET",

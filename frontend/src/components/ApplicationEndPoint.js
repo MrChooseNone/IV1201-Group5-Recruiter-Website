@@ -37,9 +37,6 @@ export default function ApplicationEndPoint() {
     //-----------submit application variables----------
     const [competenceProfileIds, setCompetenceProfileIds] = useState([]);
     const [availabilityIds, setAvailabilityIds] = useState([]);
-    //-------------Get Id based on Username-----------
-    const [searchedPerson, setSearchedPerson] = useState();
-    const [result, setResult] = useState();
     //--------------------bool if submiting-------------
     const [isSubmiting, setIsSubmiting] = useState(false);
 
@@ -55,14 +52,10 @@ export default function ApplicationEndPoint() {
      * This fetches the users competence profiles
      */
     const getCompetenceProfiles = async () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-            
-        }
-        const url = `${API_URL}/application/getAllCompetenceProfiles?personId=${personId}`;
+
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        
+        const url = `${API_URL}/application/getAllCompetenceProfiles`;
 
         fetch(url, {
             method: "GET",
@@ -94,12 +87,9 @@ export default function ApplicationEndPoint() {
      * This fetches the competences, to allow creation of new competence profiles
      */
     const fetchCompetences = () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
+
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
         const url = `${API_URL}/translation/getStandardCompetences`;
 
         console.log("Fetching competences from:", url);
@@ -152,13 +142,10 @@ export default function ApplicationEndPoint() {
      * This function is responsible for creating a new competence profile
      */
     const createCompetenceProfile = async () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
-        const response = await fetch(`${API_URL}/application/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
+        
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
+        const response = await fetch(`${API_URL}/application/createCompetenceProfile?competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${auth.token}`, 
@@ -179,13 +166,9 @@ export default function ApplicationEndPoint() {
      * This function is responsible for fetching all of the users availability periods
      */
     const getAvailability = async () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
-        const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`,
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
+        const response = await fetch(`${API_URL}/application/getAllAvailability`,
             {
                 method: "GET",
                 headers: {
@@ -209,13 +192,10 @@ export default function ApplicationEndPoint() {
 
     // This create a new availability period
     const createAvailability = async () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
-        const response = await fetch(`${API_URL}/application/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
+
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+
+        const response = await fetch(`${API_URL}/application/createAvailability?fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${auth.token}`, 
@@ -307,14 +287,10 @@ export default function ApplicationEndPoint() {
      * This handles submitting an application, performing some validation before sending, and handling the result (good or bad) and notifying the user
      */
     const submitApplication = async () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
-            setAuth({});
-            sessionStorage.clear();
-            alert("Your session has expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-        }
+        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
-        if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
+
+        if (availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
             alert("Please fill in competences and availability")
             return;
@@ -464,7 +440,7 @@ export default function ApplicationEndPoint() {
             <Paper elevation={3} sx={{width: "90%",justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Create Competence Profile</Typography>
                 <FormControl fullWidth margin="dense">
-                    {personId !== "" && competences ? (
+                    {competences ? (
                         competences.length > 0 ? (
                             
                             <Select value={competenceId} onChange={(e) => setCompetenceId(e.target.value)}>
@@ -478,7 +454,7 @@ export default function ApplicationEndPoint() {
                             <CircularProgress />  // Show loading indicator if no competences are available
                         )
                     ) : (
-                        <Typography variant="h8" sx={{color: "red", m: 1}}>Please set person id first</Typography>
+                        <CircularProgress />  // Show loading indicator if no competences are available
                     )}
                 </FormControl>
                 <TextField label="Years of Experience" value={yearsOfExperience} onChange={(e) => setYearsOfExperience(e.target.value)} fullWidth />
@@ -493,9 +469,7 @@ export default function ApplicationEndPoint() {
                 Get Availability Periods
                 </Button>
                 
-                {personId !== "" ? (
-
-                    availability.length > 0 ? (
+                {availability.length > 0 ? (
                         <List>
                         {availability.map((a, index) => (
                             <ListItem key={index}>
@@ -515,15 +489,12 @@ export default function ApplicationEndPoint() {
                     ) : (
                         <Typography variant="h8">No registered availability periods</Typography>
                     )
-                ) : (
-                    <Typography variant="h8" sx={{color: "red", m: 1}}>Please set person id first</Typography>
-                )
                 }
             </Paper>
 
             <Paper elevation={3} sx={{width: "90%",justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 <Typography variant="h6">Create Availability</Typography>
-                {personId !== "" ? (
+                
                     <>
                         <Typography variant="h8">From date</Typography>
                         <TextField type="date"  value={fromDate} onChange={(e) => setFromDate(e.target.value)} fullWidth />
@@ -533,9 +504,7 @@ export default function ApplicationEndPoint() {
                         Create Availability
                         </Button>
                     </>
-                ) : (
-                    <Typography variant="h8" sx={{color: "red", m: 1}}>Please set person id first</Typography>
-                )}
+                
             </Paper>
 
             <Paper elevation={3} sx={{width: "90%", justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
