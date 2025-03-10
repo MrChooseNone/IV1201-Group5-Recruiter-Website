@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -159,6 +160,34 @@ public class GeneralRestAdvice {
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   String MissingServletRequestParameterExceptionHandler(MissingServletRequestParameterException ex) {
+    return ex.getMessage();
+  }
+
+  /**
+   * This function is responsible for handeling the TransactionSystemException error
+   * @param ex the error which was thrown to active this handler
+   * @return this sends a http 400 status code with the TransactionSystemException error message as the text
+   */
+  @ExceptionHandler(TransactionSystemException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  String TransactionSystemExceptionHandler(TransactionSystemException ex) {
+
+    LOGGER.error("Transaction system exception occured",ex);
+
+    Throwable specificCause=ex.getMostSpecificCause();
+
+    if (specificCause.getClass()==ConstraintViolationException.class) { //If this was caused by a constraint violation send such an error message
+
+      ConstraintViolationException specificCauseConstraintViolation = (ConstraintViolationException)specificCause;
+
+      String errorMessage="Request contained 1 or more incorrectly formatted parameters, the following are details about the exact issues: ";
+
+      for (ConstraintViolation<?> i : specificCauseConstraintViolation.getConstraintViolations()) {
+        errorMessage+= " \n" + i.getMessage();
+      }
+      return errorMessage;
+    }
+    //Otherwise send a generic message
     return ex.getMessage();
   }
 

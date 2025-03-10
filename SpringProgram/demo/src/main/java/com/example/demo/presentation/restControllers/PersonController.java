@@ -91,7 +91,7 @@ public class PersonController {
     /**
      * This method allows an existing applicant to request a reset link for their account be sent to their email
      * 
-     * @param personId The pnr of the person to reset
+     * @param email The email of the person to reset
      * @return A string describing the success status
      *  TODO is this a good level of security, or what else could be used?
      */
@@ -105,11 +105,9 @@ public class PersonController {
 
     /**
      * This method allows an existing reviwer to specify their pnr and email
-     * @param personId The reviwerer to update, TODO replace this with auth based id retrival if possible
      * @param username The new username
      * @param password The new password
      * @return A string describing the success status
-     *  TODO is this a good level of security, or what else could be used?
      */
     @PostMapping("/updateApplicant")
     public String UpdateApplicant(@RequestParam String resetToken, @RequestParam String username, @RequestParam String password) {

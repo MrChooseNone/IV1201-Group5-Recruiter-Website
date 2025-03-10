@@ -13,7 +13,7 @@ import com.example.demo.presentation.restException.EntryNotFoundExceptions.Appli
 /**
  * This class is responsible for defining the error handeling for the ReviewEndpointController flow, defining which http response code should be used for the different potential errors
  */
-@Order(1)//This ensures this is loaded after the other rest advices
+@Order(2)//This ensures this is loaded after the other rest advices
 public class ReviewRestAdvice {
     /**
    * This function is responsible for handeling the ApplicationNotFoundException error

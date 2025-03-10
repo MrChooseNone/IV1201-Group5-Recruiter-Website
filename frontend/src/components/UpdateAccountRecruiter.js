@@ -18,6 +18,25 @@ const RecruiterForm = () => {
 
     const navigate = useNavigate();
 
+    /**
+     * This function checks if a person number is valid or not
+     * @param {*} pnr the pnr to check if it is valid or not  
+     * @returns A boolean for if this is a valid pnr or not
+     */
+    const validatePersonNumber = (pnr) => {
+        return /\d{8}-\d{4}/.test(pnr); 
+    };
+
+    /**
+     * This function checks if an email is valid or not
+     * @param {*} email the email to check if it is valid or not  
+     * @returns A boolean for if this is a valid email or not
+     */
+    const validateEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(email);
+    };
+
     const { auth, setAuth } = useContext(AuthContext);
 
     //This sends the actual request
@@ -29,6 +48,17 @@ const RecruiterForm = () => {
             navigate("/login"); // Redirect to login page
         }
         e.preventDefault(); // Prevents page refresh
+
+      // Validate fields
+        if (!validatePersonNumber(pnr)) {
+            alert("Person number must follow this format: yyyymmdd-xxxx");
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            alert("Please enter a valid email address");
+            return;
+        }
 
         const params = new URLSearchParams();
         params.append("pnr", pnr);

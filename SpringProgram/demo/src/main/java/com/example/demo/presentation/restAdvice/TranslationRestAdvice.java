@@ -14,7 +14,7 @@ import com.example.demo.presentation.restException.EntryNotFoundExceptions.Trans
  * This class is responsible for defining the error handeling for the TranslationEndpointController flow, defining which http response code should be used for the different potential errors
  */
 @RestControllerAdvice
-@Order(1)//This ensures this is loaded after the other rest advices
+@Order(3)//This ensures this is loaded after the other rest advices
 public class TranslationRestAdvice {
   /**
    * This function is responsible for handeling the LanguageNotFound error

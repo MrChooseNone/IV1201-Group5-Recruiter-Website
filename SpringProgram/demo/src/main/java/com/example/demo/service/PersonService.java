@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,9 @@ import com.example.demo.presentation.restException.EntryNotFoundExceptions.Perso
 import com.example.demo.repository.ApplicantResetRepository;
 import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.RoleRepository;
+
+import jakarta.transaction.RollbackException;
+import jakarta.validation.ConstraintViolationException;
 
 
 @Service
@@ -185,10 +189,10 @@ public class PersonService implements UserDetailsService {
      * @throws PersonNotFoundException if the personId does not match a existing person
      * @throws InvalidPersonException  if the person is not a reviewer
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
+     * @throws TransactionSystemException if something causes a transaction exception
      * @return If successfull, a string describing this
      */
-    public String UpdateRecruiter(Integer personId, String pnr, String email)
-      throws PersonNotFoundException, InvalidPersonException, CustomDatabaseException {
+    public String UpdateRecruiter(Integer personId, String pnr, String email) throws PersonNotFoundException, InvalidPersonException, CustomDatabaseException,TransactionSystemException {
         
         try {
             Optional<Person> personContainer = personRepository.findById(personId);
@@ -224,7 +228,8 @@ public class PersonService implements UserDetailsService {
                     "Failed to update pnr and email for a reviwer (`{}`) to pnr (`{}`) and email (`{}`) due to a database error : (`{}`)",
                     personId, pnr, email, e.getMessage());
             throw new CustomDatabaseException();
-        }
+        }     
+        
     }
 
     /**
@@ -232,8 +237,7 @@ public class PersonService implements UserDetailsService {
      * applicant, which is done by generating a unique link to the users email
      * 
      * @param email The email for the applicant to generate a reset link for
-     * @throws InvalidPersonException  if the email does not match a existing person
-     *                                 or that person is not an applicant
+     * @throws InvalidPersonException  if the email does not match a existing person or that person is not an applicant
      * @throws CustomDatabaseException this is thrown if any of the jpa methods fail
      * @return a message indicating the reset link was sent
      */
@@ -292,10 +296,11 @@ public class PersonService implements UserDetailsService {
      * @param password   the new password
      * @throws InvalidJWTException if the reset token is invalid or expired
      * @throws CustomDatabaseException if a database error occurs during the update
+     * @throws TransactionSystemException if something causes a transaction exception
      * @return A message confirming the update and showing the new username.
      */
     public String ApplicantUseResetLink(String resetToken, String username, String password)
-      throws InvalidJWTException, CustomDatabaseException {
+      throws InvalidJWTException, CustomDatabaseException,TransactionSystemException {
         
         try {
 
