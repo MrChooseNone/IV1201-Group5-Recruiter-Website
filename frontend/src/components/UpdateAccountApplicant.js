@@ -1,7 +1,10 @@
 import React, { useState} from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 
-
+/**
+ * This component handles updating an applicants username and password
+ * @returns The component itself
+ */
 const ApplicantForm = () => {
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
@@ -12,6 +15,7 @@ const ApplicantForm = () => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
+    //This sends a reset request to the backend
     const RequestReset = (e) => {
         e.preventDefault(); // Prevents page refresh
 
@@ -53,6 +57,7 @@ const ApplicantForm = () => {
         
     };
 
+    //This sends a reset attempt to the backend
     const ResetPassword = (e) => {
         e.preventDefault(); // Prevents page refresh
 

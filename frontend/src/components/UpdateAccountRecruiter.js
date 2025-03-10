@@ -4,6 +4,10 @@ import { AuthContext } from '../App';
 import { isTokenExpired } from "./utils/TokenChecker";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * This component handles updating a logged in reviewers pnr and email
+ * @returns The component itself
+ */
 const RecruiterForm = () => {
         // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
@@ -16,6 +20,7 @@ const RecruiterForm = () => {
 
     const { auth, setAuth } = useContext(AuthContext);
 
+    //This sends the actual request
     const ResetEmail = (e) => {
         if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
             setAuth({});
@@ -58,8 +63,8 @@ const RecruiterForm = () => {
         })
         .catch((error) => {
             console.error("Error:", error);
-            alert("Reset token is incorrect or username is taken")
-        });
+            alert("Error updating pnr and email " + error) 
+        }); 
         
     };
 
