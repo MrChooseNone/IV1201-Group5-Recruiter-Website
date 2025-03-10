@@ -3870,19 +3870,31 @@ ALTER TABLE public.role ALTER COLUMN role_id ADD GENERATED ALWAYS AS IDENTITY (
 
 --
 -- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: app_db_user
+-- 
+-- To login as recruiter use passwords below
+-- person_id 1: LiZ98qvL8Lw
+-- person_id 2: QkK48drV2Da
+-- person_id 3: EyD84euX5Nj
+-- person_id 4: VdE34mqY2Xy
+-- person_id 5: NmK87boS4Lf
+-- person_id 6: LqK20ygU3Lw
+-- person_id 7: OjP41mkY3Vb
+-- person_id 8: LbH38urF4Kn
+-- person_id 9: XoH15hnY3Bw
+-- person_id 10: MvZ46kfC1Kr
 --
 
 \COPY public.person (person_id, name, surname, pnr, email, password, role_id, username) FROM stdin;
-1	Joelle	Wilkinson	\N	\N	LiZ98qvL8Lw	1	JoelleWilkinson
-2	Martin	Cummings	\N	\N	QkK48drV2Da	1	MartinCummings
-3	Dante	Mason	\N	\N	EyD84euX5Nj	1	DanteMason
-4	Risa	Mayer	\N	\N	VdE34mqY2Xy	1	RisaMayer
-5	Maxwell	Bailey	\N	\N	NmK87boS4Lf	1	MaxwellBailey
-6	Emi	Flowers	\N	\N	LqK20ygU3Lw	1	EmiFlowers
-7	Hedley	Arnold	\N	\N	OjP41mkY3Vb	1	HedleyArnold
-8	Armand	Todd	\N	\N	LbH38urF4Kn	1	ArmandTodd
-9	Phillip	Ramsey	\N	\N	XoH15hnY3Bw	1	PhillipRamsey
-10	Austin	Mueller	\N	\N	MvZ46kfC1Kr	1	AustinMueller
+1	Joelle	Wilkinson	\N	\N	$2a$10$A7WruiFOgJT8UeoPAkB5QOaa7nRk8IYdLNiEiwlDIbhDzQhqPpyQe	1	JoelleWilkinson
+2	Martin	Cummings	\N	\N	$2a$10$E2o0mRnYqZgglW4s51dQkO6LzKqquNOQWgd4RVFrfK3B31RQrtFWG	1	MartinCummings
+3	Dante	Mason	\N	\N	$2a$10$CcegUbcNGagVYwBUWrQ61er7Ug2wdJzBdgNatExTwG1Nt.saeYm/e	1	DanteMason
+4	Risa	Mayer	\N	\N	$2a$10$JVGDC3Rs9p08yKpXFOT9rOcWTFs.gP9Wa5D9mcKD7O7d.b8m9yzou	1	RisaMayer
+5	Maxwell	Bailey	\N	\N	$2a$10$jJcD/h4m3ImhZwUUfYrRZuf0X2HEfhUONiX4XPN76/P/UBcnhhd76	1	MaxwellBailey
+6	Emi	Flowers	\N	\N	$2a$10$N0/PQjk0J/qw7hPjkEIw1OcKgqoGxwfgohrmLUV8qW11TdpQm1qfi	1	EmiFlowers
+7	Hedley	Arnold	\N	\N	$2a$10$GjBi14rmt7srO1FeQqhaNuIZkZF5/QvUBiN0rNq/6Bj/kjXRfoAGu	1	HedleyArnold
+8	Armand	Todd	\N	\N	$2a$10$E0XzlIhakByY39PQWw3ZEespL8ABkUA8w3U.wqgrVErHk31lSCJfm	1	ArmandTodd
+9	Phillip	Ramsey	\N	\N	$2a$10$eCBjJzrg7dArFRUJrOSqs.5GyAou4imBZ4h59gyda4gLUnKIZqSfm	1	PhillipRamsey
+10	Austin	Mueller	\N	\N	$2a$10$8c06ioBXoYMAVYYUh1C7hOPtfte93E9z3A3qH5ohr6tolCTXqAAle	1	AustinMueller
 11	Leroy	Crane	20070114-1252	l_crane118@finnsinte.se	\N	2	\N
 12	Aristotle	Meadows	20030413-5765	a-meadows7789@finnsinte.se	\N	2	\N
 13	Tucker	Travis	20090317-7750	tucker-travis2407@finnsinte.se	\N	2	\N

@@ -10,6 +10,9 @@ import {
   Divider,
 } from "@mui/material";
 
+/**
+ * Component for fetching and displaying a specific competence by ID
+ */
 export default function CompetencesByID(){
 
     const [competenceId, setCompetenceId] = useState("");
@@ -18,6 +21,7 @@ export default function CompetencesByID(){
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
     
+    // Fetches specific competence details based on the entered competence ID
     const fetchSpecificCompetence = async () => {
         if (!competenceId) return;
         try {

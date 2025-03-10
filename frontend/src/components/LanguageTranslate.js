@@ -10,6 +10,9 @@ import {
   Divider,
 } from "@mui/material";
 
+/**
+ * Component for fetching and displaying competence translations and supported languages
+ */
 export default function LanguageTranslate(){
     const [language, setLanguage] = useState("");
     const [translations, setTranslations] = useState([]);
@@ -18,6 +21,7 @@ export default function LanguageTranslate(){
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
     
+    // Fetches the list of supported languages from the backend
     const fetchLanguages = async () => {
         try {
         const response = await fetch(`${API_URL}/translation/getLanguages`);
@@ -29,6 +33,7 @@ export default function LanguageTranslate(){
         }
     };
 
+    // Fetches competence translations for the selected language
     const fetchCompetenceTranslations = async () => {
         if (!language) return;
         console.log("language is set");

@@ -7,6 +7,9 @@ import LoginIcon from '@mui/icons-material/Login';
 import Grid from "./Grid";
 import { ThemeContext } from "@emotion/react";
 
+/**
+ * Home page component displaying the steps for user actions with cards
+ */
 export default function HomePageComp() {
     return (
       <Box
