@@ -87,8 +87,8 @@ public class PersonController {
      */
     @PostMapping("/updateRecruiter")
     @PreAuthorize("hasAuthority('recruiter')")
-    public String UpdateRecruiter(Authentication authentication, @RequestParam String pnr, @RequestParam String email) {
-        PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
+    public String UpdateRecruiter(@RequestParam String pnr, @RequestParam String email) {
+        PersonDetails userAuthentication=((PersonDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         LOGGER.info("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) by (`{}`)",userAuthentication.getPersonId(),pnr,email, userAuthentication.getUsername());
         return personService.UpdateRecruiter(userAuthentication.getPersonId(),pnr,email);
     }
