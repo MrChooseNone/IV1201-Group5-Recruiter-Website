@@ -36,6 +36,7 @@ export default function Appbar() {
   //This function renders the login button, if not logged in renders a button to go to the login screen, if logged in renders a button which sign out the user using the setAuth context function
   function renderLoginButton()
   {
+    
     if(auth.token)
     {
       return <Button color="inherit" onClick={() => {
@@ -67,6 +68,80 @@ export default function Appbar() {
       >Login</Button>
     }
   }
+  //this functions renders the reset password only if not signed in
+  function renderLoginButton()
+  {
+    
+    if(auth.token)
+    {
+      return <Button color="inherit" onClick={() => {
+        logOut();
+      }}
+      sx={{
+        p: 2,
+        px: 4,
+        marginLeft: "auto",
+        display: "flex", 
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        
+      }}
+      >Sign Out</Button>
+    }
+    else
+    {
+      return           <Button color="inherit" component={Link} to="/login"
+      sx={{
+        p: 2,
+        px: 4,
+        marginLeft: "auto",
+        display: "flex", 
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        
+      }}
+      >Login</Button>
+    }
+  }
+
+    //This function renders the edit profile button if logged in or the register button if not logged in
+    function renderResetApplicant()
+    {
+      if(!auth.token)
+      {
+        return <Button color="inherit" component={Link} to="/update"
+              sx={{
+                p: 2,
+                px: 4,
+                
+                display: "flex", 
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                
+              }}
+              >Reset Password</Button>
+      }
+      return null;
+    }
+
+    function renderResetRecruiter()
+    {
+      if(auth.role =="recruiter")
+      {
+        return <Button color="inherit" component={Link} to="/updateReviewer"
+              sx={{
+                p: 2,
+                px: 4,
+                
+                display: "flex", 
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                
+              }}
+              >Reset Email</Button>
+      }
+      return null;
+    }
 
     //This function renders the edit profile button if logged in as an applicant, or the register button if not logged in
     function renderEditProfileOrRegister()
@@ -123,6 +198,8 @@ export default function Appbar() {
       }
     }
 
+    
+
   return (
       <AppBar position="sticky">
         <Toolbar sx={{
@@ -144,11 +221,17 @@ export default function Appbar() {
                 
                 
               }}>Home</Button>
+
+              
               
               {renderEditProfileOrRegister()}
 
               {renderReviewerButton()}
 
+              {renderResetApplicant()}
+
+              {renderResetRecruiter()}
+              
               {renderLoginButton()}
               
         </Toolbar>

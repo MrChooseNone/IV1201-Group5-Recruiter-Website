@@ -15,6 +15,8 @@ import {
   InputLabel,
   CircularProgress
 } from "@mui/material";
+import { isTokenExpired } from "./utils/TokenChecker";
+import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from '../App';
 
@@ -35,10 +37,15 @@ export default function ApplicationEndPoint() {
     //-----------submit application variables----------
     const [competenceProfileIds, setCompetenceProfileIds] = useState([]);
     const [availabilityIds, setAvailabilityIds] = useState([]);
-    //--------------------Competences-------------
+    //-------------Get Id based on Username-----------
+    const [searchedPerson, setSearchedPerson] = useState();
+    const [result, setResult] = useState();
+    //--------------------bool if submiting-------------
+    const [isSubmiting, setIsSubmiting] = useState(false);
 
     //We load the authentication information from the context
     const { auth, setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
     
 
     // Get API URL from .env file
@@ -48,7 +55,14 @@ export default function ApplicationEndPoint() {
      * This fetches the users competence profiles
      */
     const getCompetenceProfiles = async () => {
-        const url = `${API_URL}/application/getAllCompetenceProfiles`;
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+            
+        }
+        const url = `${API_URL}/application/getAllCompetenceProfiles?personId=${personId}`;
 
         fetch(url, {
             method: "GET",
@@ -80,6 +94,12 @@ export default function ApplicationEndPoint() {
      * This fetches the competences, to allow creation of new competence profiles
      */
     const fetchCompetences = () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const url = `${API_URL}/translation/getStandardCompetences`;
 
         console.log("Fetching competences from:", url);
@@ -132,7 +152,13 @@ export default function ApplicationEndPoint() {
      * This function is responsible for creating a new competence profile
      */
     const createCompetenceProfile = async () => {
-        const response = await fetch(`${API_URL}/application/createCompetenceProfile?competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
+        const response = await fetch(`${API_URL}/application/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${auth.token}`, 
@@ -153,7 +179,13 @@ export default function ApplicationEndPoint() {
      * This function is responsible for fetching all of the users availability periods
      */
     const getAvailability = async () => {
-        const response = await fetch(`${API_URL}/application/getAllAvailability`,
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
+        const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`,
             {
                 method: "GET",
                 headers: {
@@ -177,7 +209,13 @@ export default function ApplicationEndPoint() {
 
     // This create a new availability period
     const createAvailability = async () => {
-        const response = await fetch(`${API_URL}/application/createAvailability?fromDate=${fromDate}&toDate=${toDate}`, {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
+        const response = await fetch(`${API_URL}/application/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${auth.token}`, 
@@ -269,11 +307,19 @@ export default function ApplicationEndPoint() {
      * This handles submitting an application, performing some validation before sending, and handling the result (good or bad) and notifying the user
      */
     const submitApplication = async () => {
-        if (availability.length === 0 || competenceProfiles.length === 0) {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
+
+        if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
             alert("Please fill in competences and availability")
             return;
         }
+
     
         const requestBody = {
             availabilityIds: availabilityIds, // Assuming this is an array of selected availability IDs
@@ -343,8 +389,17 @@ export default function ApplicationEndPoint() {
             alert("faild to select availability");
         }
     };
+    //-----------is submiting handle---------------------
+    //this is to verify that the user is happy with the application
+    const handleConfirmation = () => {
+        setIsSubmiting(true);
+    }
+    const handleQuitConfirmation = () => {
+        setIsSubmiting(false);
+    }
     
-    return (
+    if(!isSubmiting) {
+        return (
             <Container sx={{ 
                 display: "flex",
                 flexDirection: "column",
@@ -485,13 +540,82 @@ export default function ApplicationEndPoint() {
 
             <Paper elevation={3} sx={{width: "90%", justifyItems:"center", padding: "20px", marginBottom: "20px", bgcolor: "#67E0A3" }}>
                 
-                <Button variant="contained" color="primary" onClick={submitApplication}>
+                <Button variant="contained" color="primary" onClick={handleConfirmation}>
                 Submit Application
                 </Button>
                 
             </Paper>
             </Container>
         
-    );
+    );}
+    else {
+        return (
+            <Box sx={{ bgcolor: '#AFF9C9', minHeight: '100vh', p: 4, m: 2, borderRadius: 4, }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'black', marginBottom: 2 }}>
+                    This is your application!
+                </Typography>
+                <Typography variant="h6" sx={{ color: 'black', marginBottom: 3 }}>
+                    Did not forget anything?
+                </Typography>
+        
+                {competences.length > 0 ? (
+                    <List sx={{ marginBottom: 3 }}>
+                        {competenceProfiles.map((cp, index) => (
+                            competenceProfileIds.includes(cp.competenceProfileId) ? (
+                                <ListItem key={index} sx={{ bgcolor: '#67E0A3', borderRadius: 2, marginBottom: 1, boxShadow: 2 }}>
+                                    <ListItemText
+                                        primary={`Competence: ${translations[cp.competenceDTO.competenceId - 1] ? translations[cp.competenceDTO.competenceId - 1].translation : "Unknown"}, Experience: ${cp.yearsOfExperience} years`}
+                                        sx={{ color: 'text.primary' }}
+                                    />
+                                </ListItem>
+                            ) : null
+                        ))}
+                    </List>
+                ) : (
+                    <Typography variant="h8" sx={{ color: 'text.secondary' }}>No registered competences</Typography>
+                )}
+        
+                {availability.length > 0 ? (
+                    <List sx={{ marginBottom: 3 }}>
+                        {availability.map((a, index) => (
+                            availabilityIds.includes(a.availabilityId) ? (
+                                <ListItem key={index} sx={{ bgcolor: '#67E0A3', borderRadius: 2, marginBottom: 1, boxShadow: 2 }}>
+                                    <ListItemText
+                                        primary={`From: ${a.fromDate}, To: ${a.toDate}`}
+                                        sx={{ color: 'text.primary' }}
+                                    />
+                                </ListItem>
+                            ) : null
+                        ))}
+                    </List>
+                ) : (
+                    <Typography variant="h8" sx={{ color: 'text.secondary' }}>No registered availability periods</Typography>
+                )}
+        
+                <Paper elevation={3} sx={{
+                    width: "90%",
+                    padding: "20px",
+                    marginBottom: "20px",
+                    bgcolor: "#006649", 
+                    color: 'white',
+                    borderRadius: 2,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    boxShadow: 3
+                }}>
+                    <Button variant="contained" color="secondary" onClick={handleQuitConfirmation} >
+                        Back
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={submitApplication} >
+                        Submit Application
+                    </Button>
+                </Paper>
+            </Box>
+        );
+        
+        
+    }
+
+
 };
 

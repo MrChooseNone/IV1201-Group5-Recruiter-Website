@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
 
 import { AuthContext } from '../App';
+import { isTokenExpired } from "./utils/TokenChecker";
+import { useNavigate } from "react-router-dom";
 
 /**
  * This component is responsible for handling the detailed view of an application
@@ -19,6 +21,8 @@ export default function ApplicationDetailsComp() {
     const [isPressedAccepted, setIsPressedAccepted] = useState(false);
     const [isPressedDenied, setIsPressedDenied] = useState(false);
 
+    const navigate = useNavigate();
+
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -27,6 +31,12 @@ export default function ApplicationDetailsComp() {
  
     // Hämta kompetenser automatiskt vid sidladdning
     useEffect(() => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         fetch(`${API_URL}/review/getApplicationsById/${id}`, {
             method: "GET",
             headers: {
@@ -73,6 +83,12 @@ export default function ApplicationDetailsComp() {
             return;
         }
 
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         fetch(`${API_URL}/review/updateApplicationStatus`, {
             method: "POST",
             headers: {

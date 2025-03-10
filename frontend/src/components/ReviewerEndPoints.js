@@ -16,6 +16,8 @@ import {
   CircularProgress
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { isTokenExpired } from "./utils/TokenChecker";
+import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from '../App';
 
@@ -28,6 +30,8 @@ export default function ReviewerDashboard() {
     const [status, setStatus] = useState("unchecked");
     const [applicationsByStatus, setApplicationsByStatus] = useState([]);
 
+    const navigate = useNavigate();
+
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -36,6 +40,12 @@ export default function ReviewerDashboard() {
     
     // Function to fetch all applications
     const fetchApplicants = () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const url = `${API_URL}/review/getApplications`
         console.log(auth.token);
         fetch(url, {
@@ -72,6 +82,12 @@ export default function ReviewerDashboard() {
 
     // Function to fetch applications filtered by status
     const fetchApplicantsByStatus = () => {
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const url = `${API_URL}/review/getApplicationsByStatus/${status}`
         fetch(url, {
             method: "GET",
