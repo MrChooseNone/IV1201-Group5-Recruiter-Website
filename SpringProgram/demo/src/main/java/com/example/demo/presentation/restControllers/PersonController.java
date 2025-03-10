@@ -1,7 +1,5 @@
 package com.example.demo.presentation.restControllers;
 
-import static org.mockito.Mockito.reset;
-
 import java.util.List;
 import java.util.Optional;
 
