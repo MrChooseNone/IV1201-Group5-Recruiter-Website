@@ -4,6 +4,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 
+/**
+ * This component is responsible for handling showing the list of competence
+ * @returns The component itself
+ */
 export default function Competences() {
     const[competences,setCompetences] = useState([]);
 

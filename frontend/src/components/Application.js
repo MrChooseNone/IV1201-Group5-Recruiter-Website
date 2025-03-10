@@ -7,6 +7,10 @@ import { Typography, Stack, Container } from '@mui/material';
 
 // Used "Material UI" as reference https://mui.com/material-ui/react-text-field/
 
+/**
+ * This is the component responsible for handling registration of a new applicant
+ * @returns The component
+ */
 export default function ApplicationForm() {
   // UseState to save users inputed data and later send to database
   const[name,setName] = useState("");
@@ -20,23 +24,41 @@ export default function ApplicationForm() {
   // Get API URL from .env file
   const API_URL = process.env.REACT_APP_API_URL;
 
-  // Handle the submition of data to database
-  // Validation functions
+  /**
+   * This function checks if a person number is valid or not
+   * @param {*} pnr the pnr to check if it is valid or not  
+   * @returns A boolean for if this is a valid pnr or not
+   */
   const validatePersonNumber = (pnr) => {
     return /\d{8}-\d{4}/.test(pnr); 
   };
 
+  /**
+   * This function checks if an email is valid or not
+   * @param {*} email the email to check if it is valid or not  
+   * @returns A boolean for if this is a valid email or not
+   */
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   };
 
+    /**
+   * This function checks if a password is valid or not
+   * @param {*} email the password to check if it is valid or not  
+   * @returns A boolean for if this is a valid password or not
+   */
   const validatePassword = (password) => {
     // Example: Password must be at least 8 characters
     return password.length >= 8;
   };
 
-  // Handle form submission
+  /**
+   * This function handles submission of the registration form, 
+   * first validating the values in the frontend and then sending an application, 
+   * and giving an alert to the user about if it worked or not (and if not why)
+   * @param {T} e The even which caused this function to be called
+   */
   const handleSubmit = (e) => {
       e.preventDefault(); // Prevents page refresh
 

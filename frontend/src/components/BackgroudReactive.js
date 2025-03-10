@@ -1,9 +1,17 @@
 import { useState } from "react";
 import Box from '@mui/material/Box';
 
+/**
+ * This component is responsible for the reactive background 
+ * @returns The component itself
+ */
 export default function DynamicBorderBox() {
     const [borderRadius, setBorderRadius] = useState("10px");
 
+    /**
+     * This tracks the mouse, and updates the reactive element correctly
+     * @param {*} e The event, aka mouse movement, which caused this to be triggered
+     */
     const handleMouseMove = (e) => {
         const { offsetX, offsetY, target } = e.nativeEvent;
         const { clientWidth, clientHeight } = target;

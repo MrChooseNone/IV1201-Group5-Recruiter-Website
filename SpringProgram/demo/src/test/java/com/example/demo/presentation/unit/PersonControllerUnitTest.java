@@ -169,7 +169,7 @@ public class PersonControllerUnitTest {
         });
 
         //And that it return the correct value if correct parameters
-        String result = personController.UpdateRecruiter(authentication, "notAPersonId", "notaDouble");
+        String result = personController.UpdateRecruiter("notAPersonId", "notaDouble");
         assertEquals("Updated pnr and email for a reviwer 0 to pnr notAPersonId and email notaDouble", result);
     }
 

@@ -18,8 +18,12 @@ import {
 
 import { AuthContext } from '../App';
 
+/**
+ * This is the component responsible for handling sending an application
+ * @returns The component
+ */
 export default function ApplicationEndPoint() {
-    const [personId, setPersonId] = useState("");
+
     const [competenceProfiles, setCompetenceProfiles] = useState([]);
     const [competenceId, setCompetenceId] = useState("");
     const [yearsOfExperience, setYearsOfExperience] = useState("");
@@ -31,9 +35,6 @@ export default function ApplicationEndPoint() {
     //-----------submit application variables----------
     const [competenceProfileIds, setCompetenceProfileIds] = useState([]);
     const [availabilityIds, setAvailabilityIds] = useState([]);
-    //-------------Get Id based on Username-----------
-    const [searchedPerson, setSearchedPerson] = useState();
-    const [result, setResult] = useState();
     //--------------------Competences-------------
 
     //We load the authentication information from the context
@@ -43,9 +44,11 @@ export default function ApplicationEndPoint() {
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
     
-    // Fetch competence profiles
+    /**
+     * This fetches the users competence profiles
+     */
     const getCompetenceProfiles = async () => {
-        const url = `${API_URL}/application/getAllCompetenceProfiles?personId=${personId}`;
+        const url = `${API_URL}/application/getAllCompetenceProfiles`;
 
         fetch(url, {
             method: "GET",
@@ -73,7 +76,9 @@ export default function ApplicationEndPoint() {
         });
     };
 
-    //function to fetch competences
+    /**
+     * This fetches the competences, to allow creation of new competence profiles
+     */
     const fetchCompetences = () => {
         const url = `${API_URL}/translation/getStandardCompetences`;
 
@@ -105,12 +110,17 @@ export default function ApplicationEndPoint() {
             alert(error);
         });
     };
-    //Auto fetch competences to choose from
+
+    /**
+     * This automatically fetches the competences
+     */
     useEffect(() => {
         fetchCompetences();
     },[]);
 
-    //Auto fetch competences to choose from
+    /**
+     * This automatically specifies the initial competence to use in the competence profile selection
+     */    
     useEffect(() => {
         if (competences.length > 0) {
             console.log("triggered competese id")
@@ -118,15 +128,11 @@ export default function ApplicationEndPoint() {
         }
     }, [competences]); // Trigger only when competences are updated
 
-    //auto fetch person id from session storage
-    useEffect(() => {
-        setPersonId(sessionStorage.getItem("id"));
-    },[]);
-
-
-    // Create a new competence profile
+    /**
+     * This function is responsible for creating a new competence profile
+     */
     const createCompetenceProfile = async () => {
-        const response = await fetch(`${API_URL}/application/createCompetenceProfile?personId=${personId}&competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
+        const response = await fetch(`${API_URL}/application/createCompetenceProfile?competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${auth.token}`, 
@@ -134,9 +140,8 @@ export default function ApplicationEndPoint() {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log("Creating profile with:", { competenceId, personId, yearsOfExperience });
+            console.log("Creating profile for you with:", { competenceId, yearsOfExperience });
             getCompetenceProfiles();
-
             alert("Competence profile created successfully!");
         } 
         else {
@@ -144,9 +149,11 @@ export default function ApplicationEndPoint() {
         }
     };
 
-    // Fetch availability periods
+    /**
+     * This function is responsible for fetching all of the users availability periods
+     */
     const getAvailability = async () => {
-        const response = await fetch(`${API_URL}/application/getAllAvailability?personId=${personId}`,
+        const response = await fetch(`${API_URL}/application/getAllAvailability`,
             {
                 method: "GET",
                 headers: {
@@ -162,21 +169,15 @@ export default function ApplicationEndPoint() {
         }
     };
 
-    useEffect(() => {
-        if(personId !== ""){
-            getAvailability();
-        }
-    }, [personId])
+    //This automatically calls the getAvailability function when the component is loaded
+    useEffect(() => {getAvailability();}, [])
 
-    useEffect(() => {
-        if(personId !== ""){
-            getCompetenceProfiles();
-        }
-    }, [personId])
+    //This automatically calls the getAvailability function when the component is loaded
+    useEffect(() => {getCompetenceProfiles();}, [])
 
-    // Create a new availability period
+    // This create a new availability period
     const createAvailability = async () => {
-        const response = await fetch(`${API_URL}/application/createAvailability?personId=${personId}&fromDate=${fromDate}&toDate=${toDate}`, {
+        const response = await fetch(`${API_URL}/application/createAvailability?fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${auth.token}`, 
@@ -198,6 +199,9 @@ export default function ApplicationEndPoint() {
     const [translations, setTranslations] = useState([]);
     const [languages, setLanguages] = useState([]);
     
+    /**
+     * This fetches the list of languages for which competence translations are available
+     */
     const fetchLanguages = async () => {
         try {
         const response = await fetch(`${API_URL}/translation/getLanguages`);
@@ -211,6 +215,9 @@ export default function ApplicationEndPoint() {
         }
     };
     
+    /**
+     * This fetches the competence translations for the currently selected language
+     */
     const fetchCompetenceTranslations = async () => {
         if (!language) return;
         console.log("language is set");
@@ -247,24 +254,28 @@ export default function ApplicationEndPoint() {
         }
     };
 
+    //This automatically calls the fetchLanguages function when the component is loaded
     useEffect(() => {
         fetchLanguages();
     }, [])
 
+    //This automatically calls the fetchCompetenceTranslations function when the language stateful variable is updated
     useEffect(() => {
         fetchCompetenceTranslations();
     }, [language])
 
     //-------------submit application---------------------
+    /**
+     * This handles submitting an application, performing some validation before sending, and handling the result (good or bad) and notifying the user
+     */
     const submitApplication = async () => {
-        if (!personId || availability.length === 0 || competenceProfiles.length === 0) {
+        if (availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
             alert("Please fill in competences and availability")
             return;
         }
     
         const requestBody = {
-            personId: personId,
             availabilityIds: availabilityIds, // Assuming this is an array of selected availability IDs
             competenceProfileIds: competenceProfileIds // Assuming this is an array of created competence profile IDs
         };
@@ -291,6 +302,10 @@ export default function ApplicationEndPoint() {
     };
     //------------select competneces and availability-----------
     // handle the selection of multiple profiles
+    /**
+     * This handles updating the list of selected competence profiles, adding or removing it from the current list
+     * @param {*} selectedID The id of the competence profile selected, either to add or remove from the list
+     */
     const handleSelectCompetence = (selectedID) => {
         console.log("the selected id is: " + selectedID);
         const selectedCompetence = competenceProfiles.find((competenceProfile) => competenceProfile.competenceProfileId === selectedID);
@@ -307,7 +322,11 @@ export default function ApplicationEndPoint() {
             alert("faild to select competence");
         }
     };
-    //handle selection of availability
+
+    /**
+     * This handles updating the list of selected availability periods, adding or removing it from the current list
+     * @param {*} selectedID The id of the availability periods selected, either to add or remove from the list
+     */
     const handleSelectAvailability = (selectedID) => {
         console.log("the selected id is: " + selectedID);
         const selectedAvailability = availability.find((availabilityProfile) => availabilityProfile.availabilityId === selectedID);

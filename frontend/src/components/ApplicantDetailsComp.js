@@ -8,6 +8,10 @@ import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/mate
 
 import { AuthContext } from '../App';
 
+/**
+ * This component is responsible for handling the detailed view of an application
+ * @returns The component itself, as a function
+ */
 export default function ApplicationDetailsComp() {
     const { id } = useParams();
     const[application,setApplication] = useState(null);
@@ -54,6 +58,12 @@ export default function ApplicationDetailsComp() {
         return <CircularProgress></CircularProgress>;
     }
 
+    /**
+     * This is responsible for sending a request to update the application status, 
+     * with it first performing some logical checks (is the new status the same as the current status), 
+     * sending a request to update if not, updating the shown application if the updated worked or showing an error alert to the user if not
+     * @returns Nothing
+     */
     const UpdateStatus = () => {
         
         //We check here if the new status is the same as the current status
@@ -109,12 +119,14 @@ export default function ApplicationDetailsComp() {
         });
     }
 
+    //This updates the status of the stateful values when the accept button is pressed
     const handleAccept = () => {
         setStatus("accepted");
         setIsPressedAccepted(!isPressedAccepted);
         setIsPressedDenied(false);
     }
 
+    //This updates the status of the stateful values when the decline button is pressed
     const handleDecline = () => {
         setStatus("denied");
         setIsPressedDenied(!isPressedDenied);

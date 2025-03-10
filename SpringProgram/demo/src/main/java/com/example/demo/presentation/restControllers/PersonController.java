@@ -17,6 +17,7 @@ import com.example.demo.service.PersonService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
@@ -75,17 +76,14 @@ public class PersonController {
     /**
      * This method allows an existing reviwer to specify their pnr and email
      * 
-     * @param pnr The reviwerer to update, TODO replace this with auth based id retrival if possible
      * @param pnr      The new pnr
      * @param email    The new email
-     * @throws InvalidParameterException If personId is not a valid integer
      * @return A string describing the success status
-     * TODO only allow a logged in reviwer to do this to their own account
      */
     @PostMapping("/updateRecruiter")
     @PreAuthorize("hasAuthority('recruiter')")
-    public String UpdateRecruiter(Authentication authentication, @RequestParam String pnr, @RequestParam String email) {
-        PersonDetails userAuthentication=((PersonDetails)authentication.getPrincipal());
+    public String UpdateRecruiter(@RequestParam String pnr, @RequestParam String email) {
+        PersonDetails userAuthentication=((PersonDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()); //This retrives the currently authenticated users person details
         LOGGER.info("Update of pnr and email for reviwer (`{}`), pnr (`{}`) and email (`{}`) by (`{}`)",userAuthentication.getPersonId(),pnr,email, userAuthentication.getUsername());
         return personService.UpdateRecruiter(userAuthentication.getPersonId(),pnr,email);
     }
