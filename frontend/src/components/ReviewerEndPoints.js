@@ -19,6 +19,10 @@ import { Link } from "react-router-dom";
 
 import { AuthContext } from '../App';
 
+/**
+ * ReviewerDashboard component allows reviewers to fetch and filter applications by status.
+ * Applications can be fetched as a whole or filtered by their current review status.
+ */
 export default function ReviewerDashboard() {
     const [applications, setApplications] = useState([]);
     const [status, setStatus] = useState("unchecked");
@@ -30,6 +34,7 @@ export default function ReviewerDashboard() {
     //Here we import the auth information from the context
     const { auth, setAuth } = useContext(AuthContext);
     
+    // Function to fetch all applications
     const fetchApplicants = () => {
         const url = `${API_URL}/review/getApplications`
         console.log(auth.token);
@@ -65,6 +70,7 @@ export default function ReviewerDashboard() {
         })
     }
 
+    // Function to fetch applications filtered by status
     const fetchApplicantsByStatus = () => {
         const url = `${API_URL}/review/getApplicationsByStatus/${status}`
         fetch(url, {

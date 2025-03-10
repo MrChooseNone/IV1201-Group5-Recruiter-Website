@@ -9,7 +9,11 @@ import { AuthContext } from '../App';
 
 // Used "Material UI" as reference https://mui.com/material-ui/react-text-field/
 
-
+/**
+ * LoginComp component provides a login form for users.
+ * It handles authentication by sending user credentials to an API
+ * and redirects the user based on their role. 
+ */
 export default function LoginComp() {
   // UseState to save users inputed data and later send to database
   const[username,setUsername] = useState("");
@@ -111,6 +115,7 @@ export default function LoginComp() {
       
    };
 
+    // Determines if the search input is a personal number, email, or username
     const parseSearch = () => {
         if(/^\d+-?\d+$/.test(search)) return "pnr";
         if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(search)) return "email";

@@ -9,6 +9,10 @@ import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/mate
 
 import { AuthContext } from '../App';
 
+/**
+ * This component allows users to search for registered people by name.
+ * It fetches matching user data from an API and displays the results.
+ */
 export default function SearchApplication() {
     const[search,setSearch] = useState("");
     const[result,setResult] = useState([]);
@@ -18,7 +22,7 @@ export default function SearchApplication() {
 
     const { auth, setAuth } = useContext(AuthContext);
     
-
+    // Function to handle search submission
     const handleSearch = (e) => {
         e.preventDefault(); // Prevents page refresh
         const param = new URLSearchParams({name: search});

@@ -1,7 +1,9 @@
 import React, {useState , useEffect} from "react";
 import { Box } from "@mui/material";
 
-
+/**
+ * FollowMouse component, which tracks and displays a small circle following the mouse position
+ */
 export default function FollowMouse() {
     const [pos, setPos] = useState("");
     useEffect(() => {

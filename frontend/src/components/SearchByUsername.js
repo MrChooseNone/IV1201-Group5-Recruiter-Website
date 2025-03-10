@@ -8,6 +8,11 @@ import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/mate
 
 import { AuthContext } from '../App';
 
+
+/** 
+ * This component allows users to search for a person by username, email, or PNR (Personal Number)
+ * It fetches user data from an API and displays the results.
+ */
 export default function SearchByUsername() {
     const[search,setSearch] = useState("");
     const[result,setResult] = useState(null);
@@ -16,12 +21,15 @@ export default function SearchByUsername() {
 
     // Get API URL from .env file
     const API_URL = process.env.REACT_APP_API_URL;
+
+    // Function to determine the type of search input (PNR, email, or username)
     const parseSearch = () => {
         if(/^\d+-?\d+$/.test(search)) return "pnr";
         if(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(search)) return "email";
         else return "username";
     }
 
+    // Function to handle search submission
     const handleSearch = (e) => {
         e.preventDefault(); // Prevents page refresh
 

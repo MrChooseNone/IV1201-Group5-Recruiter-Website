@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import DynamicBorderBox from "./BackgroudReactive";
 import Box from "@mui/material/Box";
 
+/**
+ * Grid component that generates a grid of DynamicBorderBox components 
+ */
 const Grid = ({rows = 10}) => {
     const [cols, setCols] = useState(99);
 
+    // Effect to handle resizing the grid layout when the window size changes
     useEffect(() => {
         const handleResize = () => {
         const newCols = Math.max(3, Math.floor(window.innerWidth / 10)); 
