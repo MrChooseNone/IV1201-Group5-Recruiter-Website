@@ -74,7 +74,7 @@ public class AuthenticationController {
         if(authentication.isAuthenticated()){
             LOGGER.info("authenticateAndGetToken success for user (`{}`), returning token",username);
             //This returns a json in the format {"token":[tokenHere],"role":[roleHere, ex "recruiter"]}
-            return "{\"token\":\""+jwtService.generateToken(username)+"\" , \"role\":\""+authentication.getAuthorities().iterator().next().toString();
+            return "{\"token\":\""+jwtService.generateToken(username)+"\" , \"role\":\""+authentication.getAuthorities().iterator().next().toString()+"\"}";
         }
         else{
             throw new UsernameNotFoundException("INVALID USER REQUEST");
