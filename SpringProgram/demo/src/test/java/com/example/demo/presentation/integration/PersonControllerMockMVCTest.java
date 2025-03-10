@@ -107,7 +107,7 @@ public class PersonControllerMockMVCTest {
     void findPersonUsernameEndpointTest() throws Exception {
         this.mockMvc.perform(get("/person/findPerson?username=JoelleWilkinson").header("Authorization", "Bearer "+jwtService.generateToken("JoelleWilkinson"))).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":1,\"name\":\"Joelle\",\"surname\":\"Wilkinson\",\"pnr\":null,\"email\":null,\"role\":{\"roleId\":1,\"name\":\"recruiter\"},\"username\":\"JoelleWilkinson\"}"));
+                .andExpect(content().string("{\"id\":1,\"name\":\"Joelle\",\"surname\":\"Wilkinson\",\"pnr\":\"12341234-1431\",\"email\":\"awdawd@awdawd.wdawd\",\"role\":{\"roleId\":1,\"name\":\"recruiter\"},\"username\":\"JoelleWilkinson\"}"));
 
     }
 
