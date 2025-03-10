@@ -16,7 +16,7 @@ import {
   CircularProgress
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { isTokenExpired } from "./utils/TokenChecker";
+import { IsTokenExpired } from "./utils/TokenChecker";
 import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from '../App';
@@ -41,7 +41,7 @@ export default function ReviewerDashboard() {
     // Function to fetch all applications
     const fetchApplicants = () => {
 
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         const url = `${API_URL}/review/getApplications`
         console.log(auth.token);
@@ -80,7 +80,7 @@ export default function ReviewerDashboard() {
     // Function to fetch applications filtered by status
     const fetchApplicantsByStatus = () => {
         
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         const url = `${API_URL}/review/getApplicationsByStatus/${status}`
         fetch(url, {

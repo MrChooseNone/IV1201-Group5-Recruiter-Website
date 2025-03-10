@@ -96,10 +96,9 @@ export default function LoginComp() {
             const dataParsed = JSON.parse(data);
             setAuth(dataParsed); 
             console.log(dataParsed.token)
-            console.log(dataParsed.id)
             console.log(data)
 
-            //TODO update this to not use local storage
+            //We the store the data in session storage
             sessionStorage.setItem("token", dataParsed.token);
             sessionStorage.setItem("role", dataParsed.role);
             sessionStorage.setItem("id", dataParsed.id);

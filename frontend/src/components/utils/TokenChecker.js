@@ -1,5 +1,7 @@
 import {jwtDecode} from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../App";
+import { useContext } from "react";
 
 
 /**
@@ -7,7 +9,9 @@ import { useNavigate } from "react-router-dom";
  * @param {*} token The token to verify
  * @returns True if token expired, non-existent or invalid, false if it is not expired and valid as a jwt token
  */
-export const isTokenExpired = (token) => {
+export const IsTokenExpired = (token) => {
+    const { auth, setAuth } = useContext(AuthContext);
+    
     const navigate = useNavigate();
 
     if (token) // Check if there is a token

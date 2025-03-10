@@ -1,8 +1,8 @@
-    import React, { useState, useContext } from "react";
-    import { TextField, Button, Container, Typography, Box } from "@mui/material";
-    import { AuthContext } from '../App';
-    import { isTokenExpired } from "./utils/TokenChecker";
-    import { useNavigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { AuthContext } from '../App';
+import { IsTokenExpired } from "./utils/TokenChecker";
+import { useNavigate } from "react-router-dom";
 
 const RecruiterForm = () => {
         // Get API URL from .env file
@@ -17,7 +17,7 @@ const RecruiterForm = () => {
     const { auth, setAuth } = useContext(AuthContext);
 
     const ResetEmail = (e) => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         e.preventDefault(); // Prevents page refresh
 

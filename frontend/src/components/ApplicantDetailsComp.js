@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
 
 import { AuthContext } from '../App';
-import { isTokenExpired } from "./utils/TokenChecker";
+import { IsTokenExpired} from "./utils/TokenChecker";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -31,7 +31,7 @@ export default function ApplicationDetailsComp() {
  
     // Hämta kompetenser automatiskt vid sidladdning
     useEffect(() => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         fetch(`${API_URL}/review/getApplicationsById/${id}`, {
             method: "GET",
@@ -79,7 +79,7 @@ export default function ApplicationDetailsComp() {
             return;
         }
 
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         fetch(`${API_URL}/review/updateApplicationStatus`, {
             method: "POST",

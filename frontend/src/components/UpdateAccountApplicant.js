@@ -12,8 +12,6 @@ const ApplicantForm = () => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
-    
-
     const RequestReset = (e) => {
         e.preventDefault(); // Prevents page refresh
 

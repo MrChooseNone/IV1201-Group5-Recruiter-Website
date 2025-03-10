@@ -15,7 +15,7 @@ import {
   InputLabel,
   CircularProgress
 } from "@mui/material";
-import { isTokenExpired } from "./utils/TokenChecker";
+import { IsTokenExpired } from "./utils/TokenChecker";
 import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from '../App';
@@ -53,7 +53,7 @@ export default function ApplicationEndPoint() {
      */
     const getCompetenceProfiles = async () => {
 
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
         
         const url = `${API_URL}/application/getAllCompetenceProfiles`;
 
@@ -88,7 +88,7 @@ export default function ApplicationEndPoint() {
      */
     const fetchCompetences = () => {
 
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         const url = `${API_URL}/translation/getStandardCompetences`;
 
@@ -143,7 +143,7 @@ export default function ApplicationEndPoint() {
      */
     const createCompetenceProfile = async () => {
         
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         const response = await fetch(`${API_URL}/application/createCompetenceProfile?competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
@@ -166,7 +166,7 @@ export default function ApplicationEndPoint() {
      * This function is responsible for fetching all of the users availability periods
      */
     const getAvailability = async () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         const response = await fetch(`${API_URL}/application/getAllAvailability`,
             {
@@ -193,7 +193,7 @@ export default function ApplicationEndPoint() {
     // This create a new availability period
     const createAvailability = async () => {
 
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
         const response = await fetch(`${API_URL}/application/createAvailability?fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
@@ -287,7 +287,7 @@ export default function ApplicationEndPoint() {
      * This handles submitting an application, performing some validation before sending, and handling the result (good or bad) and notifying the user
      */
     const submitApplication = async () => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
 
         if (availability.length === 0 || competenceProfiles.length === 0) {

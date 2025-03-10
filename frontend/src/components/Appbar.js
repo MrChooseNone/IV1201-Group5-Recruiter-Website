@@ -20,7 +20,7 @@ export default function Appbar() {
   //Here we import the auth information from the context
   const { auth, setAuth } = useContext(AuthContext);
   
-      const navigate = useNavigate();
+    const navigate = useNavigate();
   
 
   //This function signs out the user, by using the context function setAuth to an empty object

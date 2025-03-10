@@ -2,9 +2,8 @@
   import Box from '@mui/material/Box';
   import TextField from '@mui/material/TextField';
   import Button from '@mui/material/Button';
-  import { isTokenExpired } from "./utils/TokenChecker";
+  import { IsTokenExpired } from "./utils/TokenChecker";
   import { useNavigate } from "react-router-dom";
-
 
   import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
 
@@ -35,7 +34,7 @@ export default function SearchByUsername() {
 
       // Function to handle search submission
     const handleSearch = (e) => {
-        if(isTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
+        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
 
           e.preventDefault(); // Prevents page refresh
 
