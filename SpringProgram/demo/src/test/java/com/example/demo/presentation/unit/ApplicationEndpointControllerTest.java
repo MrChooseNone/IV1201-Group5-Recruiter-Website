@@ -53,6 +53,7 @@ public class ApplicationEndpointControllerTest {
     @InjectMocks
     private ApplicationEndpointController applicationEndpointController;
 
+    private static Person person;
     private static Authentication authentication;
 
     // This ensures mocks are created correctly
@@ -61,7 +62,7 @@ public class ApplicationEndpointControllerTest {
 
         Role role = new Role();
         role.setName("testRole");
-        Person person = new Person();
+        person = new Person();
         person.setId(0);
         person.setRole(role);
         PersonDetails details=new PersonDetails(person);
@@ -92,16 +93,11 @@ public class ApplicationEndpointControllerTest {
         });
 
         // We first test that it throws the correct exception for an invalid integer
-        var e = assertThrowsExactly(InvalidParameterException.class,
-                () -> applicationEndpointController.GetCompetenceProfilesForAPerson("notAnInteger"));
-        assertEquals("Invalid parameter : Provided value (notAnInteger) could not be parsed as a valid integer",
-                e.getMessage());
 
         // And then that it returns the list it recived from service for a valid integer
-        List<? extends CompetenceProfileDTO> result = applicationEndpointController
-                .GetCompetenceProfilesForAPerson("1");
+        List<? extends CompetenceProfileDTO> result = applicationEndpointController.GetCompetenceProfilesForAPerson();
         assertEquals(1, result.size());
-        assertEquals(1, result.get(0).getPerson().getId());
+        assertEquals(person.getId(), result.get(0).getPerson().getId());
     }
 
     @Test
@@ -125,26 +121,21 @@ public class ApplicationEndpointControllerTest {
             return profile;
         });
 
-        // We first test that it throws the correct exception for an invalid integer and
-        // double for each of the parameters
-        var e = assertThrowsExactly(InvalidParameterException.class, () -> applicationEndpointController
-                .CreateCompetenceProfile("notAnInteger", "notAPersonId", "notaDouble"));
-        assertEquals("Invalid parameter : Provided value (notAnInteger) could not be parsed as a valid integer",
-                e.getMessage());
+        // We first test that it throws the correct exception for an invalid integer and double for each of the parameters
 
-        e = assertThrowsExactly(InvalidParameterException.class,
-                () -> applicationEndpointController.CreateCompetenceProfile("0", "notAPersonId", "notaDouble"));
+        var e = assertThrowsExactly(InvalidParameterException.class,
+                () -> applicationEndpointController.CreateCompetenceProfile("notAPersonId", "notaDouble"));
         assertEquals("Invalid parameter : Provided value (notAPersonId) could not be parsed as a valid integer",
                 e.getMessage());
 
         e = assertThrowsExactly(InvalidParameterException.class,
-                () -> applicationEndpointController.CreateCompetenceProfile("0", "0", "notaDouble"));
+                () -> applicationEndpointController.CreateCompetenceProfile( "0", "notaDouble"));
         assertEquals("Invalid parameter : Provided value (notaDouble) could not be parsed as a valid double",
                 e.getMessage());
 
         // And then that it returns the list it recived from service for a valid integer
-        CompetenceProfileDTO result = applicationEndpointController.CreateCompetenceProfile("1", "2", "3.1");
-        assertEquals(1, result.getPerson().getId());
+        CompetenceProfileDTO result = applicationEndpointController.CreateCompetenceProfile("2", "3.1");
+        assertEquals(person.getId(), result.getPerson().getId());
         assertEquals(2, result.getCompetenceDTO().getCompetenceId());
         assertEquals(3.1, result.getYearsOfExperience());
 
@@ -168,16 +159,10 @@ public class ApplicationEndpointControllerTest {
             return availabilityList;
         });
 
-        // We first test that it throws the correct exception for an invalid integer
-        var e = assertThrowsExactly(InvalidParameterException.class,
-                () -> applicationEndpointController.GetAllAvailability("notAnInteger"));
-        assertEquals("Invalid parameter : Provided value (notAnInteger) could not be parsed as a valid integer",
-                e.getMessage());
-
         // And then that it returns the list it recived from service for a valid integer
-        List<? extends AvailabilityDTO> result = applicationEndpointController.GetAllAvailability("1");
+        List<? extends AvailabilityDTO> result = applicationEndpointController.GetAllAvailability();
         assertEquals(1, result.size());
-        assertEquals(1, result.get(0).getPerson().getId());
+        assertEquals(person.getId(), result.get(0).getPerson().getId());
     }
 
     @Test
@@ -204,26 +189,22 @@ public class ApplicationEndpointControllerTest {
 
         // We first test that it throws the correct exception for invalid integer or
         // date parameters
-        var e = assertThrowsExactly(InvalidParameterException.class,
-                () -> applicationEndpointController.CreateAvailability("notAnInteger", "notAFromDate", "notAToDate"));
-        assertEquals("Invalid parameter : Provided value (notAnInteger) could not be parsed as a valid integer",
-                e.getMessage());
 
-        e = assertThrowsExactly(InvalidParameterException.class,
-                () -> applicationEndpointController.CreateAvailability("0", "notAFromDate", "notAToDate"));
+        var e = assertThrowsExactly(InvalidParameterException.class,
+                () -> applicationEndpointController.CreateAvailability("notAFromDate", "notAToDate"));
         assertEquals(
                 "Invalid parameter : Provided value (notAFromDate) could not be parsed as a valid date, please use the yyyy-(m)m-(d)d format, with the (m) and (d) specifying that these can be 0 or ignored",
                 e.getMessage());
 
         e = assertThrowsExactly(InvalidParameterException.class,
-                () -> applicationEndpointController.CreateAvailability("0", "2000-01-10", "notAToDate"));
+                () -> applicationEndpointController.CreateAvailability("2000-01-10", "notAToDate"));
         assertEquals(
                 "Invalid parameter : Provided value (notAToDate) could not be parsed as a valid date, please use the yyyy-(m)m-(d)d format, with the (m) and (d) specifying that these can be 0 or ignored",
                 e.getMessage());
 
         // And then that it returns the list it recived from service for a valid integer
-        AvailabilityDTO result = applicationEndpointController.CreateAvailability("1", "2000-01-10", "2000-01-14");
-        assertEquals(1, result.getPerson().getId());
+        AvailabilityDTO result = applicationEndpointController.CreateAvailability("2000-01-10", "2000-01-14");
+        assertEquals(person.getId(), result.getPerson().getId());
         assertEquals(true, result.getFromDate().equals(Date.valueOf("2000-01-10")));
         assertEquals(true, result.getToDate().equals(Date.valueOf("2000-01-14")));
 
@@ -277,11 +258,11 @@ public class ApplicationEndpointControllerTest {
         availabilityIds.add(54);
 
         //In this case we just test the correct execution, since the endpoint controller has no real logic
-        ApplicationSubmissionRequestBody body = new ApplicationSubmissionRequestBody(1, availabilityIds, competenceProfilesIds);
+        ApplicationSubmissionRequestBody body = new ApplicationSubmissionRequestBody(availabilityIds, competenceProfilesIds);
 
         ApplicationDTO result=applicationEndpointController.SubmitApplication(body);
 
-        assertEquals(1, result.getApplicant().getId());
+        assertEquals(0, result.getApplicant().getId());
         assertEquals(1, result.getAvailabilityPeriodsForApplication().size());
         assertEquals(1, result.getCompetenceProfilesForApplication().size());        
         assertEquals(23, result.getCompetenceProfilesForApplication().get(0).getCompetenceProfileId());
