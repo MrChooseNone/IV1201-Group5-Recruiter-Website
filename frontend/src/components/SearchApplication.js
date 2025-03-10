@@ -3,7 +3,7 @@ import React, {useState,useContext} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { IsTokenExpired } from "./utils/TokenChecker";
+import { isTokenExpired } from "./utils/TokenChecker";
 import { useNavigate } from "react-router-dom";
 
 import { Typography, Divider, CircularProgress, List, ListItem } from '@mui/material';
@@ -27,8 +27,12 @@ export default function SearchApplication() {
     
     // Function to handle search submission
     const handleSearch = (e) => {
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         e.preventDefault(); // Prevents page refresh
         const param = new URLSearchParams({name: search});
         const url = new URL(`${API_URL}/person/find`);

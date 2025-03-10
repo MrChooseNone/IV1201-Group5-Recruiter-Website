@@ -1,37 +1,13 @@
 import {jwtDecode} from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../App";
-import { useContext } from "react";
 
-
-/**
- * This function is responsible for checking and handling if a token is expired
- * @param {*} token The token to verify
- * @returns True if token expired, non-existent or invalid, false if it is not expired and valid as a jwt token
- */
-export const IsTokenExpired = (token) => {
-    const { auth, setAuth } = useContext(AuthContext);
-    
-    const navigate = useNavigate();
-
-    if (token) // Check if there is a token
-    {
-        try {
+export const isTokenExpired = (token) => {
+    if (!token) return true; // If no token, consider it expired
+    try {
         const { exp } = jwtDecode(token);
 
         const currentTime = Math.floor(Date.now() / 1000); // Get time in seconds
-
-        if(!(exp < currentTime))
-        {
-            return false; //if expiration date >= currentTime token is not expired, and return false
-        }
-    } 
-        catch (error) {}
+        return exp < currentTime; // return true if expired
+    } catch (error) {
+        return true; // If there's an error treat as expired
     }
-    // If there was an error, no token or it was expired then remove authentication from state + session storage, alert that token was expired + naviage to login
-    setAuth({});
-    sessionStorage.clear();
-    alert("Your session has expired. Please log in again.");
-    navigate("/login"); // Redirect to login page
-    return true;
-};
+}

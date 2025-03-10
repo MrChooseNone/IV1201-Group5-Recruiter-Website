@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { AuthContext } from '../App';
-import { IsTokenExpired } from "./utils/TokenChecker";
+import { isTokenExpired } from "./utils/TokenChecker";
 import { useNavigate } from "react-router-dom";
 
 const RecruiterForm = () => {
@@ -17,8 +17,12 @@ const RecruiterForm = () => {
     const { auth, setAuth } = useContext(AuthContext);
 
     const ResetEmail = (e) => {
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         e.preventDefault(); // Prevents page refresh
 
         const params = new URLSearchParams();

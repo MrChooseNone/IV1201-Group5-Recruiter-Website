@@ -15,7 +15,7 @@ import {
   InputLabel,
   CircularProgress
 } from "@mui/material";
-import { IsTokenExpired } from "./utils/TokenChecker";
+import { isTokenExpired } from "./utils/TokenChecker";
 import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from '../App';
@@ -53,8 +53,12 @@ export default function ApplicationEndPoint() {
      */
     const getCompetenceProfiles = async () => {
 
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-        
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const url = `${API_URL}/application/getAllCompetenceProfiles`;
 
         fetch(url, {
@@ -88,8 +92,12 @@ export default function ApplicationEndPoint() {
      */
     const fetchCompetences = () => {
 
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const url = `${API_URL}/translation/getStandardCompetences`;
 
         console.log("Fetching competences from:", url);
@@ -143,8 +151,12 @@ export default function ApplicationEndPoint() {
      */
     const createCompetenceProfile = async () => {
         
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const response = await fetch(`${API_URL}/application/createCompetenceProfile?competenceId=${competenceId}&yearsOfExperience=${yearsOfExperience}`, {
         method: "POST",
         headers: {
@@ -166,8 +178,12 @@ export default function ApplicationEndPoint() {
      * This function is responsible for fetching all of the users availability periods
      */
     const getAvailability = async () => {
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const response = await fetch(`${API_URL}/application/getAllAvailability`,
             {
                 method: "GET",
@@ -193,8 +209,12 @@ export default function ApplicationEndPoint() {
     // This create a new availability period
     const createAvailability = async () => {
 
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
         const response = await fetch(`${API_URL}/application/createAvailability?fromDate=${fromDate}&toDate=${toDate}`, {
         method: "POST",
         headers: {
@@ -287,8 +307,12 @@ export default function ApplicationEndPoint() {
      * This handles submitting an application, performing some validation before sending, and handling the result (good or bad) and notifying the user
      */
     const submitApplication = async () => {
-        if(IsTokenExpired(sessionStorage.getItem("token"))){return;}//If the token is expired, do not continue
-
+        if(isTokenExpired(sessionStorage.getItem("token"))){ //if token has expired 
+            setAuth({});
+            sessionStorage.clear();
+            alert("Your session has expired. Please log in again.");
+            navigate("/login"); // Redirect to login page
+        }
 
         if (availability.length === 0 || competenceProfiles.length === 0) {
             console.error("Missing required fields.");
