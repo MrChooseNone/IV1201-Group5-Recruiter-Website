@@ -1,3 +1,8 @@
+# IV1201 Group 5 – Job Application System
+My role: Full-stack developer with a focus on Frontend.
+Software & Tools: Java, JavaScript, Spring Boot, React, PostgreSQL, REST API
+Original Repository: https://github.com/Hustra03/IV1201-Group5
+
 # A Theme Park Recruitment System
 
 This project is a recruitment system for a hypothetical theme park. It uses PostgreSQL as the database system, a Springboot server as the backend and a React-based frontend, and it follows the Monolithic Architectural pattern.
